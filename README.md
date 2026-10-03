@@ -2,9 +2,9 @@
 
 Hands-on study material for the quantitative methods on the CFA Level II syllabus — regression, time series and machine learning — in Python.
 
-- **`notebooks/`** — eight Jupyter notebooks. Each has worked examples, exercises with hints, and solutions at the end.
+- **`notebooks/`** — nine Jupyter notebooks. Notebooks 00–07 have worked examples and self-checking exercises: run `check("01.1")` after an exercise to get ✅ or ❌ with a hint. Notebook 08 is a capstone on real market data.
 - **`data/`** — six practice datasets (simulated with a fixed seed so everyone gets the same numbers).
-- **`quant-atlas.html`** — the interactive study guide: topic explanations, formulas, labs, a data workbench, a model chooser and practice questions. Open it in any browser.
+- **`quant-atlas.html`** — the interactive study guide: topic explanations, formulas, labs, a data workbench, 10 exam-style item sets, a model chooser and practice questions. Open it in any browser.
 
 ## Run the notebooks
 
@@ -29,6 +29,7 @@ jupyter lab
 | 05 | [Supervised ML](notebooks/05_supervised_ml.ipynb) | LASSO, logistic, KNN, SVM, CART, random forest, boosting, cross-validation, ROC | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/lukasquaderer-lgtm/Linear-regression/blob/master/notebooks/05_supervised_ml.ipynb) |
 | 06 | [Unsupervised ML](notebooks/06_unsupervised_ml.ipynb) | PCA on Treasury yields, k-means and hierarchical clustering | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/lukasquaderer-lgtm/Linear-regression/blob/master/notebooks/06_unsupervised_ml.ipynb) |
 | 07 | [Neural nets and text](notebooks/07_neural_nets_and_text.ipynb) | MLP hyperparameters, tokenisation, document-term matrix, TF-IDF, sentiment | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/lukasquaderer-lgtm/Linear-regression/blob/master/notebooks/07_neural_nets_and_text.ipynb) |
+| 08 | [Capstone: real market data](notebooks/08_capstone_real_market_data.ipynb) | Real Swiss stock prices from Yahoo Finance: betas, momentum factor, time-series tests, PCA, clustering, backtest, ML forecast | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/lukasquaderer-lgtm/Linear-regression/blob/master/notebooks/08_capstone_real_market_data.ipynb) |
 
 ## Datasets
 
@@ -40,6 +41,7 @@ jupyter lab
 | `credit_default.csv` | 800 loans | Logistic regression, dummies, classification, model evaluation |
 | `company_fundamentals.csv` | 150 companies | K-means and hierarchical clustering |
 | `headlines.csv` | 300 headlines | Text preparation, TF-IDF, sentiment classification |
+| `capstone_prices.csv`, `capstone_sectors.csv` | 180 months, 20 stocks | Fallback for the capstone if the Yahoo Finance download fails |
 
 Load any of them with `pd.read_csv("https://raw.githubusercontent.com/lukasquaderer-lgtm/Linear-regression/master/data/<file>.csv")`.
 

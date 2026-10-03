@@ -139,4 +139,35 @@ for _ in range(300):
     hl.append([txt, s])
 pd.DataFrame(hl, columns=["headline", "sentiment"]).to_csv(OUT / "headlines.csv", index=False)
 
+# 7. Monthly stock prices for the capstone (fallback when Yahoo Finance is unavailable)
+rng = np.random.default_rng(SEEDS["main"] + 7)
+months = pd.date_range("2010-01-31", periods=180, freq="ME")
+sectors = {"BANK": "Financials", "PHARMA": "Health care", "FOOD": "Consumer staples", "TECH": "Technology", "INDU": "Industrials"}
+names = [f"{s}{i}" for s in sectors for i in range(1, 5)]
+Tm = len(months)
+h = np.empty(Tm); e = np.empty(Tm); h[0] = 0.0016
+for i in range(Tm):                                    # GARCH-style market volatility
+    if i:
+        h[i] = 0.00012 + 0.12 * e[i - 1] ** 2 + 0.80 * h[i - 1]
+    e[i] = np.sqrt(h[i]) * rng.normal()
+mkt_r = 0.007 + e
+sec_f = {s: rng.normal(0, 0.03, Tm) for s in sectors}
+beta_by_sector = {"BANK": 1.25, "PHARMA": 0.70, "FOOD": 0.60, "TECH": 1.45, "INDU": 1.10}
+rets = {}
+past = np.zeros((Tm, len(names)))
+for j, nm in enumerate(names):
+    sec = nm.rstrip("1234")
+    b = beta_by_sector[sec] + rng.normal(0, 0.12)
+    idio = 0.03 + rng.uniform(0, 0.02)
+    r = 0.001 + b * mkt_r + sec_f[sec] + rng.normal(0, idio, Tm)
+    rets[nm] = r
+R = pd.DataFrame(rets, index=months)
+mom = (1 + R).rolling(11).apply(np.prod, raw=True).shift(2) - 1          # 12-1 momentum known at t-1
+R = R + 0.006 * mom.sub(mom.mean(axis=1), axis=0).fillna(0)               # small momentum premium
+prices = 100 * (1 + R).cumprod()
+prices.loc[: "2018-12-31", "TECH4"] = np.nan                            # a later listing, like real data
+prices.insert(0, "INDEX", (1000 * (1 + mkt_r).cumprod()).round(2))
+prices.round(2).rename_axis("date").to_csv(OUT / "capstone_prices.csv")
+pd.DataFrame({"ticker": names, "sector": [sectors[n.rstrip("1234")] for n in names]}).to_csv(OUT / "capstone_sectors.csv", index=False)
+
 print("Wrote:", *sorted(p.name for p in OUT.glob("*.csv")))

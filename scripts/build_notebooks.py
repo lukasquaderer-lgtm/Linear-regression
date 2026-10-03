@@ -78,22 +78,25 @@ Output appears underneath. Cells run top to bottom; if something breaks, use *Ru
     code('''
     df[["mkt_excess", "smb", "hml", "mom", "stock_excess"]].corr().round(2)
     '''),
-    *exercise(1, "Compute the **annualised** mean (×12) and annualised standard deviation (×√12) of `mkt_excess`.",
-              "`df['mkt_excess'].mean() * 12` and `df['mkt_excess'].std() * np.sqrt(12)`"),
-    *exercise(2, "How many months did the stock beat the market (`stock_excess > mkt_excess`)? What fraction is that?",
-              "A comparison gives True/False values; `.sum()` counts the Trues and `.mean()` gives the fraction."),
-    *exercise(3, "Load `macro_quarterly.csv` and plot `inflation` against `quarter` as a line chart.",
-              "`m = pd.read_csv(DATA + 'macro_quarterly.csv')` then `plt.plot(m['t'], m['inflation'])`"),
+    *exercise(1, "Compute the **annualised** mean (×12) and annualised standard deviation (×√12) of `mkt_excess`. Store them in `ann_mean` and `ann_std`.",
+              "`df['mkt_excess'].mean() * 12` and `df['mkt_excess'].std() * np.sqrt(12)`", key="00.1"),
+    *exercise(2, "How many months did the stock beat the market (`stock_excess > mkt_excess`)? What fraction is that? Store them in `n_beat` and `frac_beat`.",
+              "A comparison gives True/False values; `.sum()` counts the Trues and `.mean()` gives the fraction.", key="00.2"),
+    *exercise(3, "Load `macro_quarterly.csv` into a DataFrame called `m` and plot `inflation` over time as a line chart.",
+              "`m = pd.read_csv(DATA + 'macro_quarterly.csv')` then `plt.plot(m['t'], m['inflation'])`", key="00.3"),
     md("---\n## Solutions"),
     code('''
     # Exercise 1
-    print("Annualised mean:", df["mkt_excess"].mean() * 12, "| annualised std:", df["mkt_excess"].std() * np.sqrt(12))
+    ann_mean, ann_std = df["mkt_excess"].mean() * 12, df["mkt_excess"].std() * np.sqrt(12)
+    print("Annualised mean:", ann_mean, "| annualised std:", ann_std)
     # Exercise 2
     beat = df["stock_excess"] > df["mkt_excess"]
-    print("Months beating market:", beat.sum(), "fraction:", round(beat.mean(), 3))
+    n_beat, frac_beat = beat.sum(), beat.mean()
+    print("Months beating market:", n_beat, "fraction:", round(frac_beat, 3))
     # Exercise 3
     m = pd.read_csv(DATA + "macro_quarterly.csv")
     plt.plot(m["t"], m["inflation"]); plt.xlabel("quarter number"); plt.ylabel("inflation %"); plt.show()
+    check_all("00")
     '''),
 ]
 
@@ -172,26 +175,30 @@ Dataset: `factor_returns.csv` (120 simulated months).
     pred = model.get_prediction(new).summary_frame(alpha=0.05)
     pred[["mean", "obs_ci_lower", "obs_ci_upper"]]   # obs_ci = prediction interval for a single new Y
     '''),
-    *exercise(1, "Regress `fund_excess` on `mkt_excess`. Report the beta, its t-statistic and R².",
-              "Copy Step 5 and change the column name."),
-    *exercise(2, "For the **stock**, test H₀: β = 1 against H₁: β ≠ 1 at the 5% level. Compute t by hand using `b1` and `s_b1` from above.",
-              "t = (b1 − 1) / s_b1, then compare with `t_crit`. Or use `model.t_test('mkt_excess = 1')`."),
-    *exercise(3, "What is the 95% prediction interval for the stock’s excess return when the market returns **+8%**? Why is it wider than the interval at the mean of X?"),
+    *exercise(1, "Regress `fund_excess` on `mkt_excess`. Store the beta, its t-statistic and R² in `beta_fund`, `t_fund` and `r2_fund`.",
+              "Copy Step 5 and change the column name.", key="01.1"),
+    *exercise(2, "For the **stock**, test H₀: β = 1 against H₁: β ≠ 1 at the 5% level. Compute t by hand using `b1` and `s_b1` from above. Store it in `t_beta1`, and store `True`/`False` in `reject_beta1`.",
+              "t = (b1 − 1) / s_b1, then compare with `t_crit`. Or use `model.t_test('mkt_excess = 1')`.", key="01.2"),
+    *exercise(3, "What is the 95% prediction interval for the stock’s excess return when the market returns **+8%**? Store the bounds in `pi_lower` and `pi_upper`. Why is it wider than the interval at the mean of X?", key="01.3"),
     *exercise(4, "Run a log-log style check: does the scatter look linear? What would a log transformation do here (hint: returns can be negative)?"),
     md("---\n## Solutions"),
     code('''
     # 1
     fm = sm.OLS(df["fund_excess"], sm.add_constant(df["mkt_excess"])).fit()
-    print("beta", round(fm.params["mkt_excess"], 4), "t", round(fm.tvalues["mkt_excess"], 2), "R2", round(fm.rsquared, 4))
+    beta_fund, t_fund, r2_fund = fm.params["mkt_excess"], fm.tvalues["mkt_excess"], fm.rsquared
+    print("beta", round(beta_fund, 4), "t", round(t_fund, 2), "R2", round(r2_fund, 4))
     # 2
     t_beta1 = (b1 - 1) / s_b1
-    print("t for H0 beta=1:", round(t_beta1, 3), "->", "reject" if abs(t_beta1) > t_crit else "fail to reject")
-    print(model.t_test("mkt_excess = 1"))
+    reject_beta1 = abs(t_beta1) > t_crit
+    print("t for H0 beta=1:", round(t_beta1, 3), "->", "reject" if reject_beta1 else "fail to reject")
     # 3
-    print(model.get_prediction(pd.DataFrame({"const": [1.0], "mkt_excess": [8.0]})).summary_frame()[["mean", "obs_ci_lower", "obs_ci_upper"]])
+    pi = model.get_prediction(pd.DataFrame({"const": [1.0], "mkt_excess": [8.0]})).summary_frame()
+    pi_lower, pi_upper = pi["obs_ci_lower"].iloc[0], pi["obs_ci_upper"].iloc[0]
+    print("95% prediction interval:", round(pi_lower, 2), "to", round(pi_upper, 2))
     print("Wider because (Xf - X̄)^2 in s_f grows as Xf moves away from the mean of X =", round(x_bar, 2))
     # 4
     print("Returns include negatives, so ln(Y) is undefined; the scatter is linear, so the plain linear model is appropriate.")
+    check_all("01")
     '''),
 ]
 
@@ -257,17 +264,21 @@ Compute adjusted R², the F-test, AIC/BIC and a nested-model joint F-test, by ha
     plt.scatter(m4.fittedvalues, m4.resid, alpha=0.5); plt.axhline(0, color="k", lw=1)
     plt.xlabel("fitted"); plt.ylabel("residual"); plt.title("A fan shape hints at heteroskedasticity (see notebook 03)"); plt.show()
     '''),
-    *exercise(1, "Is momentum significant for this fund at 5%? Use the t-stat and p-value from `m4`."),
-    *exercise(2, "Add a useless random variable `noise = np.random.default_rng(0).normal(size=n)` to the 4-factor model. What happens to R² and to adjusted R²? Why?"),
-    *exercise(3, "Predict the fund’s excess return in a month where mkt = 2, smb = −1, hml = 0.5, mom = 1.",
-              "`m4.predict(pd.DataFrame({'const':[1], 'mkt_excess':[2], 'smb':[-1], 'hml':[0.5], 'mom':[1]}))`"),
+    *exercise(1, "Is momentum significant for this fund at 5%? Store its t-stat in `mom_t` and `True`/`False` in `mom_significant`.", key="02.1"),
+    *exercise(2, "Add a useless random variable `noise = np.random.default_rng(0).normal(size=n)` to the 4-factor model. Store the new R² and adjusted R² in `r2_noise` and `adj_r2_noise`. What happened to each, and why?", key="02.2"),
+    *exercise(3, "Predict the fund’s excess return in a month where mkt = 2, smb = −1, hml = 0.5, mom = 1. Store the number in `pred_fund`.",
+              "`m4.predict(pd.DataFrame({'const':[1], 'mkt_excess':[2], 'smb':[-1], 'hml':[0.5], 'mom':[1]}))`", key="02.3"),
     md("---\n## Solutions"),
     code('''
-    print("1) MOM t =", round(m4.tvalues["mom"], 2), "p =", round(m4.pvalues["mom"], 3))
+    mom_t, mom_significant = m4.tvalues["mom"], m4.pvalues["mom"] < 0.05
+    print("1) MOM t =", round(mom_t, 2), "p =", round(m4.pvalues["mom"], 3))
     d2 = df.copy(); d2["noise"] = np.random.default_rng(0).normal(size=n)
     r5 = sm.OLS(y, sm.add_constant(d2[["mkt_excess", "smb", "hml", "mom", "noise"]])).fit()
-    print(f"2) R2 {m4.rsquared:.4f} -> {r5.rsquared:.4f} (never falls); adj R2 {m4.rsquared_adj:.4f} -> {r5.rsquared_adj:.4f} (penalised)")
-    print("3)", m4.predict(pd.DataFrame({"const": [1], "mkt_excess": [2], "smb": [-1], "hml": [0.5], "mom": [1]})).round(3).tolist())
+    r2_noise, adj_r2_noise = r5.rsquared, r5.rsquared_adj
+    print(f"2) R2 {m4.rsquared:.4f} -> {r2_noise:.4f} (never falls); adj R2 {m4.rsquared_adj:.4f} -> {adj_r2_noise:.4f} (penalised)")
+    pred_fund = m4.predict(pd.DataFrame({"const": [1], "mkt_excess": [2], "smb": [-1], "hml": [0.5], "mom": [1]})).iloc[0]
+    print("3)", round(pred_fund, 3))
+    check_all("02")
     '''),
 ]
 
@@ -353,20 +364,23 @@ dummy variables, and a logistic regression for loan default.
     print(out)
     print(f"\\nLikelihood ratio test: LR = {logit.llr:.1f}, p = {logit.llr_pvalue:.2e}; pseudo R2 = {logit.prsquared:.3f}")
     '''),
-    *exercise(1, "Re-run the Breusch–Pagan test on the **stock** CAPM regression (`stock_excess` on `mkt_excess`). Is there heteroskedasticity?"),
-    *exercise(2, "Interpret the odds ratio on `fico`: by what percentage do the odds of default change for a 10-point higher FICO score?",
-              "Odds ratio for 10 points = exp(10 × coef)."),
-    *exercise(3, "Predict the default probability for: income 50, DTI 45, FICO 620, LTV 90, 1 year employed, not a home owner, purpose small_business.",
-              "Build a one-row DataFrame with exactly the columns of `Xl` (const = 1 and the three dummy columns), then `logit.predict(row)`."),
+    *exercise(1, "Re-run the Breusch–Pagan test on the **stock** CAPM regression (`stock_excess` on `mkt_excess`). Store the p-value in `bp_p_stock` and `True`/`False` (heteroskedasticity at 5%?) in `hetero_stock`.", key="03.1"),
+    *exercise(2, "Interpret the odds ratio on `fico`: by what percentage do the odds of default change for a 10-point higher FICO score? Store the percentage (e.g. −12.3) in `fico_change_pct`.",
+              "Odds ratio for 10 points = exp(10 × coef).", key="03.2"),
+    *exercise(3, "Predict the default probability for: income 50, DTI 45, FICO 620, LTV 90, 1 year employed, not a home owner, purpose small_business. Store it in `pd_borrower`.",
+              "Build a one-row DataFrame with exactly the columns of `Xl` (const = 1 and the three dummy columns), then `logit.predict(row)`.", key="03.3"),
     md("---\n## Solutions"),
     code('''
     ms = sm.OLS(df["stock_excess"], sm.add_constant(df["mkt_excess"])).fit()
-    bp_p = het_breuschpagan(ms.resid, ms.model.exog)[1]
-    print("1) BP p-value:", round(bp_p, 4), "→", "heteroskedasticity" if bp_p < 0.05 else "no evidence of conditional heteroskedasticity")
-    b = logit.params["fico"]; print(f"2) 10-point FICO: odds × {np.exp(10*b):.3f} → {100*(np.exp(10*b)-1):.1f}% change")
+    bp_p_stock = het_breuschpagan(ms.resid, ms.model.exog)[1]; hetero_stock = bp_p_stock < 0.05
+    print("1) BP p-value:", round(bp_p_stock, 4), "→", "heteroskedasticity" if hetero_stock else "no evidence of conditional heteroskedasticity")
+    b = logit.params["fico"]; fico_change_pct = 100 * (np.exp(10 * b) - 1)
+    print(f"2) 10-point FICO: odds × {np.exp(10*b):.3f} → {fico_change_pct:.1f}% change")
     row = pd.DataFrame([dict(const=1, income_k=50, debt_to_income=45, fico=620, loan_to_value=90, years_employed=1, home_owner=0,
                              p_debt_consolidation=0, p_home_improvement=0, p_small_business=1)])[Xl.columns]
-    print("3) PD =", round(float(logit.predict(row).iloc[0]), 3))
+    pd_borrower = float(logit.predict(row).iloc[0])
+    print("3) PD =", round(pd_borrower, 3))
+    check_all("03")
     '''),
 ]
 
@@ -471,21 +485,25 @@ Columns in `macro_quarterly.csv`: `retail_sales` (growing, seasonal), `inflation
         t_stat, p, _ = coint(ts[a], ts[b])
         print(f"{a} vs {b}: EG t = {t_stat:.2f}, p = {p:.3f} → {'cointegrated: regression valid' if p < 0.05 else 'NOT cointegrated: regression spurious'}")
     '''),
-    *exercise(1, "Run the Dickey–Fuller test on `inflation` in levels. Do you reject the unit root? Is that consistent with the AR(1) estimate b₁?"),
-    *exercise(2, "Fit an AR(1) to the first-differenced `fx_rate`. Is b₁ significant? What does that say about predicting exchange-rate changes?"),
-    *exercise(3, "Forecast inflation **four** quarters ahead with the chain rule. Which value does the forecast approach as the horizon grows?"),
-    *exercise(4, "Regress `gold_price` on `oil_price` with OLS and look at R² and the t-stat. Why should you not trust them?"),
+    *exercise(1, "Run the Dickey–Fuller test on `inflation` in levels. Store the DF t-stat in `df_t_infl` and `True`/`False` (does inflation have a unit root?) in `unit_root_infl`. Is that consistent with the AR(1) estimate b₁?", key="04.1"),
+    *exercise(2, "Fit an AR(1) to the first-differenced `fx_rate`. Store b₁ and its p-value in `b1_dfx` and `p_dfx`. What does that say about predicting exchange-rate changes?", key="04.2"),
+    *exercise(3, "Forecast inflation **four** quarters ahead with the chain rule and store the four-step-ahead value in `forecast_4q`. Which value does the forecast approach as the horizon grows?", key="04.3"),
+    *exercise(4, "Run the Engle–Granger cointegration test for `gold_price` and `oil_price`. Store the p-value in `eg_p_gold` and `True`/`False` (would a regression of one on the other be spurious?) in `spurious`.", key="04.4"),
     md("---\n## Solutions"),
     code('''
-    s, p, *_ = adfuller(ts["inflation"], maxlag=0, autolag=None); print(f"1) DF t={s:.2f}, p={p:.4f}; b1={b1:.3f} < 1 → stationary")
+    df_t_infl, p, *_ = adfuller(ts["inflation"], maxlag=0, autolag=None); unit_root_infl = p > 0.05
+    print(f"1) DF t={df_t_infl:.2f}, p={p:.4f}; b1={b1:.3f} < 1 →", "unit root" if unit_root_infl else "stationary")
     dd = pd.DataFrame({"y": dfx, "l": dfx.shift(1)}).dropna(); r2 = sm.OLS(dd["y"], sm.add_constant(dd["l"])).fit()
-    print(f"2) b1={r2.params['l']:.3f}, p={r2.pvalues['l']:.3f} →", "changes are not predictable (random walk)" if r2.pvalues["l"] > 0.05 else "some predictability")
+    b1_dfx, p_dfx = r2.params["l"], r2.pvalues["l"]
+    print(f"2) b1={b1_dfx:.3f}, p={p_dfx:.3f} →", "changes are not predictable (random walk)" if p_dfx > 0.05 else "some predictability")
     f = x.iloc[-1]
     for h in range(1, 5):
         f = b0 + b1 * f; print(f"3) h={h}: {f:.3f}")
+    forecast_4q = f
     print("   → converges to the mean-reverting level", round(b0 / (1 - b1), 3))
-    sp = sm.OLS(ts["gold_price"], sm.add_constant(ts["oil_price"])).fit()
-    print(f"4) R2={sp.rsquared:.2f}, t={sp.tvalues['oil_price']:.1f}: both unit-root, not cointegrated → spurious regression")
+    eg_p_gold = coint(ts["gold_price"], ts["oil_price"])[1]; spurious = eg_p_gold > 0.05
+    print(f"4) EG p = {eg_p_gold:.3f} → {'not cointegrated: OLS t-stats and R2 would be spurious' if spurious else 'cointegrated'}")
+    check_all("04")
     '''),
 ]
 
@@ -578,18 +596,22 @@ SVM, CART, random forest, boosting) with proper train/test splits, cross-validat
         pr = (p >= th).astype(int); tn, fp, fn, tp = confusion_matrix(y_test, pr).ravel()
         print(f"threshold {th}: precision {tp/max(tp+fp,1):.2f}, recall {tp/(tp+fn):.2f}")
     '''),
-    *exercise(1, "Try KNN with k = 1, 5, 15, 51. Report train and test accuracy. Which k overfits? Which underfits?"),
-    *exercise(2, "Fit KNN **without** the StandardScaler. Why does test AUC drop?", "Look at the scale of `income_k` vs `fico` vs `home_owner`."),
-    *exercise(3, "The bank says missing a default costs 5× more than a false alarm. Pick a threshold for the logistic model that minimises `5*FN + FP` on the test set."),
+    *exercise(1, "Try KNN (with StandardScaler in a pipeline) for k = 1, 5, 15, 51. Store the **test** accuracies in a dict `knn_test = {1: ..., 5: ..., 15: ..., 51: ...}`. Which k overfits? Which underfits?", key="05.1"),
+    *exercise(2, "Fit KNN with k = 15 **without** the StandardScaler and store its test AUC in `auc_unscaled`. Why does it drop?", "Look at the scale of `income_k` vs `fico` vs `home_owner`.", key="05.2"),
+    *exercise(3, "The bank says missing a default costs 5× more than a false alarm. Try thresholds `np.arange(0.05, 0.95, 0.05)` for the logistic model and store the one that minimises `5*FN + FP` on the test set in `best_threshold`.", key="05.3"),
     md("---\n## Solutions"),
     code('''
+    knn_test = {}
     for k in [1, 5, 15, 51]:
         m = make_pipeline(StandardScaler(), KNeighborsClassifier(n_neighbors=k)).fit(X_train, y_train)
-        print(f"1) k={k:>2}: train {m.score(X_train, y_train):.3f}  test {m.score(X_test, y_test):.3f}")
+        knn_test[k] = m.score(X_test, y_test)
+        print(f"1) k={k:>2}: train {m.score(X_train, y_train):.3f}  test {knn_test[k]:.3f}")
     raw = KNeighborsClassifier(n_neighbors=15).fit(X_train, y_train)
-    print("2) unscaled KNN test AUC:", round(roc_auc_score(y_test, raw.predict_proba(X_test)[:, 1]), 3), "→ fico/income dominate the distance")
+    auc_unscaled = roc_auc_score(y_test, raw.predict_proba(X_test)[:, 1])
+    print("2) unscaled KNN test AUC:", round(auc_unscaled, 3), "→ fico/income dominate the distance")
     costs = {th: 5 * ((p < th) & (y_test == 1)).sum() + ((p >= th) & (y_test == 0)).sum() for th in np.arange(0.05, 0.95, 0.05)}
-    best = min(costs, key=costs.get); print(f"3) best threshold ≈ {best:.2f}, cost {costs[best]}")
+    best_threshold = min(costs, key=costs.get); print(f"3) best threshold ≈ {best_threshold:.2f}, cost {costs[best_threshold]}")
+    check_all("05")
     '''),
 ]
 
@@ -658,17 +680,23 @@ notebooks[f] = header(f, "06 · Unsupervised learning: PCA on yield curves and c
     agg = AgglomerativeClustering(n_clusters=5, linkage="ward").fit(Z)
     pd.crosstab(agg.labels_, co["true_sector"])
     '''),
-    *exercise(1, "How many principal components do you need to explain 95% of the variance in yield changes?"),
-    *exercise(2, "Run PCA on the **companies** (standardised). Plot the companies on PC1 vs PC2, coloured by `true_sector`."),
-    *exercise(3, "Run k-means with k = 3 instead of 5. Which sectors get merged? Does that make economic sense?"),
+    *exercise(1, "How many principal components do you need to explain 95% of the variance in yield changes? Store the number in `n_pc_95`.", key="06.1"),
+    *exercise(2, "Run PCA on the **companies** (standardised, i.e. on `Z`). Store the share of variance explained by the first two components in `share_2pc`, then plot the companies on PC1 vs PC2 coloured by `true_sector`.", key="06.2"),
+    *exercise(3, "Run k-means with k = 3 instead of 5 (`n_init=10, random_state=0`). Store the set of sectors that end up in the same cluster as energy in `merged_with_energy`, e.g. `{'energy', 'banks'}`. Does the grouping make economic sense?", key="06.3"),
     md("---\n## Solutions"),
     code('''
-    print("1)", int((ev["cumulative"] < 0.95).sum() + 1), "components")
-    pc = PCA(2).fit_transform(Z)
+    n_pc_95 = int((ev["cumulative"] < 0.95).sum() + 1)
+    print("1)", n_pc_95, "components")
+    pca2 = PCA(2).fit(Z); share_2pc = pca2.explained_variance_ratio_.sum(); pc = pca2.transform(Z)
+    print(f"2) first two PCs explain {share_2pc:.1%}")
     for s in co["true_sector"].unique():
         msk = co["true_sector"] == s; plt.scatter(pc[msk, 0], pc[msk, 1], label=s, alpha=0.7)
     plt.legend(); plt.xlabel("PC1"); plt.ylabel("PC2"); plt.title("2) companies in PC space"); plt.show()
-    print("3)"); print(pd.crosstab(KMeans(3, n_init=10, random_state=0).fit_predict(Z), co["true_sector"]))
+    lab3 = KMeans(3, n_init=10, random_state=0).fit_predict(Z)
+    tab3 = pd.crosstab(lab3, co["true_sector"]); print("3)"); print(tab3)
+    major = tab3.idxmax()                       # each sector's main cluster
+    merged_with_energy = set(major[major == major["energy"]].index); print("merged with energy:", merged_with_energy)
+    check_all("06")
     '''),
 ]
 
@@ -755,19 +783,25 @@ project on financial headlines: tokenise, build a document-term matrix, TF-IDF, 
         print(c.ljust(8), ", ".join(names[np.argsort(lr.coef_[i])[-6:]][::-1]))
     print(clf.predict(["Initech beats estimates as demand grows", "Globex cuts guidance after weak quarter"]))
     '''),
-    *exercise(1, "Replace the logistic regression with `MultinomialNB()` (naive Bayes) and a plain `CountVectorizer`. Compare macro F1."),
+    *exercise(1, "Replace the logistic regression with `MultinomialNB()` (naive Bayes) and `CountVectorizer(ngram_range=(1, 2))`. Store its macro F1 on the test set in `nb_f1` and compare with the logistic model.", key="07.1"),
     *exercise(2, "Write three headlines of your own and classify them. Can you fool the model?"),
-    *exercise(3, "Train the (64, 64) neural network for only `max_iter=20`. What happens to train and test AUC (underfitting)?"),
+    *exercise(3, "Train the (64, 64) neural network (`random_state=0`, with StandardScaler) for only `max_iter=20`. Store its test AUC in `auc_test_20`. What happens to train and test AUC compared with 600 iterations?", key="07.3"),
     md("---\n## Solutions"),
     code('''
     from sklearn.metrics import f1_score
     nb = make_pipeline(CountVectorizer(ngram_range=(1, 2)), MultinomialNB()).fit(Xtr, ytr)
-    print("1) NB macro F1:", round(f1_score(yte, nb.predict(Xte), average="macro"), 3), "| logistic:", round(f1_score(yte, pred, average="macro"), 3))
+    nb_f1 = f1_score(yte, nb.predict(Xte), average="macro")
+    print("1) NB macro F1:", round(nb_f1, 3), "| logistic:", round(f1_score(yte, pred, average="macro"), 3))
     print("2)", clf.predict(["Hooli loses key customer but raises guidance", "Vandelay schedules earnings date", "Acme record revenue"]))
     nn = make_pipeline(StandardScaler(), MLPClassifier((64, 64), max_iter=20, random_state=0)).fit(X_train, y_train)
-    print("3) train AUC", round(roc_auc_score(y_train, nn.predict_proba(X_train)[:, 1]), 3), "test AUC", round(roc_auc_score(y_test, nn.predict_proba(X_test)[:, 1]), 3))
+    auc_test_20 = roc_auc_score(y_test, nn.predict_proba(X_test)[:, 1])
+    print("3) train AUC", round(roc_auc_score(y_train, nn.predict_proba(X_train)[:, 1]), 3), "test AUC", round(auc_test_20, 3))
+    check_all("07")
     '''),
 ]
+
+from capstone_nb import F as CAP_F, CELLS as CAP_CELLS
+notebooks[CAP_F] = CAP_CELLS
 
 for name, cells in notebooks.items():
     nb = build(name, cells)
@@ -775,5 +809,9 @@ for name, cells in notebooks.items():
     if "--execute" in sys.argv:
         from nbclient import NotebookClient
         NotebookClient(nb, timeout=600, kernel_name="python3", resources={"metadata": {"path": str(NB)}}).execute()
+        if name == CAP_F:  # verified offline with the fallback data; ship it clean so Colab runs on real prices
+            for c in nb.cells:
+                if c.cell_type == "code":
+                    c.outputs, c.execution_count = [], None
     nbf.write(nb, path)
     print("wrote", path.name)

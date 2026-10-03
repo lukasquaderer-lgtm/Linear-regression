@@ -16,7 +16,15 @@ warnings.filterwarnings("ignore", category=FutureWarning)   # hide library depre
 DATA = "../data/" if Path("../data").exists() else "https://raw.githubusercontent.com/%s/master/data/"
 pd.set_option("display.precision", 4)
 plt.rcParams["figure.figsize"] = (8, 4)
-print("Ready. Data folder:", DATA)''' % REPO
+
+# Answer checker: after an exercise, check("01.1") tells you whether your answer is right
+try:
+    from checks import check, check_all
+except ImportError:  # in Colab: fetch the checker from GitHub
+    import urllib.request
+    urllib.request.urlretrieve("https://raw.githubusercontent.com/%s/master/notebooks/checks.py", "checks.py")
+    from checks import check, check_all
+print("Ready. Data folder:", DATA)''' % (REPO, REPO)
 
 
 def md(s):
@@ -33,11 +41,14 @@ def header(fname, title, intro):
     return [md(f"# {title}\n\n{badge}\n\n" + textwrap.dedent(intro).strip()), code(SETUP)]
 
 
-def exercise(n, text, hint=None):
+def exercise(n, text, hint=None, key=None):
     body = f"### Exercise {n}\n\n" + textwrap.dedent(text).strip()
     if hint:
         body += f"\n\n<details><summary>Hint</summary>\n\n{textwrap.dedent(hint).strip()}\n\n</details>"
-    return [md(body), code("# Your code here\n")]
+    cells = [md(body), code("# Your code here\n")]
+    if key:
+        cells.append(code(f'check("{key}")   # run me after your code: ✅ correct, ❌ try again, ⬜ not answered yet'))
+    return cells
 
 
 def build(fname, cells):

@@ -222,6 +222,109 @@ def _e_07_3():
     return [roc_auc_score(yte, nn.predict_proba(Xte)[:, 1])]
 
 
+# ---------- notebook 09: ML from scratch ----------
+def _c_09_1(g):
+    f = g["sigmoid"]
+    try:
+        ok = abs(float(f(0)) - 0.5) < 1e-9 and np.allclose(f(np.array([-2.0, 2.0])), [0.11920292, 0.88079708], atol=1e-6)
+    except Exception as e:
+        return False, f"sigmoid raised {type(e).__name__}: {e}"
+    return ok, "sigmoid(z) = 1 / (1 + np.exp(-z)); it must work on NumPy arrays."
+
+
+def _e_09_2():
+    d = _csv("factor_returns.csv")
+    return [_ols(d["fund_excess"], d[["mkt_excess", "smb", "hml", "mom"]]).params.values]
+
+
+def _c_09_3(g):
+    f = g["gini"]
+    try:
+        vals = [f(np.array(v)) for v in ([0, 0, 1, 1], [1, 1, 1], [0, 1, 1, 1])]
+        ok = np.allclose(vals, [0.5, 0.0, 0.375])
+    except Exception as e:
+        return False, f"gini raised {type(e).__name__}: {e}"
+    return ok, "Gini = 1 − Σ pₖ² where pₖ is the share of each class; gini([0, 1, 1, 1]) should be 0.375."
+
+
+def _e_09_4():
+    from sklearn.tree import DecisionTreeClassifier
+    cr = _csv("credit_default.csv")
+    t = DecisionTreeClassifier(max_depth=1).fit(cr[["fico"]], cr["default"])
+    return [t.tree_.threshold[0]]
+
+
+def _c_09_5(g):
+    f = g["wcss"]
+    X = np.array([[0.0, 0.0], [0.0, 2.0], [4.0, 0.0], [6.0, 0.0]]); lab = np.array([0, 0, 1, 1]); C = np.array([[0.0, 1.0], [5.0, 0.0]])
+    try:
+        ok = abs(float(f(X, lab, C)) - 4.0) < 1e-9
+    except Exception as e:
+        return False, f"wcss raised {type(e).__name__}: {e}"
+    return ok, "Sum over all points of the squared distance to their own cluster's centroid: ((X - C[labels])**2).sum()."
+
+
+# ---------- notebook 10: workflow and leakage ----------
+def _credit_pipe(C=1.0):
+    from sklearn.compose import ColumnTransformer
+    from sklearn.preprocessing import OneHotEncoder, StandardScaler
+    from sklearn.pipeline import Pipeline
+    from sklearn.linear_model import LogisticRegression
+    num = ["income_k", "debt_to_income", "fico", "loan_to_value", "years_employed", "home_owner"]
+    pre = ColumnTransformer([("num", StandardScaler(), num), ("cat", OneHotEncoder(handle_unknown="ignore"), ["purpose"])])
+    return Pipeline([("prep", pre), ("model", LogisticRegression(C=C, max_iter=1000))])
+
+
+def _e_10_1():
+    from sklearn.model_selection import StratifiedKFold, cross_val_score
+    cr = _csv("credit_default.csv")
+    cv = StratifiedKFold(5, shuffle=True, random_state=0)
+    return [cross_val_score(_credit_pipe(), cr.drop(columns="default"), cr["default"], cv=cv, scoring="roc_auc").mean()]
+
+
+def _e_10_2():
+    from sklearn.model_selection import StratifiedKFold, GridSearchCV
+    cr = _csv("credit_default.csv")
+    gs = GridSearchCV(_credit_pipe(), {"model__C": [0.01, 0.1, 1, 10]}, cv=StratifiedKFold(5, shuffle=True, random_state=0), scoring="roc_auc")
+    gs.fit(cr.drop(columns="default"), cr["default"])
+    return [gs.best_params_["model__C"]]
+
+
+def _c_10_3(g):
+    a = g["leak_answers"]
+    right = {"leak1": "A", "leak2": "B", "leak3": "C", "leak4": "D"}
+    if not isinstance(a, dict):
+        return False, "leak_answers must be a dict like {'leak1': 'A', ...}."
+    wrong = [k for k in right if str(a.get(k, "")).strip().upper() != right[k]]
+    return not wrong, ("Look again at: " + ", ".join(wrong) + ". Ask: when would this information really be available?") if wrong else ""
+
+
+def _noise_data():
+    rng = np.random.default_rng(42)
+    X = rng.normal(size=(200, 2000)); y = rng.integers(0, 2, 200)
+    return X, y
+
+
+def _e_10_4():
+    from sklearn.pipeline import make_pipeline
+    from sklearn.feature_selection import SelectKBest, f_classif
+    from sklearn.linear_model import LogisticRegression
+    from sklearn.model_selection import StratifiedKFold, cross_val_score
+    X, y = _noise_data()
+    pipe = make_pipeline(SelectKBest(f_classif, k=20), LogisticRegression(max_iter=1000))
+    return [cross_val_score(pipe, X, y, cv=StratifiedKFold(5, shuffle=True, random_state=0)).mean()]
+
+
+def _e_10_5():
+    from sklearn.metrics import average_precision_score
+    Xtr, Xte, ytr, yte = _credit_split()
+    from sklearn.pipeline import make_pipeline
+    from sklearn.preprocessing import StandardScaler
+    from sklearn.linear_model import LogisticRegression
+    m = make_pipeline(StandardScaler(), LogisticRegression(class_weight="balanced", max_iter=1000)).fit(Xtr, ytr)
+    return [average_precision_score(yte, m.predict_proba(Xte)[:, 1])]
+
+
 # key: (variable names, reference function, absolute tolerances, hint)
 SPECS = {
     "00.1": (["ann_mean", "ann_std"], _e_00_1, [0.01, 0.01], "Annualise the mean with × 12 and the standard deviation with × √12 (np.sqrt(12))."),
@@ -248,12 +351,28 @@ SPECS = {
     "06.3": (["merged_with_energy"], _e_06_3, None, "A Python set of sector names, e.g. {'energy', 'banks'}, that share energy's cluster when k = 3."),
     "07.1": (["nb_f1"], _e_07_1, [0.01], "Pipeline of CountVectorizer(ngram_range=(1, 2)) and MultinomialNB(); f1_score(..., average='macro')."),
     "07.3": (["auc_test_20"], _e_07_3, [0.03], "MLPClassifier((64, 64), max_iter=20, random_state=0) in a pipeline with StandardScaler."),
+    "09.2": (["sigmoid"], _c_09_1, "custom", ""),
+    "09.1": (["b_ne"], _e_09_2, [1e-6], "b = (XᵀX)⁻¹ Xᵀy with a column of ones first: np.linalg.solve(X.T @ X, X.T @ y)."),
+    "09.3": (["gini"], _c_09_3, "custom", ""),
+    "09.4": (["best_threshold_fico"], _e_09_4, [0.51], "Try midpoints between sorted unique FICO values; keep the one with the lowest weighted Gini of the two sides."),
+    "09.5": (["wcss"], _c_09_5, "custom", ""),
+    "10.1": (["cv_auc"], _e_10_1, [0.002], "Pipeline(ColumnTransformer(StandardScaler on numbers, OneHotEncoder on purpose), LogisticRegression(max_iter=1000)); StratifiedKFold(5, shuffle=True, random_state=0); scoring='roc_auc'."),
+    "10.2": (["best_C"], _e_10_2, [0], "GridSearchCV over {'model__C': [0.01, 0.1, 1, 10]} with the same CV; read .best_params_."),
+    "10.4": (["leak_answers"], _c_10_3, "custom", ""),
+    "10.5": (["cv_noise_fixed"], _e_10_4, [0.005], "Put SelectKBest(f_classif, k=20) inside make_pipeline(..., LogisticRegression(max_iter=1000)) and cross-validate the whole pipeline."),
+    "10.3": (["ap_balanced"], _e_10_5, [0.005], "StandardScaler + LogisticRegression(class_weight='balanced', max_iter=1000) on the notebook-05 split; average_precision_score on test."),
 }
 
 
 def _same(a, b, tol):
     if isinstance(b, (bool, np.bool_)):
         return bool(a) == bool(b) and isinstance(a, (bool, np.bool_))
+    if isinstance(b, np.ndarray):
+        try:
+            a = np.asarray(a, dtype=float).ravel()
+            return a.shape == b.ravel().shape and np.allclose(a, b.ravel(), atol=tol or 0, rtol=0)
+        except (TypeError, ValueError):
+            return False
     if isinstance(b, set):
         return set(a) == b
     if isinstance(b, dict):
@@ -274,6 +393,10 @@ def check(key, _quiet=False):
         if not _quiet:
             print(f"⬜ Exercise {key}: not answered yet. Store your answer in " + ", ".join(f"`{n}`" for n in names) + ".")
         return False
+    if tols == "custom":
+        ok, msg = fn(g)
+        print(f"✅ Exercise {key}: correct." if ok else f"❌ Exercise {key}: not quite. {msg}")
+        return ok
     if fn is None:  # custom check for 00.3
         m = g["m"]; ok = isinstance(m, pd.DataFrame) and len(m) == 120 and "inflation" in m.columns
         print(f"✅ Exercise {key}: correct." if ok else f"❌ Exercise {key}: not quite. {hint}")
@@ -293,4 +416,3 @@ def check_all(prefix):
     keys = [k for k in SPECS if k.startswith(prefix + ".")]
     n = sum(check(k) for k in keys)
     print(f"\n{n} of {len(keys)} exercises correct.")
-    return n == len(keys)

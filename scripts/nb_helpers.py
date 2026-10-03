@@ -13,11 +13,14 @@ import warnings
 warnings.filterwarnings("ignore", category=FutureWarning)   # hide library deprecation notices
 
 # Use the local data folder if it exists, otherwise read the CSVs straight from GitHub (e.g. in Colab)
-DATA = "../data/" if Path("../data").exists() else "https://raw.githubusercontent.com/%s/master/data/"
+DATA = next((p for p in ["../data/", "../../data/"] if Path(p).exists()), "https://raw.githubusercontent.com/%s/master/data/")
 pd.set_option("display.precision", 4)
 plt.rcParams["figure.figsize"] = (8, 4)
 
 # Answer checker: after an exercise, check("01.1") tells you whether your answer is right
+import sys
+if Path("../checks.py").exists():
+    sys.path.insert(0, "..")  # solution notebooks live one folder down
 try:
     from checks import check, check_all
 except ImportError:  # in Colab: fetch the checker from GitHub
@@ -47,7 +50,7 @@ def exercise(n, text, hint=None, key=None):
         body += f"\n\n<details><summary>Hint</summary>\n\n{textwrap.dedent(hint).strip()}\n\n</details>"
     cells = [md(body), code("# Your code here\n")]
     if key:
-        cells.append(code(f'check("{key}")   # run me after your code: ✅ correct, ❌ try again, ⬜ not answered yet'))
+        cells.append(code(f'check("{key}");   # run me after your code: ✅ correct, ❌ try again, ⬜ not answered yet'))
     return cells
 
 

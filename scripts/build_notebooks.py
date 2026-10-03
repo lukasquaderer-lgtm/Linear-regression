@@ -802,14 +802,25 @@ project on financial headlines: tokenise, build a document-term matrix, TF-IDF, 
 
 from capstone_nb import F as CAP_F, CELLS as CAP_CELLS
 notebooks[CAP_F] = CAP_CELLS
+from scratch_nb import F as SCR_F, CELLS as SCR_CELLS
+from workflow_nb import F as WF_F, CELLS as WF_CELLS
+import projects_nb
+notebooks[SCR_F] = SCR_CELLS
+notebooks[WF_F] = WF_CELLS
+notebooks.update(projects_nb.NOTEBOOKS)
+notebooks.update(projects_nb.SOLUTIONS)
+(NB / "solutions").mkdir(exist_ok=True)
 
+only = [a for a in sys.argv[1:] if not a.startswith("--")]
 for name, cells in notebooks.items():
+    if only and not any(name.startswith(o) or name.startswith("solutions/" + o) for o in only):
+        continue
     nb = build(name, cells)
     path = NB / name
     if "--execute" in sys.argv:
         from nbclient import NotebookClient
-        NotebookClient(nb, timeout=600, kernel_name="python3", resources={"metadata": {"path": str(NB)}}).execute()
-        if name == CAP_F:  # verified offline with the fallback data; ship it clean so Colab runs on real prices
+        NotebookClient(nb, timeout=900, kernel_name="python3", resources={"metadata": {"path": str(path.parent)}}).execute()
+        if name == CAP_F or name in projects_nb.NOTEBOOKS:  # verified offline with the fallback data; ship it clean so Colab runs on real prices
             for c in nb.cells:
                 if c.cell_type == "code":
                     c.outputs, c.execution_count = [], None

@@ -1,0 +1,11 @@
+metric,2021,2022,2023,2024,2025,source,note
+revenue,,,,,,To collect from the Geschäftsbericht,Total income – define it consistently (e.g. gross premiums + investment result).
+net_income,,,,,,To collect from the Geschäftsbericht,Jahresgewinn.
+total_assets,,,,,,To collect from the Geschäftsbericht,
+total_liabilities,,,,,,To collect from the Geschäftsbericht,
+total_equity,,,,,,To collect from the Geschäftsbericht,
+operating_cash_flow,,,,,,To collect from the Geschäftsbericht,If a cash flow statement is published.
+gross_premiums,,,,,,To collect from the Geschäftsbericht,Gebuchte Bruttoprämien.
+investment_income,,,,,,To collect from the Geschäftsbericht,Ertrag aus Kapitalanlagen (own account – not policyholder funds).
+solvency_ratio,,,,,,To collect from the SFCR,Solvency II ratio (Bericht über Solvabilität und Finanzlage).
+aum,,,,,,To collect from the Geschäftsbericht,Investments for the account of policyholders (Kapitalanlagen für Rechnung und Risiko von Inhabern von Lebensversicherungspolicen).

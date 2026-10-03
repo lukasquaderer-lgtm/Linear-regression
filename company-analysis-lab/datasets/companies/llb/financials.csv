@@ -1,0 +1,17 @@
+metric,2021,2022,2023,2024,2025,source,note
+revenue,473.911,505.904,541.767,556.557,611.775,Data vendor (FMP via Bigdata.com) – unverified,Vendor 'gross profit' line = total operating income (Geschäftsertrag). Verify.
+operating_expenses,310.517,330.943,348.423,368.387,410.486,Data vendor (FMP via Bigdata.com) – unverified,
+net_income,129.907,147.543,164.570,167.106,166.500,Data vendor (FMP via Bigdata.com) – unverified,2021 excludes the Bank Linth minority share (non-controlling interests).
+total_assets,25129.490,25215.865,25691.573,27773.109,28320.549,Data vendor (FMP via Bigdata.com) – unverified,
+total_liabilities,22889.363,23192.137,23560.921,25538.426,25963.728,Derived: total assets − total equity incl. non-controlling interests,
+total_equity,2097.423,2022.525,2129.690,2233.637,2355.816,Data vendor (FMP via Bigdata.com) – unverified,Equity attributable to shareholders.
+operating_cash_flow,763.972,-33.193,-483.933,-352.998,156.470,Data vendor (FMP via Bigdata.com) – unverified,Bank operating cash flow – driven by client deposits and loans.
+eps,4.23,4.80,5.34,5.44,5.44,Data vendor (FMP via Bigdata.com) – unverified,Diluted.
+dps,2.30,2.50,2.70,2.80,2.80,Data vendor (FMP via Bigdata.com) – unverified,Dividend for the fiscal year (paid the following spring).
+shares_outstanding,30.724,30.767,30.799,30.679,30.439,Data vendor (FMP via Bigdata.com) – unverified,Diluted weighted average.
+net_interest_income,,,,,,To collect from the annual report,
+fee_income,,,,,,To collect from the annual report,
+cet1_ratio,,,,,,To collect from the annual report,
+cost_income_ratio,,,,,,To collect from the annual report,
+aum,,,,,,To collect from the annual report,Client assets / Kundenvermögen (business volume vs. assets under management – note which one you use).
+net_new_money,,,,,,To collect from the annual report,

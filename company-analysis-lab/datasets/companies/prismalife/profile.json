@@ -1,0 +1,99 @@
+{
+  "id": "prismalife",
+  "name": "PrismaLife AG",
+  "short_name": "PrismaLife",
+  "sector": "insurer",
+  "subsector": "Unit-linked life and pension insurance (Liechtenstein)",
+  "country": "Liechtenstein",
+  "headquarters": "Ruggell",
+  "listed": false,
+  "exchange_ticker": "Not listed (majority-owned by Barmenia since February 2023)",
+  "currency": "EUR",
+  "currency_confirmed": false,
+  "fiscal_year_end": "31 December (confirm)",
+  "accounting": {"2021": "Local GAAP (Liechtenstein)", "2022": "Local GAAP (Liechtenstein)", "2023": "Local GAAP (Liechtenstein)", "2024": "Local GAAP (Liechtenstein)", "2025": "Local GAAP (Liechtenstein)"},
+  "accounting_notes": "Statutory accounts under Liechtenstein law (not IFRS) — so there is no IFRS 17 insurance revenue or CSM. Solvency II applies (EEA), so a Solvency and Financial Condition Report (SFCR) is published. Confirm the reporting currency and accounting basis in the Geschäftsbericht.",
+  "regulator": "FMA Liechtenstein (Finanzmarktaufsicht)",
+  "capital_regime": "Solvency II (EEA)",
+  "investor_relations": "https://www.prismalife.com",
+  "annual_report_hint": "prismalife.com → Über uns / Unternehmen → Geschäftsberichte and SFCR (Bericht über Solvabilität und Finanzlage). Public information is limited — this is part of the exercise.",
+  "data_source": "No starter data: PrismaLife is not listed and data vendors do not cover it. Collect every figure yourself from the Geschäftsbericht and the SFCR.",
+  "required_extra": ["gross_premiums", "solvency_ratio", "aum"],
+  "not_applicable": ["eps", "dps", "shares_outstanding", "share_price", "insurance_revenue", "insurance_service_result", "combined_ratio", "csm", "roe_reported"],
+  "business_reference": {
+    "what_it_does": {
+      "reference": "PrismaLife is a life insurer in Ruggell, Liechtenstein, founded in 2000. It specialises in unit-linked life and pension insurance (fondsgebundene Lebens- und Rentenversicherungen), largely sold as 'net policies' (Nettopolicen) through independent brokers and fee-based advisers, mainly in Germany. Barmenia became a shareholder in 2020 and took a 75.1 % majority in February 2023. (Public information is limited — check against the company's own documents.)",
+      "key_points": [
+        {"point": "Unit-linked life and pension insurance", "keywords": ["unit-linked", "unit linked", "fondsgebunden", "fund", "fonds", "pension", "rente", "life", "leben"]},
+        {"point": "Net policies via independent brokers", "keywords": ["net polic", "nettopolice", "broker", "makler", "advis", "berater", "honorar", "fee-based"]},
+        {"point": "Liechtenstein insurer serving Germany", "keywords": ["liechtenstein", "germany", "deutschland", "cross-border", "grenzüberschreitend"]},
+        {"point": "Owned by Barmenia", "keywords": ["barmenia", "parent", "mutter", "majority", "mehrheit"]}
+      ]
+    },
+    "how_money": {
+      "reference": "In unit-linked business the policyholder bears the investment risk. The insurer earns contract charges (administration charges and fees as a percentage of fund assets and contributions), risk premiums for biometric covers (death, disability) and income on its own investments. With net policies the advice fee is paid separately to the broker, so the policy carries low acquisition costs.",
+      "key_points": [
+        {"point": "Charges on contracts and fund assets", "keywords": ["charge", "kosten", "fee", "gebühr", "gebuehr", "asset-based", "verwaltungskosten"]},
+        {"point": "Risk premiums for biometric cover", "keywords": ["risk premium", "risikoprämie", "risikopraemie", "biometr", "death", "todesfall", "disability", "berufsunfähig"]},
+        {"point": "Policyholder bears the investment risk", "keywords": ["investment risk", "anlagerisiko", "policyholder", "versicherungsnehmer"]}
+      ]
+    },
+    "segments": {
+      "reference": "Essentially one business line: unit-linked life and pension insurance. In Solvency II reporting this is the line of business 'index-linked and unit-linked insurance'. Check the annual report and SFCR for any split by product or market.",
+      "key_points": [
+        {"point": "Unit-linked insurance as the single main line", "keywords": ["unit-linked", "unit linked", "fondsgebunden", "index-linked", "one line", "single"]}
+      ]
+    },
+    "customers": {
+      "reference": "Retail clients (private savers) acquired via independent brokers and fee-based advisers (B2B2C). The brokers are the direct 'customers' of the distribution model.",
+      "key_points": [
+        {"point": "Retail savers", "keywords": ["retail", "private", "privat", "saver", "sparer", "consumer"]},
+        {"point": "Brokers / advisers as distribution partners", "keywords": ["broker", "makler", "advis", "berater", "intermediar", "vermittler"]}
+      ]
+    },
+    "markets": {
+      "reference": "Mainly Germany, plus other EEA markets served cross-border from Liechtenstein under the freedom to provide services (Solvency II passport). Verify the market split in the annual report.",
+      "key_points": [
+        {"point": "Germany", "keywords": ["germany", "deutschland"]},
+        {"point": "Cross-border EEA business", "keywords": ["eea", "ewr", "cross-border", "grenzüberschreitend", "dienstleistungsfreiheit", "passport", "austria", "österreich"]}
+      ]
+    },
+    "advantages": {
+      "reference": "Specialisation in net (fee-based) unit-linked policies; flexibility and fund choice; the Liechtenstein EEA passport and a stable jurisdiction; low capital intensity because investment risk sits with policyholders; a strong strategic shareholder (Barmenia).",
+      "key_points": [
+        {"point": "Specialist in net policies", "keywords": ["net polic", "nettopolice", "special", "nische", "niche"]},
+        {"point": "Low capital intensity", "keywords": ["capital", "kapital", "solvency", "light"]},
+        {"point": "Liechtenstein / EEA access", "keywords": ["liechtenstein", "eea", "ewr", "passport"]},
+        {"point": "Strategic shareholder", "keywords": ["barmenia", "shareholder", "aktionär", "aktionaer"]}
+      ]
+    },
+    "threats": {
+      "reference": "Lapse and surrender risk; market downturns reducing asset-based charges; dependence on the broker channel and on German regulation of commissions vs fees; competition from large German insurers and low-cost ETF savings plans; expense ratio given limited scale; regulatory change (Solvency II review, consumer protection / value-for-money rules).",
+      "key_points": [
+        {"point": "Lapse / surrender", "keywords": ["lapse", "storno", "surrender", "rückkauf", "rueckkauf", "cancel", "kündig"]},
+        {"point": "Market downturn", "keywords": ["market", "markt", "crash", "downturn"]},
+        {"point": "Distribution dependence and regulation", "keywords": ["broker", "makler", "commission", "provision", "regulat", "regulier"]},
+        {"point": "Competition (incl. ETFs)", "keywords": ["competition", "wettbewerb", "etf"]},
+        {"point": "Cost / scale", "keywords": ["cost", "kosten", "scale", "grösse", "groesse"]}
+      ]
+    }
+  },
+  "events": [
+    {"year": 2023, "metrics": [], "nature": "structural", "title": "Barmenia takes a majority stake (75.1 %)", "detail": "A change of control can affect strategy, distribution, capital policy and dividends to the parent. Check the annual report for any effects (e.g. integration costs, new products, capital measures).", "where_to_verify": "Geschäftsbericht 2023: Lagebericht (management report); SFCR section A (business and performance)."}
+  ],
+  "top_risks_reference": [
+    {"risk": "underwriting", "why": "Lapse risk is usually the dominant life underwriting risk for unit-linked business: early cancellations destroy the future charges that pay back acquisition and administration costs."},
+    {"risk": "market", "why": "Charges are a percentage of fund assets; falling markets shrink the fee base (policyholders bear the investment loss, but the insurer loses income)."},
+    {"risk": "operational", "why": "Expense risk and operational/regulatory risk for a small insurer distributing cross-border through brokers (conduct, consumer-protection rules, IT)."}
+  ],
+  "audit_focus": [
+    "Measurement of technical provisions (statutory) and deferred acquisition costs, if any",
+    "Valuation of investments for the account of policyholders",
+    "Completeness and accuracy of premium and charge income (IT systems)"
+  ],
+  "quiz": [
+    {"level": 2, "concept": "business_model", "prompt": "In PrismaLife's unit-linked business, who bears the investment risk of the underlying funds?", "options": ["The policyholder", "PrismaLife's shareholders", "The broker", "The Liechtenstein state"], "answer": 0, "explanation": "That is why unit-linked insurers need relatively little solvency capital for market risk — but their fee income still falls when markets fall."},
+    {"level": 3, "concept": "valuation_methods", "prompt": "PrismaLife is not listed. Which approach is most practical to estimate its equity value?", "options": ["Apply P/B or P/E multiples of listed life insurers and adjust, or use a dividend/capital-generation model", "Use its own P/E ratio from the stock exchange", "Use the dividend yield quoted on SIX", "It cannot be valued at all"], "answer": 0, "explanation": "Private companies have no market price — analysts use comparable-company multiples, transaction multiples (e.g. Barmenia's purchase) or intrinsic models."}
+  ],
+  "peers_suggested": ["swiss_life"]
+}

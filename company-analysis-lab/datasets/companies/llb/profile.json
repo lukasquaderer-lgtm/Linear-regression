@@ -1,0 +1,107 @@
+{
+  "id": "llb",
+  "name": "Liechtensteinische Landesbank AG (LLB Group)",
+  "short_name": "LLB",
+  "sector": "bank",
+  "subsector": "Wealth management and universal bank (Liechtenstein, Switzerland, Austria)",
+  "country": "Liechtenstein",
+  "headquarters": "Vaduz",
+  "listed": true,
+  "exchange_ticker": "LLBN (SIX Swiss Exchange)",
+  "currency": "CHF",
+  "currency_confirmed": true,
+  "fiscal_year_end": "31 December",
+  "accounting": {"2021": "IFRS", "2022": "IFRS", "2023": "IFRS", "2024": "IFRS", "2025": "IFRS"},
+  "accounting_notes": "IFRS group accounts in Swiss francs. The Principality of Liechtenstein is the majority shareholder.",
+  "regulator": "FMA Liechtenstein (plus FINMA and the Austrian FMA for subsidiaries)",
+  "capital_regime": "EU Capital Requirements Regulation (CRR) as applicable in the EEA — Basel III",
+  "investor_relations": "https://www.llb.li/en/investors",
+  "annual_report_hint": "llb.li → Investors → Reports. The 'Geschäftsbericht / Annual Report' contains the management report, the segment reporting and the consolidated IFRS financial statements; capital ratios are in the capital section and the Pillar 3 disclosure.",
+  "data_source": "Starter values from a third-party data vendor (FMP via Bigdata.com); sector KPIs are left for you to collect.",
+  "required_extra": [],
+  "not_applicable": [],
+  "business_reference": {
+    "what_it_does": {
+      "reference": "LLB is the oldest and largest bank in Liechtenstein (founded 1861), majority-owned by the Principality of Liechtenstein and listed on SIX. It is a universal bank focused on wealth management for private and institutional clients, with retail and corporate banking in Liechtenstein and Switzerland and an investment-solutions business (asset management and fund services).",
+      "key_points": [
+        {"point": "Universal bank anchored in Liechtenstein", "keywords": ["liechtenstein", "universal", "retail", "landesbank"]},
+        {"point": "Wealth management focus", "keywords": ["wealth", "vermögensverwaltung", "vermoegensverwaltung", "private banking", "privatkunden"]},
+        {"point": "Asset management and fund services", "keywords": ["asset management", "fund", "fonds", "investment solutions"]},
+        {"point": "State majority ownership", "keywords": ["state", "staat", "principality", "fürstentum", "fuerstentum", "majority", "mehrheit"]}
+      ]
+    },
+    "how_money": {
+      "reference": "Mainly fee and commission income from wealth management, custody and fund services (driven by client assets), plus net interest income from mortgages and loans in Liechtenstein and eastern Switzerland, and trading income (mostly foreign exchange).",
+      "key_points": [
+        {"point": "Fee and commission income on client assets", "keywords": ["fee", "gebühr", "gebuehr", "kommission", "commission", "dienstleistung"]},
+        {"point": "Net interest income (mortgages, loans)", "keywords": ["interest", "zins", "mortgage", "hypothek", "loan", "kredit"]},
+        {"point": "Trading / FX income", "keywords": ["trading", "handel", "fx", "foreign exchange", "devisen"]}
+      ]
+    },
+    "segments": {
+      "reference": "Retail & Corporate Banking; International Wealth Management; Investment Solutions (asset management and fund services); plus Corporate Center.",
+      "key_points": [
+        {"point": "Retail & Corporate Banking", "keywords": ["retail", "corporate banking", "privat- und firmenkunden"]},
+        {"point": "International Wealth Management", "keywords": ["international wealth", "wealth management", "iwm"]},
+        {"point": "Investment Solutions", "keywords": ["investment solutions", "asset management", "fund"]}
+      ]
+    },
+    "customers": {
+      "reference": "Private clients and high-net-worth individuals, SMEs and corporates in Liechtenstein and Switzerland, external asset managers and fiduciaries (intermediaries), institutional clients and fund clients.",
+      "key_points": [
+        {"point": "Private and wealthy clients", "keywords": ["private", "privat", "wealthy", "hnw", "vermögend"]},
+        {"point": "SMEs and corporates", "keywords": ["sme", "kmu", "corporate", "firmen"]},
+        {"point": "Intermediaries and institutions", "keywords": ["intermediar", "intermediär", "external asset manager", "fiduciar", "treuhänder", "treuhaender", "institutional", "institutionell"]}
+      ]
+    },
+    "markets": {
+      "reference": "Liechtenstein (home market), Switzerland (LLB Schweiz, formerly Bank Linth) and Austria (LLB Österreich, enlarged by the 2025 acquisition of Zürcher Kantonalbank Österreich), plus selected international wealth-management markets.",
+      "key_points": [
+        {"point": "Liechtenstein", "keywords": ["liechtenstein"]},
+        {"point": "Switzerland", "keywords": ["switzerland", "schweiz", "swiss"]},
+        {"point": "Austria", "keywords": ["austria", "österreich", "oesterreich"]}
+      ]
+    },
+    "advantages": {
+      "reference": "Strong anchor shareholder (the State of Liechtenstein) and a high credit rating; access to both the Swiss franc area and the EEA single market (EU passporting) from Liechtenstein; long-standing client relationships; solid capitalisation.",
+      "key_points": [
+        {"point": "State anchor shareholder / high rating", "keywords": ["state", "staat", "rating", "anchor", "ankeraktionär"]},
+        {"point": "CHF area plus EEA market access", "keywords": ["eea", "ewr", "passport", "eu market", "binnenmarkt", "swiss franc", "franken"]},
+        {"point": "Strong capitalisation", "keywords": ["capital", "kapital", "cet1", "solid"]},
+        {"point": "Client relationships / trust", "keywords": ["relationship", "beziehung", "trust", "vertrauen", "loyal"]}
+      ]
+    },
+    "threats": {
+      "reference": "Limited scale versus larger Swiss competitors (cost pressure); falling Swiss franc rates reducing net interest income; cross-border regulation and anti-money-laundering scrutiny; dependence on client-asset inflows and market levels; competition for wealth clients; integration risk from acquisitions.",
+      "key_points": [
+        {"point": "Scale and cost pressure", "keywords": ["scale", "grösse", "groesse", "cost", "kosten", "efficiency"]},
+        {"point": "Falling CHF interest rates", "keywords": ["interest", "zins", "snb", "rates"]},
+        {"point": "Regulation / AML", "keywords": ["regulation", "regulierung", "aml", "money laundering", "geldwäsch", "geldwaesch", "compliance"]},
+        {"point": "Market levels and client flows", "keywords": ["market", "markt", "outflow", "abfluss", "net new money", "neugeld"]},
+        {"point": "Integration of acquisitions", "keywords": ["integration", "acquisition", "übernahme", "uebernahme"]}
+      ]
+    }
+  },
+  "events": [
+    {"year": 2022, "metrics": ["net_income", "total_equity"], "nature": "structural", "title": "Full ownership of Bank Linth (renamed LLB Schweiz)", "detail": "LLB bought out the minority shareholders of Bank Linth and integrated it as LLB (Schweiz) AG. Non-controlling interests fell to almost zero, so more of group profit is attributable to LLB shareholders; the buy-out reduced equity.", "where_to_verify": "Annual Report 2022: statement of changes in equity (transactions with non-controlling interests); note on group companies."},
+    {"year": 2023, "metrics": ["net_interest_income", "revenue", "net_income"], "nature": "operational", "title": "Higher Swiss franc interest rates", "detail": "SNB rate rises in 2022–2023 increased net interest income, lifting revenues and profit.", "where_to_verify": "Annual Report 2023: income statement and the net interest income note; management report on results."},
+    {"year": 2024, "metrics": ["net_interest_income", "revenue"], "nature": "operational", "title": "SNB rate cuts start to compress net interest income", "detail": "The SNB cut rates during 2024 (and to 0 % by mid-2025), reducing margins on deposits. Fee income had to carry growth.", "where_to_verify": "Annual Report 2024/2025: net interest income note and management commentary."},
+    {"year": 2025, "metrics": ["total_assets", "aum", "operating_expenses", "net_new_money"], "nature": "acquisition", "title": "Acquisition of Zürcher Kantonalbank Österreich (closed 9 January 2025)", "detail": "LLB acquired 100 % of ZKB Österreich (client assets of about EUR 3.4bn) and merged it with LLB Österreich in August 2025. Goodwill, client assets and costs (including integration costs) increased — acquired assets are not organic growth.", "where_to_verify": "Annual Report 2025: note on business combinations (purchase price allocation, goodwill); segment reporting; net new money definition (acquired assets are usually excluded)."}
+  ],
+  "top_risks_reference": [
+    {"risk": "interest_rate", "why": "With the SNB policy rate back at 0 %, net interest income — a large revenue line — is under pressure; every rate cut reduces deposit margins and profit."},
+    {"risk": "market", "why": "Fee income depends on client assets: a market downturn or client outflows directly reduce recurring revenue in wealth management and fund services."},
+    {"risk": "regulatory", "why": "Cross-border wealth management from Liechtenstein carries regulatory, AML and reputational risk; a compliance failure could damage client trust and the franchise."}
+  ],
+  "audit_focus": [
+    "Expected credit loss allowances on mortgages and loans",
+    "Goodwill and client-relationship intangibles from acquisitions (impairment testing, purchase price allocation)",
+    "Pension obligations (defined benefit plans)",
+    "IT general controls"
+  ],
+  "quiz": [
+    {"level": 1, "concept": "business_model", "prompt": "Who is LLB's majority shareholder?", "options": ["The Principality of Liechtenstein", "UBS", "A private equity fund", "The Swiss Confederation"], "answer": 0, "explanation": "The State of Liechtenstein holds a majority — an important anchor for LLB's rating and stability."},
+    {"level": 3, "concept": "acquisition_effects", "prompt": "LLB's client assets rose in 2025 partly because it acquired ZKB Österreich. How should you treat the acquired assets when judging organic growth?", "options": ["Exclude them — acquired assets are not net new money", "Include them — all asset growth is organic", "Count them as market performance", "Count them as a dividend"], "answer": 0, "explanation": "Organic growth = net new money. Acquired client assets inflate total assets under management but say nothing about the bank's ability to win clients."}
+  ],
+  "peers_suggested": ["ubs"]
+}

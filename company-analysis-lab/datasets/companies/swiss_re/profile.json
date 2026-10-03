@@ -1,0 +1,106 @@
+{
+  "id": "swiss_re",
+  "name": "Swiss Re Ltd",
+  "short_name": "Swiss Re",
+  "sector": "insurer",
+  "subsector": "Global reinsurance and corporate insurance",
+  "country": "Switzerland",
+  "headquarters": "Zurich",
+  "listed": true,
+  "exchange_ticker": "SREN (SIX Swiss Exchange)",
+  "currency": "USD",
+  "currency_confirmed": true,
+  "fiscal_year_end": "31 December",
+  "accounting": {"2021": "US GAAP", "2022": "US GAAP", "2023": "IFRS 17 / IFRS 9 (restated)", "2024": "IFRS 17 / IFRS 9", "2025": "IFRS 17 / IFRS 9"},
+  "accounting_notes": "Swiss Re switched from US GAAP to IFRS (IFRS 17/IFRS 9) in 2024 with 2023 restated. The starter data therefore has an accounting break between 2022 and 2023. Reporting currency is USD; dividends were declared in CHF up to FY2022 and in USD from FY2023.",
+  "regulator": "FINMA",
+  "capital_regime": "Swiss Solvency Test (SST)",
+  "investor_relations": "https://www.swissre.com/investors.html",
+  "annual_report_hint": "swissre.com → Investors → Financial information. The Annual Report has the Group and business-unit results (P&C Re, L&H Re, Corporate Solutions) and the financial statements; the SST ratio is reported in the financial condition report and investor materials.",
+  "data_source": "Starter values from a third-party data vendor (FMP via Bigdata.com) plus annual-report dividends; sector KPIs are left for you to collect.",
+  "required_extra": ["solvency_ratio", "combined_ratio"],
+  "not_applicable": ["aum"],
+  "business_reference": {
+    "what_it_does": {
+      "reference": "Swiss Re is one of the world's largest reinsurers: it insures insurance companies against large or peak risks (natural catastrophes, mortality, liability). Through Corporate Solutions it also insures large corporations directly.",
+      "key_points": [
+        {"point": "Reinsurance — insurance for insurers", "keywords": ["reinsur", "rückversicher", "rueckversicher", "insurers", "versicherer"]},
+        {"point": "Covers peak risks (nat cat, mortality, liability)", "keywords": ["catastroph", "katastroph", "nat cat", "peak", "mortality", "liability", "haftpflicht"]},
+        {"point": "Direct commercial insurance (Corporate Solutions)", "keywords": ["corporate solutions", "corporates", "commercial", "industrie"]}
+      ]
+    },
+    "how_money": {
+      "reference": "Underwriting profit (premiums earned minus claims and expenses — measured in P&C by the combined ratio), investment income on the 'float' (premiums are invested until claims are paid) and margins in Life & Health reinsurance. Earnings are lumpy because of catastrophe losses.",
+      "key_points": [
+        {"point": "Underwriting result / combined ratio", "keywords": ["underwriting", "combined ratio", "premium", "prämie", "praemie", "claims", "schäden", "schaeden"]},
+        {"point": "Investment income on the float", "keywords": ["investment", "kapitalanlage", "float", "anlage"]},
+        {"point": "Life & Health margins", "keywords": ["life", "health", "leben", "mortality"]}
+      ]
+    },
+    "segments": {
+      "reference": "Property & Casualty Reinsurance (P&C Re), Life & Health Reinsurance (L&H Re) and Corporate Solutions, plus Group items.",
+      "key_points": [
+        {"point": "P&C Reinsurance", "keywords": ["p&c", "property", "casualty", "sach", "schaden"]},
+        {"point": "L&H Reinsurance", "keywords": ["l&h", "life & health", "life and health", "leben"]},
+        {"point": "Corporate Solutions", "keywords": ["corporate solutions"]}
+      ]
+    },
+    "customers": {
+      "reference": "Primary insurers (cedants) worldwide, large multinational corporations, public-sector bodies (e.g. parametric covers for governments) and capital-market investors (insurance-linked securities).",
+      "key_points": [
+        {"point": "Primary insurers (cedants)", "keywords": ["insurer", "versicherer", "cedant", "zedent", "primary"]},
+        {"point": "Large corporates", "keywords": ["corporat", "compan", "unternehm", "multinational"]},
+        {"point": "Public sector", "keywords": ["public", "government", "regierung", "öffentlich", "oeffentlich", "staat"]}
+      ]
+    },
+    "markets": {
+      "reference": "Global — the Americas (largest, especially the US), Europe/Middle East/Africa and Asia-Pacific.",
+      "key_points": [
+        {"point": "Americas / US", "keywords": ["america", "amerika", "usa", "us", "united states"]},
+        {"point": "EMEA", "keywords": ["emea", "europe", "europa"]},
+        {"point": "Asia-Pacific", "keywords": ["asia", "apac", "asien"]}
+      ]
+    },
+    "advantages": {
+      "reference": "Scale and diversification across perils and regions (diversification lowers required capital); capital strength and high ratings; risk knowledge, data and modelling; long client relationships; ability to provide capacity for peak risks.",
+      "key_points": [
+        {"point": "Scale and diversification", "keywords": ["scale", "divers", "grösse", "groesse", "global"]},
+        {"point": "Capital strength / ratings", "keywords": ["capital", "kapital", "rating", "sst", "solvency"]},
+        {"point": "Risk knowledge and data", "keywords": ["knowledge", "wissen", "data", "daten", "model", "expertise"]},
+        {"point": "Client relationships", "keywords": ["relationship", "beziehung", "client", "kunden"]}
+      ]
+    },
+    "threats": {
+      "reference": "Natural catastrophes and climate change; US casualty 'social inflation' forcing reserve strengthening; softening reinsurance prices; interest-rate and credit risk on the investment portfolio; competition from alternative capital (cat bonds, insurance-linked securities); model risk; pandemics and mortality shocks (L&H).",
+      "key_points": [
+        {"point": "Nat cat / climate change", "keywords": ["catastroph", "katastroph", "nat cat", "climate", "klima", "hurricane", "hurrikan", "earthquake", "erdbeben", "flood"]},
+        {"point": "Reserve adequacy (US casualty)", "keywords": ["reserve", "rückstell", "rueckstell", "social inflation", "casualty", "liability"]},
+        {"point": "Pricing cycle", "keywords": ["pricing", "price", "preis", "cycle", "zyklus", "soft"]},
+        {"point": "Investment / interest-rate risk", "keywords": ["interest", "zins", "credit", "investment", "market"]},
+        {"point": "Alternative capital", "keywords": ["alternative capital", "cat bond", "ils", "insurance-linked"]}
+      ]
+    }
+  },
+  "events": [
+    {"year": 2022, "metrics": ["total_equity", "net_income"], "nature": "accounting", "title": "Unrealised bond losses under US GAAP and large nat cat losses", "detail": "Rising rates created large unrealised losses on the bond portfolio. Under US GAAP these reduced equity (via OCI) while insurance liabilities were not remeasured — equity roughly halved although economic solvency stayed strong. Hurricane Ian and other events depressed net income.", "where_to_verify": "Statement of comprehensive income; statement of shareholders' equity; nat cat disclosures in the P&C Re results."},
+    {"year": 2023, "metrics": ["net_income", "revenue", "total_equity", "total_assets"], "nature": "accounting", "title": "Strong underwriting year — and IFRS restatement", "detail": "Higher reinsurance prices and investment yields produced a strong result. In this dataset 2023 is already on the IFRS basis (restated in the 2024 Annual Report), so equity and assets are not comparable with the US GAAP years 2021–2022.", "where_to_verify": "Annual Report 2024: IFRS transition note (restated 2023 comparatives)."},
+    {"year": 2024, "metrics": ["net_income", "insurance_service_result", "combined_ratio"], "nature": "one-off", "title": "US liability reserve strengthening", "detail": "Swiss Re strengthened reserves for US casualty/liability business by about USD 2.4bn in Q3 2024 in response to 'social inflation' (rising litigation costs). This prior-year reserve development reduced 2024 profit — check how much is a one-off and how much signals under-reserving.", "where_to_verify": "Annual Report 2024: P&C Re results, prior-year development disclosure, notes on insurance contract liabilities."},
+    {"year": 2025, "metrics": ["net_income", "combined_ratio"], "nature": "operational", "title": "Record result despite large nat cat losses", "detail": "The Los Angeles wildfires (January 2025) were a large loss event, yet net income reached a record level thanks to underwriting discipline and investment income.", "where_to_verify": "Annual Report 2025: nat cat losses vs budget; combined ratio by business unit."}
+  ],
+  "top_risks_reference": [
+    {"risk": "underwriting", "why": "Natural catastrophes and reserve inadequacy (US casualty social inflation) are the biggest swing factors for earnings and capital; a large event or reserve charge can wipe out a year's profit."},
+    {"risk": "market", "why": "A large investment portfolio (the float) is exposed to interest rates, credit spreads and equity markets; returns fund a large part of earnings."},
+    {"risk": "concentration", "why": "Peak-peril concentration (e.g. US hurricane, earthquake) — a single extreme event can hit multiple lines at once; also pricing-cycle risk when capital floods the market."}
+  ],
+  "audit_focus": [
+    "Valuation of P&C claims reserves (incurred but not reported) — especially US casualty lines",
+    "Measurement of insurance contract liabilities under IFRS 17 (life & health assumptions, CSM)",
+    "Valuation of Level 3 investments",
+    "Transition to IFRS 17/IFRS 9 (first-time adoption)"
+  ],
+  "quiz": [
+    {"level": 1, "concept": "combined_ratio", "prompt": "A P&C reinsurer reports a combined ratio of 94 %. What does it mean?", "options": ["Claims and expenses were 94 % of earned premiums — an underwriting profit of about 6 %", "The company lost 94 % of its capital", "Solvency is 94 % of the requirement", "Investment returns were 94 % of premiums"], "answer": 0, "explanation": "Combined ratio below 100 % = underwriting profit before investment income."},
+    {"level": 4, "concept": "accounting_changes", "prompt": "Swiss Re's equity roughly halved in 2022 (US GAAP) although net income was positive. Which statement explains it?", "options": ["Other comprehensive income: unrealised losses on bonds as rates rose", "A large share buyback", "Goodwill impairment", "Dividend payments of USD 10bn"], "answer": 0, "explanation": "Under US GAAP unrealised bond losses go through OCI into equity while liabilities are not remeasured at current rates — an accounting mismatch."}
+  ],
+  "peers_suggested": ["swiss_life"]
+}

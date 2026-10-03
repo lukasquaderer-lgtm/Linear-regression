@@ -5,6 +5,7 @@ Hands-on study material for the quantitative methods on the CFA Level II syllabu
 - **`notebooks/`** — nine Jupyter notebooks. Notebooks 00–07 have worked examples and self-checking exercises: run `check("01.1")` after an exercise to get ✅ or ❌ with a hint. Notebook 08 is a capstone on real market data.
 - **`data/`** — six practice datasets (simulated with a fixed seed so everyone gets the same numbers).
 - **`quant-atlas.html`** — the interactive study guide: topic explanations, formulas, labs, a data workbench, 10 exam-style item sets, a model chooser and practice questions. Open it in any browser.
+- **`company-analysis-lab/`** — *Analyst Lab*, a Streamlit app that teaches you to analyse a bank or insurer (UBS, LLB, Swiss Life, Swiss Re, PrismaLife) step by step, from the business model to an investment thesis, with quizzes and spaced repetition. See [its README](company-analysis-lab/README.md); run it with `cd company-analysis-lab && pip install -r requirements.txt && streamlit run app.py`.
 
 ## Run the notebooks
 

@@ -1,0 +1,108 @@
+{
+  "id": "swiss_life",
+  "name": "Swiss Life Holding AG",
+  "short_name": "Swiss Life",
+  "sector": "insurer",
+  "subsector": "Life insurance, pensions and asset management",
+  "country": "Switzerland",
+  "headquarters": "Zurich",
+  "listed": true,
+  "exchange_ticker": "SLHN (SIX Swiss Exchange)",
+  "currency": "CHF",
+  "currency_confirmed": true,
+  "fiscal_year_end": "31 December",
+  "accounting": {"2021": "IFRS 4 / IAS 39", "2022": "IFRS 4 / IAS 39", "2023": "IFRS 17 / IFRS 9", "2024": "IFRS 17 / IFRS 9", "2025": "IFRS 17 / IFRS 9"},
+  "accounting_notes": "Swiss Life adopted IFRS 17 and IFRS 9 on 1 January 2023 (comparatives restated). The starter dataset keeps 2021–2022 on the IFRS 4 basis as originally reported, so there is an accounting break between 2022 and 2023.",
+  "regulator": "FINMA",
+  "capital_regime": "Swiss Solvency Test (SST); EU subsidiaries under Solvency II",
+  "investor_relations": "https://www.swisslife.com/en/home/investors.html",
+  "annual_report_hint": "swisslife.com → Investors → Results and reports. The Annual Report contains the segment reporting (Switzerland, France, Germany, International, Asset Managers) and the IFRS consolidated financial statements; the SST ratio is published separately (and in the Financial Condition Report).",
+  "data_source": "Starter values from a third-party data vendor (FMP via Bigdata.com); sector KPIs are left for you to collect.",
+  "required_extra": ["solvency_ratio", "gross_premiums"],
+  "not_applicable": ["combined_ratio"],
+  "business_reference": {
+    "what_it_does": {
+      "reference": "Swiss Life is a leading European provider of life insurance, pensions and financial solutions, and one of Europe's largest real-estate asset managers. It insures individuals and companies (including Swiss occupational pensions under the BVG), sells advice through its own financial-advisory networks, and manages assets for third parties (Swiss Life Asset Managers).",
+      "key_points": [
+        {"point": "Life insurance and pensions", "keywords": ["life", "leben", "pension", "vorsorge", "retirement", "bvg"]},
+        {"point": "Asset management for third parties (incl. real estate)", "keywords": ["asset manag", "tpam", "real estate", "immobilien", "third-party", "drittkunden"]},
+        {"point": "Own financial-advisory networks", "keywords": ["advis", "berat", "network", "netzwerk", "distribution", "vertrieb"]}
+      ]
+    },
+    "how_money": {
+      "reference": "Three earnings sources: (1) the savings/investment result — the spread between investment returns and guaranteed or credited rates on policyholder savings; (2) the risk result — premiums for death and disability cover minus claims; (3) the fee result — fees from third-party asset management, advisory networks and unit-linked business. Swiss Life has been shifting towards fee income to reduce capital intensity.",
+      "key_points": [
+        {"point": "Investment/savings spread", "keywords": ["spread", "investment result", "savings", "anlage", "kapitalanlage", "zins", "guarantee", "garantie"]},
+        {"point": "Risk result (biometric risks)", "keywords": ["risk result", "risiko", "mortality", "sterblich", "disability", "invalid", "biometr"]},
+        {"point": "Fee result", "keywords": ["fee", "gebühr", "gebuehr", "commission", "kommission", "asset management"]}
+      ]
+    },
+    "segments": {
+      "reference": "Switzerland, France, Germany, International, Asset Managers.",
+      "key_points": [
+        {"point": "Switzerland", "keywords": ["switzerland", "schweiz"]},
+        {"point": "France", "keywords": ["france", "frankreich"]},
+        {"point": "Germany", "keywords": ["germany", "deutschland"]},
+        {"point": "International", "keywords": ["international"]},
+        {"point": "Asset Managers", "keywords": ["asset manager"]}
+      ]
+    },
+    "customers": {
+      "reference": "Private clients (life and pension products), companies and their employees (group life / BVG occupational pensions), high-net-worth clients (International, private placement life insurance) and institutional investors (asset management).",
+      "key_points": [
+        {"point": "Private clients", "keywords": ["private", "privat", "individual", "retail"]},
+        {"point": "Companies / occupational pensions", "keywords": ["compan", "unternehm", "employer", "arbeitgeber", "bvg", "group life", "kollektiv", "sme", "kmu"]},
+        {"point": "Institutional investors", "keywords": ["institutional", "institutionell", "investor"]}
+      ]
+    },
+    "markets": {
+      "reference": "Switzerland (largest), France and Germany, plus Luxembourg, Liechtenstein and Singapore (International).",
+      "key_points": [
+        {"point": "Switzerland", "keywords": ["switzerland", "schweiz"]},
+        {"point": "France", "keywords": ["france", "frankreich"]},
+        {"point": "Germany", "keywords": ["germany", "deutschland"]},
+        {"point": "Luxembourg / Liechtenstein / Singapore", "keywords": ["luxemb", "liechtenstein", "singapore", "singapur"]}
+      ]
+    },
+    "advantages": {
+      "reference": "Market leader in Swiss group life (BVG); scale in real-estate asset management; owned advisory networks in Germany and France (control of distribution); strong brand and solvency; diversified earnings with a growing fee share.",
+      "key_points": [
+        {"point": "Leadership in Swiss occupational pensions", "keywords": ["leader", "market share", "marktanteil", "bvg", "group life"]},
+        {"point": "Real-estate asset management scale", "keywords": ["real estate", "immobilien", "scale"]},
+        {"point": "Own distribution", "keywords": ["distribution", "vertrieb", "advisor", "berater", "network"]},
+        {"point": "Strong solvency / brand", "keywords": ["solvency", "solvenz", "sst", "brand", "marke"]}
+      ]
+    },
+    "threats": {
+      "reference": "Interest-rate risk (low rates squeeze the savings spread on guaranteed business); real-estate valuation risk (large real-estate portfolio); regulatory and political risk (BVG reform, the 'legal quote' profit-sharing rules, SST); longevity risk; competition in advisory; market downturns hitting fee income.",
+      "key_points": [
+        {"point": "Interest rates / guarantees", "keywords": ["interest", "zins", "rate", "guarantee", "garantie"]},
+        {"point": "Real-estate prices", "keywords": ["real estate", "immobilien", "property"]},
+        {"point": "Regulation and politics", "keywords": ["regulat", "politic", "politik", "bvg", "legal quote", "sst", "reform"]},
+        {"point": "Longevity", "keywords": ["longevity", "langlebig", "life expectancy", "lebenserwartung"]},
+        {"point": "Markets / fee income", "keywords": ["market", "markt", "fee"]}
+      ]
+    }
+  },
+  "events": [
+    {"year": 2022, "metrics": ["total_equity"], "nature": "accounting", "title": "Rising interest rates cut IFRS 4 equity", "detail": "Bond prices fell as rates rose in 2022. Under IFRS 4/IAS 39, unrealised losses on available-for-sale bonds reduced equity through other comprehensive income (OCI) — while the matching decrease in the economic value of liabilities was not fully reflected. Net income was unaffected; equity fell sharply.", "where_to_verify": "Statement of comprehensive income (OCI); statement of changes in equity; notes on financial assets."},
+    {"year": 2023, "metrics": ["revenue", "total_equity", "net_income", "total_liabilities", "eps"], "nature": "accounting", "title": "Adoption of IFRS 17 and IFRS 9", "detail": "From 2023 insurance revenue replaces premiums (investment components are excluded), the unearned profit on in-force business sits in the contractual service margin (a liability), and equity is measured differently. Revenue and equity before and after 2023 are not comparable — the decline is accounting-driven, not a collapse in business.", "where_to_verify": "Annual Report 2023: note on changes in accounting policies / transition to IFRS 17 and IFRS 9 (restated 2022 comparatives)."},
+    {"year": 2024, "metrics": ["eps", "total_equity"], "nature": "capital", "title": "Share buybacks and rising dividends", "detail": "Swiss Life returned capital through buybacks, reducing the share count, which supports EPS growth beyond net income growth.", "where_to_verify": "Statement of changes in equity (treasury shares); EPS note; capital management section."}
+  ],
+  "top_risks_reference": [
+    {"risk": "interest_rate", "why": "The savings result depends on the spread between investment yields and guaranteed rates; low or falling rates and reinvestment risk compress margins and the SST ratio."},
+    {"risk": "market", "why": "A large real-estate and equity exposure plus fee income linked to asset values: a property downturn hits investment results, solvency and asset-management fees."},
+    {"risk": "regulatory", "why": "Swiss pension politics (BVG conversion rate, legal quote) and SST changes can cap profitability of the Swiss group-life business and change capital requirements."}
+  ],
+  "audit_focus": [
+    "Measurement of insurance contract liabilities under IFRS 17 (assumptions, contractual service margin)",
+    "Valuation of investment property and Level 3 financial assets",
+    "Goodwill and intangible assets impairment testing",
+    "IT controls over actuarial and investment systems"
+  ],
+  "quiz": [
+    {"level": 2, "concept": "accounting_changes", "prompt": "Swiss Life's revenue in the starter data drops from about CHF 20bn (2022) to about CHF 15bn (2023). What is the main reason?", "options": ["Adoption of IFRS 17 changed the revenue definition", "Swiss Life lost a third of its clients", "A large divestment", "A currency translation loss"], "answer": 0, "explanation": "IFRS 17 insurance revenue excludes investment components (savings deposits). The drop is accounting-driven."},
+    {"level": 3, "concept": "business_model", "prompt": "Which earnings source has Swiss Life been deliberately growing to reduce capital intensity?", "options": ["Fee result (asset management, advisory)", "Savings spread on guaranteed products", "Property & casualty underwriting", "Trading income"], "answer": 0, "explanation": "Fee income needs little solvency capital compared with guaranteed savings business."}
+  ],
+  "peers_suggested": ["swiss_re", "prismalife"]
+}

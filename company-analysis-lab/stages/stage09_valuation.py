@@ -1,0 +1,314 @@
+"""Stage 9 — Valuation (Bewertung).
+
+Valuation comes after the fundamental work. For banks and insurers the emphasis is on
+P/B versus ROE, dividends and capital generation rather than an industrial FCFF DCF.
+The app never turns the result into a buy/sell call.
+"""
+
+from __future__ import annotations
+
+import numpy as np
+import pandas as pd
+import streamlit as st
+
+from lab import calculations as C
+from lab import company_analysis as CA
+from lab import data as D
+from lab import ratios as R
+from lab import ui
+from lab import valuation as V
+from lab import visualization as viz
+from stages.common import AppContext, record_attempt, stage_footer, stage_header
+
+NUMBER = 9
+RF_DEFAULT = {"CHF": 0.5, "EUR": 2.5, "USD": 4.2, "GBP": 4.3}
+G_DEFAULT = {"CHF": 1.0, "EUR": 1.5, "USD": 2.0, "GBP": 2.0}
+SUITED = {"pb", "jpb", "ddm", "ri"}  # best suited for financials
+UNSUITED = {"dcf"}
+
+
+def base_inputs(app: AppContext, values: pd.DataFrame) -> dict | None:
+    years = [y for y in D.year_columns(values) if D.value(values, "net_income", y) is not None and D.value(values, "total_equity", y) is not None]
+    if not years:
+        return None
+    y = years[-1]
+    ni, eq = D.value(values, "net_income", y), D.value(values, "total_equity", y)
+    shares = D.value(values, "shares_outstanding", y)
+    per_share = bool(app.profile.get("listed")) and shares is not None and shares > 0
+    underlying = app.progress.get("stages", {}).get("6", {}).get("answers", {}).get("underlying", {}).get(str(y))
+    eps = D.value(values, "eps", y) if per_share else None
+    dps = D.value(values, "dps", y) or (D.value(values, "dps", y - 1) if per_share else None)
+    roe_hist = [R.compute(R.RATIOS["roe"], values, yy).value for yy in years[-3:]]
+    roe_hist = [x for x in roe_hist if x is not None]
+    roe_default, roe_basis = (float(np.median(roe_hist)), "median ROE of the last 3 years (robust to one-off years)") if roe_hist else (None, "")
+    prev_eq = D.value(values, "total_equity", y - 1)
+    if underlying is not None and prev_eq:
+        roe_default, roe_basis = underlying / ((prev_eq + eq) / 2) * 100, f"underlying ROE {y} from your Stage 6 bridge"
+    return {
+        "year": y, "ni": ni, "equity": eq, "shares": shares, "per_share": per_share,
+        "eps": eps if eps is not None else (ni / shares if per_share else None),
+        "dps": dps, "bvps": eq / shares if per_share else None,
+        "underlying_ni": underlying,
+        "roe_avg3": roe_default,
+        "roe_basis": roe_basis,
+        "payout": (dps / eps * 100) if (per_share and dps and eps and eps > 0) else None,
+        "rwa": D.value(values, "rwa", y), "cet1_ratio": D.value(values, "cet1_ratio", y),
+    }
+
+
+def _criteria(app: AppContext, answers: dict) -> list[tuple[str, bool]]:
+    listed = bool(app.profile.get("listed"))
+    return [
+        ("Valuation methods chosen and justified", bool(answers.get("methods_submitted"))),
+        ("Market multiples calculated yourself" if listed else "Peer multiples applied to the unlisted company", bool(answers.get("multiples_done"))),
+        ("Base-case assumptions saved", "base" in answers.get("scenarios", {})),
+        ("Valuation conclusion written (method + value range)", bool(answers.get("conclusion_submitted"))),
+    ]
+
+
+def render(app: AppContext) -> None:
+    stage_header(app, NUMBER)
+    values = app.values
+    state = app.state(NUMBER)
+    answers = state["answers"]
+    b = base_inputs(app, values)
+    if b is None:
+        st.warning("Net income and equity are needed — complete Stage 2.")
+        stage_footer(app, NUMBER, _criteria(app, answers))
+        return
+
+    c1, c2 = st.columns([3, 2], gap="large")
+    with c1:
+        ui.task_box(
+            "Valuation comes <b>last</b> — it translates your analysis into numbers. For banks and insurers, <b>P/B versus ROE</b>, dividends and "
+            "<b>capital generation</b> are usually more informative than an industrial free-cash-flow DCF: their 'debt' (deposits, policy liabilities) is raw material, "
+            "not financing, and regulators decide how much capital can be paid out. Change the assumptions and watch the value move."
+        )
+    with c2:
+        ui.cfa_box("justified_pb")
+        st.caption("This tool does not tell you whether to buy or sell. A gap between your value and the market price is a hypothesis to test.")
+
+    _methods(app, answers)
+    st.divider()
+    price = _multiples(app, answers, b)
+    st.divider()
+    _playground(app, answers, b, price)
+    st.divider()
+    _conclusion(app, answers, b)
+    stage_footer(app, NUMBER, _criteria(app, answers))
+
+
+def _methods(app: AppContext, answers: dict) -> None:
+    st.subheader("1 · Which methods fit this company?")
+    names = {m.key: m.name for m in V.METHOD_GUIDE}
+    with st.form("s9-methods"):
+        chosen = st.multiselect("Pick the two or three methods you consider most informative", list(names), default=answers.get("methods", []), format_func=lambda k: names[k], key="s9-m")
+        why = st.text_area("Why these — and why not the others?", value=answers.get("methods_why", ""), height=90, key="s9-m-why")
+        if st.form_submit_button("Submit my choice", type="primary", icon=":material/send:"):
+            if not 2 <= len(chosen) <= 3 or CA.word_count(why) < 12:
+                st.warning("Choose two or three methods and explain in at least 12 words.")
+            else:
+                answers.update({"methods": chosen, "methods_why": why.strip(), "methods_submitted": True})
+                app.save()
+                record_attempt(app, NUMBER, "methods", "valuation_methods", not (set(chosen) & UNSUITED))
+                st.rerun()
+    if answers.get("methods_submitted"):
+        chosen = set(answers["methods"])
+        if chosen & UNSUITED:
+            st.warning("You included an FCFF-style DCF. For a bank or insurer, cash flow statements do not measure distributable cash, and debt is operating funding — use FCFE defined as distributable capital instead (section 3).", icon=":material/warning:")
+        good = chosen & SUITED
+        st.success(f"{len(good)} of your choices are classic financial-sector methods." if good else "None of your choices is a typical financial-sector method — compare with the guide below.", icon=":material/fact_check:")
+        guide = pd.DataFrame([{"Method": m.name, "When it fits": m.when, "Watch out for": m.caution} for m in V.METHOD_GUIDE])
+        st.dataframe(guide, hide_index=True, column_config={"When it fits": st.column_config.TextColumn(width="large"), "Watch out for": st.column_config.TextColumn(width="large")})
+        ui.cfa_box("dcf")
+
+
+def _multiples(app: AppContext, answers: dict, b: dict) -> float | None:
+    listed = b["per_share"]
+    st.subheader("2 · Market multiples" if listed else "2 · Valuing an unlisted company with peer multiples")
+    ccy = app.currency
+    if listed:
+        st.caption("Look up the current share price (stock exchange / financial website). Note: some companies report in a different currency than their share trades in (e.g. UBS reports in USD, trades in CHF) — use the same currency for price and per-share figures.")
+        price = st.number_input(f"Current share price ({ccy})", value=answers.get("price"), min_value=0.0, format="%.2f", step=None, key="s9-price")
+        if price != answers.get("price"):
+            answers["price"] = price
+            answers["multiples_done"] = False
+            app.save()
+        if not price:
+            st.info("Enter a share price to continue.", icon=":material/edit:")
+            return None
+        eps_basis = b["eps"]
+        correct = {
+            "pe": V.pe(price, eps_basis),
+            "pb": V.pb(price, b["bvps"]),
+            "dy": (V.dividend_yield(b["dps"], price) or 0) * 100 if b["dps"] else None,
+        }
+        st.markdown(f"Use your dataset ({b['year']}): EPS {ccy} {eps_basis:.2f} · equity {C.fmt_num(b['equity'])} m · shares {C.fmt_num(b['shares'], 1)} m · DPS (latest declared) {('%.2f' % b['dps']) if b['dps'] else '–'}")
+        with st.form("s9-mult"):
+            m1, m2, m3 = st.columns(3)
+            pe_in = m1.number_input("P/E (×)", value=answers.get("pe_in"), format="%.2f", step=None, key="s9-pe")
+            pb_in = m2.number_input("P/B (×) — compute BVPS first", value=answers.get("pb_in"), format="%.2f", step=None, key="s9-pb")
+            dy_in = m3.number_input("Dividend yield (%)", value=answers.get("dy_in"), format="%.2f", step=None, key="s9-dy")
+            go = st.form_submit_button("Check my multiples", type="primary", icon=":material/calculate:")
+        if go:
+            if None in (pe_in, pb_in) or (correct["dy"] is not None and dy_in is None):
+                st.warning("Fill in all multiples.")
+            else:
+                ok = {k: C.is_close(v, correct[k], rel=0.02, abs_tol=0.05) if correct[k] is not None else True for k, v in (("pe", pe_in), ("pb", pb_in), ("dy", dy_in))}
+                answers.update({"pe_in": pe_in, "pb_in": pb_in, "dy_in": dy_in, "multiples_ok": ok, "multiples_done": True})
+                app.save()
+                record_attempt(app, NUMBER, "pb", "justified_pb", ok["pb"])
+                st.rerun()
+        if answers.get("multiples_done"):
+            ok = answers.get("multiples_ok", {})
+            bvps = b["bvps"]
+            cols = st.columns(3)
+            cols[0].metric("P/E", f"{correct['pe']:.2f}×" if correct["pe"] else "n/m", help=f"{price:.2f} ÷ EPS {eps_basis:.2f}")
+            cols[1].metric("P/B", f"{correct['pb']:.2f}×" if correct["pb"] else "n/m", help=f"BVPS = {C.fmt_num(b['equity'])} ÷ {C.fmt_num(b['shares'], 1)} = {bvps:.2f}")
+            cols[2].metric("Dividend yield", f"{correct['dy']:.2f} %" if correct["dy"] is not None else "–")
+            st.markdown(" · ".join(f"{k.upper()}: {'✓' if v else '✗'}" for k, v in ok.items()))
+            if b.get("underlying_ni") and b["shares"]:
+                u_eps = b["underlying_ni"] / b["shares"]
+                st.caption(f"On your underlying earnings from Stage 6 (EPS ≈ {u_eps:.2f}) the P/E would be {price / u_eps:.2f}× — which one is more meaningful?")
+            ui.cfa_box("pe")
+        return price
+
+    # unlisted: peer multiples
+    st.caption("No market price exists. Analysts use multiples of listed peers (or of recent transactions — e.g. what an acquirer paid) and intrinsic models.")
+    with st.form("s9-peer-mult"):
+        p1, p2 = st.columns(2)
+        pb_peer = p1.number_input("Peer P/B you looked up (×)", value=answers.get("peer_pb"), format="%.2f", step=None, key="s9-ppb")
+        pe_peer = p2.number_input("Peer P/E you looked up (×)", value=answers.get("peer_pe"), format="%.2f", step=None, key="s9-ppe")
+        disc = st.slider("Discount for size / illiquidity (%)", 0, 40, int(answers.get("discount", 15)), key="s9-disc")
+        if st.form_submit_button("Apply peer multiples", type="primary", icon=":material/calculate:"):
+            if not pb_peer or not pe_peer:
+                st.warning("Enter both peer multiples.")
+            else:
+                answers.update({"peer_pb": pb_peer, "peer_pe": pe_peer, "discount": disc, "multiples_done": True})
+                app.save()
+                st.rerun()
+    if answers.get("multiples_done"):
+        f = 1 - answers["discount"] / 100
+        v_pb = answers["peer_pb"] * b["equity"] * f
+        v_pe = answers["peer_pe"] * b["ni"] * f
+        cols = st.columns(2)
+        cols[0].metric(f"Equity value via P/B ({app.currency} m)", C.fmt_num(v_pb))
+        cols[1].metric(f"Equity value via P/E ({app.currency} m)", C.fmt_num(v_pe))
+        st.caption("Why do the two differ? Because the company's ROE differs from the peers' — which is exactly what P/B = f(ROE) captures.")
+    return None
+
+
+def _playground(app: AppContext, answers: dict, b: dict, price: float | None) -> None:
+    st.subheader("3 · Assumptions → value (live)")
+    per_share = b["per_share"]
+    unit = f"{app.currency}/share" if per_share else f"{app.currency} m"
+    saved = answers.get("scenarios", {}).get("base", {}).get("assumptions", {})
+    ccy = app.currency
+    left, right = st.columns([2, 3], gap="large")
+    with left:
+        st.markdown("**Cost of equity (CAPM)** · <span class='al-de'>Eigenkapitalkosten</span>", unsafe_allow_html=True)
+        rf = st.slider("Risk-free rate (%)", 0.0, 6.0, float(saved.get("rf", RF_DEFAULT.get(ccy, 2.0))), 0.1, key="s9-rf")
+        beta = st.slider("Beta", 0.4, 2.0, float(saved.get("beta", 1.15 if app.sector == "bank" else 0.95)), 0.05, key="s9-beta")
+        erp = st.slider("Equity risk premium (%)", 3.0, 8.0, float(saved.get("erp", 5.5)), 0.1, key="s9-erp")
+        r = V.capm(rf / 100, beta, erp / 100)
+        st.markdown(f"→ cost of equity **r = {r * 100:.2f} %**")
+        ui.cfa_box("capm")
+        st.markdown("**Profitability, payout and growth**")
+        roe_default = b["roe_avg3"] if b["roe_avg3"] is not None else 10.0
+        roe = st.slider("Sustainable ROE (%)", 0.0, 25.0, float(np.clip(saved.get("roe", round(roe_default, 1)), 0.0, 25.0)), 0.1, key="s9-roe",
+                        help=f"Default = {b['roe_basis'] or 'assumption'} ({roe_default:.1f} %). Adjust for one-offs (Stage 6).")
+        payout = st.slider("Payout ratio (%)", 0.0, 100.0, float(np.clip(saved.get("payout", b["payout"] if b["payout"] is not None else 60.0), 0.0, 100.0)), 1.0, key="s9-payout")
+        g = st.slider("Long-term growth g (%)", 0.0, 4.0, float(saved.get("g", G_DEFAULT.get(ccy, 1.5))), 0.1, key="s9-g")
+        n = st.slider("Years of explicit forecast", 1, 10, int(saved.get("n", 5)), key="s9-n")
+        g_sus = V.sustainable_growth(roe / 100, payout / 100) * 100
+        g1 = st.slider("Near-term dividend growth (%)", -5.0, 15.0, float(saved.get("g1", round(min(max(g_sus, -5.0), 15.0), 1))), 0.1, key="s9-g1", help=f"Sustainable growth (1 − payout) × ROE = {g_sus:.1f} %")
+        fade = st.checkbox("Let ROE fade to the cost of equity (no lasting advantage)", value=bool(saved.get("fade", False)), key="s9-fade")
+        rwa_g, cet1_t = None, None
+        if app.sector == "bank" and b["rwa"]:
+            st.markdown("**Capital generation (bank FCFE)**")
+            rwa_g = st.slider("RWA growth (%)", -5.0, 10.0, float(saved.get("rwa_g", 3.0)), 0.5, key="s9-rwag")
+            cet1_t = st.slider("Target CET1 ratio (%)", 8.0, 20.0, float(saved.get("cet1_t", b["cet1_ratio"] or 14.0)), 0.1, key="s9-cet1t")
+
+    with right:
+        R_, G_, ROE_, P_ = r, g / 100, roe / 100, payout / 100
+        bv = b["bvps"] if per_share else b["equity"]
+        earn = (bv * ROE_)  # normalised earnings on sustainable ROE
+        d0 = earn * P_
+        results = []
+        jpb = V.justified_pb(ROE_, R_, G_)
+        if jpb is not None:
+            results.append(("Justified P/B × book value", jpb * bv))
+        jpe = V.justified_pe(P_, R_, G_)
+        if jpe is not None:
+            results.append(("Justified P/E × normalised earnings", jpe * earn))
+        ddm = V.gordon_ddm(d0, R_, G_)
+        if ddm is not None:
+            results.append(("Gordon DDM", ddm))
+        ts = V.two_stage_ddm(d0, g1 / 100, n, G_, R_)
+        if ts is not None:
+            results.append((f"Two-stage DDM ({n} yrs at {g1:.1f} %)", ts["value"]))
+        ri = V.residual_income(bv, ROE_, R_, G_, P_, years=10, fade_to_r=fade)
+        if ri is not None:
+            results.append(("Residual income" + (" (ROE fades)" if fade else ""), ri["value"]))
+        if rwa_g is not None and cet1_t is not None and b["rwa"]:
+            scale = b["shares"] if per_share else 1.0
+            fcfe = V.bank_distributable_fcfe(earn * scale, b["rwa"], rwa_g / 100, cet1_t / 100) / scale
+            dcf = V.fcfe_dcf(fcfe, rwa_g / 100, n, G_, R_)
+            if dcf is not None:
+                results.append(("Capital-generation DCF (FCFE)", dcf["value"]))
+        if not results:
+            st.error("r must be greater than g for these models.")
+            return
+        ui.plotly(viz.value_bars(results, f"Value per share ({unit})" if per_share else f"Equity value ({unit})", unit, reference=price if per_share else None), key="s9-bars")
+        if price and per_share:
+            mid = float(np.median([v for _, v in results]))
+            st.caption(f"Median of your model values: {mid:,.2f} vs market price {price:,.2f} ({(mid / price - 1) * 100:+.1f} %). A gap is a question — which assumption would have to change to close it?")
+            market_pb = price / b["bvps"]
+            implied = V.implied_roe_from_pb(market_pb, R_, G_) * 100
+            st.info(f"**Reverse-engineering:** at P/B {market_pb:.2f}× and your r = {r * 100:.1f} %, g = {g:.1f} %, the market price implies a sustainable ROE of **{implied:.1f} %** (your assumption: {roe:.1f} %).", icon=":material/swap_horiz:")
+            points = [{"name": f"{app.name} (market)", "roe": b["roe_avg3"] or roe, "pb": market_pb}]
+        else:
+            points = []
+        points.append({"name": "Your assumption", "roe": roe, "pb": jpb if jpb is not None else np.nan})
+        ui.plotly(viz.pb_roe_chart(R_, G_, points), key="s9-pbroe")
+        r_vals = [R_ + d / 100 for d in (-2, -1, 0, 1, 2)]
+        g_vals = [max(G_ + d / 100, 0) for d in (-1, -0.5, 0, 0.5, 1)]
+        grid = V.sensitivity_grid(lambda rr, gg: (V.justified_pb(ROE_, rr, gg) or np.nan) * bv, r_vals, g_vals)
+        ui.plotly(viz.sensitivity_heatmap(grid, r_vals, g_vals, "Sensitivity — justified P/B value", unit), key="s9-sens")
+        ui.table_view(pd.DataFrame(results, columns=["Method", unit]), hide_index=True)
+
+    scen = st.segmented_control("Save these assumptions as", ["base", "bull", "bear"], default="base", key="s9-scen", format_func=lambda s: s.capitalize() + " case")
+    if st.button("Save scenario", icon=":material/bookmark_add:", key="s9-save"):
+        answers.setdefault("scenarios", {})[scen or "base"] = {
+            "assumptions": {"rf": rf, "beta": beta, "erp": erp, "roe": roe, "payout": payout, "g": g, "n": n, "g1": g1, "fade": fade, "rwa_g": rwa_g, "cet1_t": cet1_t},
+            "r": r * 100, "results": {k: float(v) for k, v in results}, "median": float(np.median([v for _, v in results])), "unit": unit,
+        }
+        app.save()
+        st.toast(f"{(scen or 'base').capitalize()} case saved.", icon=":material/bookmark:")
+        st.rerun()
+    sc = answers.get("scenarios", {})
+    if sc:
+        st.dataframe(pd.DataFrame([{"Scenario": k.capitalize(), "Cost of equity %": v["r"], "ROE %": v["assumptions"]["roe"], "g %": v["assumptions"]["g"], f"Median value ({v['unit']})": v["median"]} for k, v in sc.items()]), hide_index=True)
+
+
+def _conclusion(app: AppContext, answers: dict, b: dict) -> None:
+    st.subheader("4 · Your valuation conclusion")
+    unit = f"{app.currency}/share" if b["per_share"] else f"{app.currency} m"
+    with st.form("s9-concl"):
+        text = st.text_area("Which method do you trust most for this company, why, and which assumption drives the value most?", value=answers.get("conclusion", ""), height=110)
+        c1, c2 = st.columns(2)
+        lo = c1.number_input(f"Value range — low ({unit})", value=answers.get("range_lo"), format="%.2f", step=None)
+        hi = c2.number_input(f"Value range — high ({unit})", value=answers.get("range_hi"), format="%.2f", step=None)
+        if st.form_submit_button("Submit conclusion", type="primary", icon=":material/send:"):
+            if CA.word_count(text) < 20 or lo is None or hi is None or lo > hi:
+                st.warning("Write at least 20 words and give a low and a high value (low ≤ high).")
+            else:
+                answers.update({"conclusion": text.strip(), "range_lo": lo, "range_hi": hi, "conclusion_submitted": True})
+                app.save()
+                st.rerun()
+    if answers.get("conclusion_submitted"):
+        st.info(
+            "**Checklist for a credible valuation:** the cost of equity reflects the risks from Stage 7 · sustainable ROE excludes the one-offs from Stage 6 · "
+            "growth is consistent with payout × ROE · the range is wide enough to reflect your uncertainty · you can name the assumption that would change your mind.",
+            icon=":material/checklist:",
+        )

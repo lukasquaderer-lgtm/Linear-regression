@@ -1,0 +1,19 @@
+metric,2021,2022,2023,2024,2025,source,note
+revenue,,,,,,To collect from the annual report,Enter 'Total revenues'. Vendor mapping is unreliable for UBS (2023 negative goodwill distorts the vendor's revenue/expense split).
+operating_expenses,,,,,,To collect from the annual report,
+net_income,7457,7630,27366,5085,7767,Data vendor (FMP via Bigdata.com) – unverified; 2023 per web search of Annual Report 2023 – unverified,2023: the 4Q23 results release showed 27849; the Annual Report 2023 figure is 27366. Check which basis your source uses.
+total_assets,1117182,1104364,1716924,1565028,1617427,Data vendor (FMP via Bigdata.com) – unverified,
+total_liabilities,1056180,1047146,1630769,1479455,1526943,Derived: total assets − total equity incl. non-controlling interests,
+total_equity,60662,56876,85624,85079,90213,Data vendor (FMP via Bigdata.com) – unverified,Equity attributable to shareholders.
+operating_cash_flow,31425,14647,86068,3279,17331,Data vendor (FMP via Bigdata.com) – unverified,Bank operating cash flow – not an earnings-quality measure for banks.
+eps,2.06,2.25,,1.52,2.36,Data vendor (FMP via Bigdata.com) – unverified,2023 left blank: vendor value inconsistent with net income – take diluted EPS from the annual report.
+dps,0.50,0.55,0.70,0.90,,Annual reports as recalled (declared in USD) – unverified,FY2025 dividend: enter from the Annual Report 2025.
+shares_outstanding,3627.241,3397.470,3295.996,3344.054,3275.951,Data vendor (FMP via Bigdata.com) – unverified,Diluted weighted average.
+net_interest_income,,,,,,To collect from the annual report,
+fee_income,,,,,,To collect from the annual report,
+cet1_capital,,,,,,To collect from the annual report,
+rwa,,,,,,To collect from the annual report,
+cet1_ratio,,,,,,To collect from the annual report,
+cost_income_ratio,,,,,,To collect from the annual report,
+aum,,,,,,To collect from the annual report,Invested assets (USD bn).
+net_new_money,,,,,,To collect from the annual report,Net new assets / net new money (USD bn) – note which definition.

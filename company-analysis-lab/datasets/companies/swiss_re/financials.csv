@@ -1,0 +1,15 @@
+metric,2021,2022,2023,2024,2025,source,note
+revenue,45935,46043,43643,46756,50224,Data vendor (FMP via Bigdata.com) – unverified,2021–22 US GAAP; 2023 restated and 2024+ under IFRS 17/9.
+net_income,1437,472,3111,3241,4966,Data vendor (FMP via Bigdata.com) – unverified,2023 IFRS restated (US GAAP as originally reported: 3214).
+total_assets,181567,170676,133861,127229,133919,Data vendor (FMP via Bigdata.com) – unverified,US GAAP to 2022; IFRS from 2023 (restated).
+total_liabilities,157889,157867,111322,103989,109084,Derived: total assets − total equity incl. non-controlling interests,
+total_equity,23568,12699,22310,23106,24654,Data vendor (FMP via Bigdata.com) – unverified,US GAAP 2022 equity was depressed by unrealised bond losses; IFRS equity from 2023.
+operating_cash_flow,4104,2927,4086,3130,3164,Data vendor (FMP via Bigdata.com) – unverified,
+eps,4.78,1.56,,10.78,16.63,Data vendor (FMP via Bigdata.com) – unverified,2023 left blank: vendor EPS is on the US GAAP basis – take IFRS-restated EPS from the Annual Report 2024.
+dps,,,6.80,7.35,,Annual reports as recalled – unverified,FY2021–22 dividends were declared in CHF (5.90 and 6.40): convert to USD or note the currency mismatch. FY2025: enter from the Annual Report 2025.
+shares_outstanding,289.900,289.900,307.862,295.327,298.761,Data vendor (FMP via Bigdata.com) – unverified,Diluted weighted average.
+insurance_revenue,,,,,,To collect from the annual report,IFRS 17 – 2023 restated onwards. Before: net premiums earned (US GAAP).
+investment_income,,,,,,To collect from the annual report,
+insurance_service_result,,,,,,To collect from the annual report,
+solvency_ratio,,,,,,To collect from the annual report,Group SST ratio.
+combined_ratio,,,,,,To collect from the annual report,P&C Reinsurance combined ratio.

@@ -1,0 +1,15 @@
+metric,2021,2022,2023,2024,2025,source,note
+revenue,21520,20358,15237,14429,15214,Data vendor (FMP via Bigdata.com) – unverified,2021–22 IFRS 4 basis (incl. premiums); 2023+ IFRS 17 basis. Not comparable across the break.
+net_income,1247,1449,1083,1214,1231,Data vendor (FMP via Bigdata.com) – unverified,2021–22 IFRS 4 as reported; 2023+ IFRS 17.
+total_assets,240647,217328,213445,218933,226072,Data vendor (FMP via Bigdata.com) – unverified,
+total_liabilities,224800,207719,205821,211265,218843,Derived: total assets − total equity incl. non-controlling interests,
+total_equity,15727,9489,7499,7520,7062,Data vendor (FMP via Bigdata.com) – unverified,Equity attributable to shareholders. Break between IFRS 4 (2021–22) and IFRS 17 (2023+).
+operating_cash_flow,289,1001,-975,186,2579,Data vendor (FMP via Bigdata.com) – unverified,
+eps,39.94,47.76,37.01,42.29,43.47,Data vendor (FMP via Bigdata.com) – unverified,Diluted.
+dps,25.00,30.00,33.00,35.00,36.50,Data vendor (FMP via Bigdata.com) – unverified,Dividend for the fiscal year (paid the following spring).
+shares_outstanding,31.221,30.339,29.261,28.704,28.533,Data vendor (FMP via Bigdata.com) – unverified,Diluted weighted average.
+gross_premiums,,,,,,To collect from the annual report,Gross written premiums / policy fees and deposits received.
+insurance_revenue,,,,,,To collect from the annual report,IFRS 17 – available from 2022 restated / 2023.
+investment_income,,,,,,To collect from the annual report,
+solvency_ratio,,,,,,To collect from the annual report,SST ratio (as at 1 January of the following year – note the date convention).
+aum,,,,,,To collect from the annual report,Third-party assets under management (Swiss Life Asset Managers).

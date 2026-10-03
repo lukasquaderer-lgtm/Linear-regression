@@ -1,0 +1,116 @@
+{
+  "id": "ubs",
+  "name": "UBS Group AG",
+  "short_name": "UBS",
+  "sector": "bank",
+  "subsector": "Global wealth manager and Swiss universal bank",
+  "country": "Switzerland",
+  "headquarters": "Zurich",
+  "listed": true,
+  "exchange_ticker": "UBSG (SIX Swiss Exchange), UBS (NYSE)",
+  "currency": "USD",
+  "currency_confirmed": true,
+  "fiscal_year_end": "31 December",
+  "accounting": {"2021": "IFRS", "2022": "IFRS", "2023": "IFRS", "2024": "IFRS", "2025": "IFRS"},
+  "accounting_notes": "UBS reports in US dollars although it is a Swiss company. The Credit Suisse acquisition (June 2023) makes 2023 onwards structurally different from 2021–2022.",
+  "regulator": "FINMA (Swiss Financial Market Supervisory Authority)",
+  "capital_regime": "Basel III as implemented in Switzerland, including 'too big to fail' (TBTF) requirements for systemically important banks",
+  "investor_relations": "https://www.ubs.com/global/en/investor-relations.html",
+  "annual_report_hint": "ubs.com → Investor Relations → Annual reporting. The Annual Report contains the management report, the risk/capital/liquidity section and the consolidated financial statements with notes.",
+  "data_source": "Starter values from a third-party data vendor (FMP via Bigdata.com) plus a few annual-report figures; sector KPIs are left for you to collect.",
+  "required_extra": [],
+  "not_applicable": [],
+  "business_reference": {
+    "what_it_does": {
+      "reference": "UBS is the largest Swiss bank and the world's largest global wealth manager by invested assets. It advises and manages money for wealthy private clients worldwide, runs a leading Swiss universal bank for retail and corporate clients, an asset manager and a capital-light investment bank. Since June 2023 it includes Credit Suisse.",
+      "key_points": [
+        {"point": "Global wealth management is the core business", "keywords": ["wealth", "vermögensverwaltung", "vermoegensverwaltung", "private bank", "privatbank", "gwm", "wealthy", "vermögend"]},
+        {"point": "Universal bank in the Swiss home market", "keywords": ["switzerland", "swiss", "schweiz", "retail", "corporate", "firmenkunden", "universal"]},
+        {"point": "Investment bank and asset manager complete the model", "keywords": ["investment bank", "investmentbank", "asset management", "asset manager", "fund", "fonds"]},
+        {"point": "Acquired Credit Suisse in 2023", "keywords": ["credit suisse", "cs", "acquisition", "übernahme", "uebernahme", "takeover"]}
+      ]
+    },
+    "how_money": {
+      "reference": "Mostly from fees: recurring fees on invested assets and mandates and transaction-based commissions, plus net interest income from loans (mortgages, Lombard loans) and client deposits, and trading and advisory revenues in the Investment Bank. Net fee and commission income is the largest revenue line; net interest income is sensitive to interest rates.",
+      "key_points": [
+        {"point": "Fee and commission income (recurring + transaction-based)", "keywords": ["fee", "fees", "gebühr", "gebuehr", "kommission", "commission", "recurring"]},
+        {"point": "Net interest income from lending and deposits", "keywords": ["interest", "zins", "nii", "lending", "loan", "kredit", "deposit", "einlage", "mortgage", "hypothek"]},
+        {"point": "Trading and advisory revenues (Investment Bank)", "keywords": ["trading", "handel", "advisory", "beratung", "m&a", "markets"]},
+        {"point": "Revenues scale with invested assets and market levels", "keywords": ["invested assets", "aum", "assets under management", "verwaltete", "market level", "markets"]}
+      ]
+    },
+    "segments": {
+      "reference": "Global Wealth Management (GWM); Personal & Corporate Banking (Switzerland); Asset Management; Investment Bank; Non-core and Legacy (run-off of former Credit Suisse positions); plus Group Items.",
+      "key_points": [
+        {"point": "Global Wealth Management", "keywords": ["global wealth", "gwm", "wealth management"]},
+        {"point": "Personal & Corporate Banking", "keywords": ["personal", "corporate banking", "p&c", "privat- und firmenkunden"]},
+        {"point": "Asset Management", "keywords": ["asset management"]},
+        {"point": "Investment Bank", "keywords": ["investment bank", "ib"]},
+        {"point": "Non-core and Legacy", "keywords": ["non-core", "legacy", "ncl", "run-off"]}
+      ]
+    },
+    "customers": {
+      "reference": "High-net-worth and ultra-high-net-worth private clients, Swiss retail clients and SMEs, large corporates, institutional investors (pension funds, sovereign funds, insurers) and Investment Bank clients (corporates, financial sponsors, hedge funds).",
+      "key_points": [
+        {"point": "Wealthy private clients (HNW/UHNW)", "keywords": ["hnw", "uhnw", "wealthy", "high net worth", "vermögend", "private client", "privatkunden"]},
+        {"point": "Swiss retail and SME clients", "keywords": ["retail", "sme", "kmu", "privat"]},
+        {"point": "Corporates and institutions", "keywords": ["corporate", "firmen", "institutional", "institutionell", "pension", "sovereign"]}
+      ]
+    },
+    "markets": {
+      "reference": "Global. The Americas (mainly the US) hold the largest share of wealth-management invested assets; Switzerland is the home market and main booking centre; EMEA and Asia Pacific are the other regions.",
+      "key_points": [
+        {"point": "Americas / United States", "keywords": ["americas", "usa", "us", "united states", "amerika"]},
+        {"point": "Switzerland", "keywords": ["switzerland", "schweiz", "swiss"]},
+        {"point": "EMEA", "keywords": ["emea", "europe", "europa"]},
+        {"point": "Asia Pacific", "keywords": ["asia", "apac", "asien"]}
+      ]
+    },
+    "advantages": {
+      "reference": "Scale as the largest global wealth manager; the leading Swiss domestic franchise (now including Credit Suisse's); brand and the perception of Swiss stability; capital strength; a broad product shelf where the investment bank and asset manager serve wealth clients; sticky recurring fee income.",
+      "key_points": [
+        {"point": "Scale in global wealth management", "keywords": ["scale", "largest", "grösste", "größte", "groesste", "size"]},
+        {"point": "Brand and Swiss stability", "keywords": ["brand", "marke", "reputation", "trust", "vertrauen", "stability", "stabilität"]},
+        {"point": "Capital strength", "keywords": ["capital", "kapital", "cet1"]},
+        {"point": "Recurring, sticky fee income", "keywords": ["recurring", "sticky", "wiederkehrend", "stable"]}
+      ]
+    },
+    "threats": {
+      "reference": "Swiss 'too big to fail' capital reforms (the Federal Council proposed in 2025 that foreign subsidiaries be fully backed with CET1 capital at the parent); Credit Suisse integration and legacy litigation; falling interest rates squeezing net interest income; market downturns reducing invested assets and fees; competition and profitability in US wealth management; conduct and reputational risk.",
+      "key_points": [
+        {"point": "Higher Swiss capital requirements (TBTF reform)", "keywords": ["capital requirement", "kapitalanforderung", "regulation", "regulierung", "finma", "too big", "tbtf", "federal council", "bundesrat"]},
+        {"point": "Integration and legacy litigation", "keywords": ["integration", "litigation", "rechtsfall", "legal", "lawsuit", "klage"]},
+        {"point": "Interest rates (NII)", "keywords": ["interest rate", "zinsen", "zins", "rates"]},
+        {"point": "Market downturn hits fee income", "keywords": ["market", "markt", "downturn", "crash", "börse", "boerse"]},
+        {"point": "Competition and reputation", "keywords": ["competition", "wettbewerb", "competitor", "reputation", "reputational"]}
+      ]
+    }
+  },
+  "events": [
+    {"year": 2021, "metrics": ["net_income"], "nature": "one-off", "title": "Loss on a US prime brokerage client (Archegos)", "detail": "UBS booked a loss in Q1 2021 when the family office Archegos defaulted. A one-off loss that also triggered a review of risk controls.", "where_to_verify": "Annual Report 2021: Investment Bank segment discussion; risk management section."},
+    {"year": 2022, "metrics": ["total_equity", "net_interest_income"], "nature": "operational", "title": "Rising rates and large share buybacks", "detail": "Higher USD and CHF rates lifted net interest income. Equity fell despite a profit because of about USD 5–6bn of share buybacks, dividends and OCI losses on cash flow hedges.", "where_to_verify": "Statement of changes in equity; note on other comprehensive income; capital management section."},
+    {"year": 2023, "metrics": ["net_income", "total_assets", "total_liabilities", "total_equity", "eps", "revenue", "operating_expenses", "cet1_capital", "rwa", "aum"], "nature": "one-off", "title": "Acquisition of Credit Suisse (completed 12 June 2023)", "detail": "UBS acquired Credit Suisse for about CHF 3bn — far below the fair value of its net assets. The difference was booked as negative goodwill (about USD 29bn), a non-cash, non-recurring gain that explains almost all of 2023 net profit. Balance sheet, RWA and invested assets jumped. This is acquisition accounting, not operating performance.", "where_to_verify": "Annual Report 2023: note on the acquisition of Credit Suisse (business combination / purchase price allocation); income statement line 'negative goodwill'."},
+    {"year": 2024, "metrics": ["net_income", "eps", "operating_expenses"], "nature": "transitional", "title": "Base effect and integration costs", "detail": "Net income fell versus 2023 because negative goodwill did not recur, while integration-related expenses stayed high. Underlying profitability was improving as cost savings came through.", "where_to_verify": "Annual Report 2024: 'underlying' vs reported results reconciliation; integration-related expenses disclosure."},
+    {"year": 2024, "metrics": ["total_assets", "rwa"], "nature": "structural", "title": "Legal merger of UBS AG and Credit Suisse AG; run-down of Non-core and Legacy", "detail": "The parent banks merged in 2024 and Non-core and Legacy positions were reduced, shrinking total assets and RWA.", "where_to_verify": "Annual Report 2024: Non-core and Legacy segment; balance sheet and capital management sections."},
+    {"year": 2025, "metrics": ["cet1_ratio", "cet1_capital"], "nature": "regulatory", "title": "Swiss capital reform proposals", "detail": "In June 2025 the Swiss Federal Council proposed that UBS fully deduct its participations in foreign subsidiaries from CET1 capital, which UBS estimated would require substantial additional CET1 capital. Final rules and phase-in determine future buybacks and ROE.", "where_to_verify": "Annual Report 2025: capital management section and outlook; FINMA / Federal Council publications."}
+  ],
+  "top_risks_reference": [
+    {"risk": "regulatory", "why": "Higher Swiss TBTF capital requirements could tie up tens of billions of capital, lowering ROE (more equity for the same earnings) and reducing distributable capital for buybacks and dividends — directly hitting value via P/B = f(ROE)."},
+    {"risk": "operational", "why": "Credit Suisse integration (IT migration, client retention, cost targets) and legacy litigation/conduct risk: delays or large provisions reduce earnings and capital."},
+    {"risk": "market", "why": "Wealth-management fees scale with invested assets; a market downturn reduces recurring fees and transaction volumes, and falling rates reduce net interest income."}
+  ],
+  "audit_focus": [
+    "Valuation of financial instruments with significant unobservable inputs (Level 3)",
+    "Expected credit loss allowances",
+    "Provisions and contingent liabilities for litigation and regulatory matters",
+    "Accounting for the Credit Suisse acquisition (purchase price allocation, negative goodwill)",
+    "Recognition of deferred tax assets",
+    "IT general controls over financial reporting systems"
+  ],
+  "quiz": [
+    {"level": 1, "concept": "business_model", "prompt": "Which UBS business division is the core of the group's strategy and the main driver of fee income?", "options": ["Global Wealth Management", "Investment Bank", "Non-core and Legacy", "Group Items"], "answer": 0, "explanation": "UBS describes itself as a global wealth manager; GWM generates the largest share of revenues and recurring fees."},
+    {"level": 3, "concept": "one_off_items", "prompt": "Why does UBS's 2023 net profit (about USD 27bn) NOT represent its recurring earning power?", "options": ["Negative goodwill from buying Credit Suisse below fair value was booked as a gain", "A one-time tax refund from the Swiss government", "Interest rates spiked and boosted net interest income", "Investment banking fees doubled"], "answer": 0, "explanation": "Negative goodwill (about USD 29bn) is a non-cash, non-recurring accounting gain from a bargain purchase. Remove it to see underlying earnings."},
+    {"level": 4, "concept": "linking_statements", "prompt": "In 2023 UBS's total assets rose by more than 50 % and equity by about 50 %. Which single event links the balance-sheet jump to the income-statement gain?", "options": ["Consolidating Credit Suisse: its assets and liabilities came onto the balance sheet and the bargain-purchase gain increased retained earnings", "A capital increase sold to new shareholders", "Revaluation of UBS's own real estate", "A change in the CET1 ratio"], "answer": 0, "explanation": "Acquisition accounting adds the target's assets/liabilities at fair value; the negative goodwill flows through profit into retained earnings, so equity rises too."}
+  ],
+  "peers_suggested": ["llb", "swiss_life"]
+}

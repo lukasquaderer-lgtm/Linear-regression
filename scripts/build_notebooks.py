@@ -520,6 +520,7 @@ SVM, CART, random forest, boosting) with proper train/test splits, cross-validat
     from sklearn.linear_model import LogisticRegression, LassoCV
     from sklearn.neighbors import KNeighborsClassifier
     from sklearn.svm import SVC
+    from sklearn.calibration import CalibratedClassifierCV
     from sklearn.tree import DecisionTreeClassifier, export_text
     from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
     from sklearn.metrics import confusion_matrix, classification_report, roc_auc_score, roc_curve
@@ -546,7 +547,7 @@ SVM, CART, random forest, boosting) with proper train/test splits, cross-validat
     models = {
         "Logistic": make_pipeline(StandardScaler(), LogisticRegression(max_iter=1000)),
         "KNN (k=15)": make_pipeline(StandardScaler(), KNeighborsClassifier(n_neighbors=15)),
-        "SVM (RBF)": make_pipeline(StandardScaler(), SVC(probability=True, random_state=0)),
+        "SVM (RBF)": make_pipeline(StandardScaler(), CalibratedClassifierCV(SVC(random_state=0), ensemble=False)),   # calibrated to give probabilities
         "CART (depth 4)": DecisionTreeClassifier(max_depth=4, random_state=0),
         "Random forest": RandomForestClassifier(n_estimators=300, min_samples_leaf=5, random_state=0),
         "Gradient boosting": GradientBoostingClassifier(random_state=0),

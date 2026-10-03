@@ -158,14 +158,15 @@ Each section ends with a **Your turn** task. There is no single right answer, so
     code('''
     from sklearn.decomposition import PCA
     from sklearn.preprocessing import StandardScaler
-    R = rets[stocks].dropna()                                 # common sample with no gaps
+    R = rets[stocks].dropna(axis=1, thresh=int(0.95 * len(rets))).dropna()   # stocks with ~full history, common months
+    print(f"PCA sample: {R.shape[1]} stocks with near-complete history, {len(R)} months (later listings left out)")
     Zr = StandardScaler().fit_transform(R)
     pca = PCA().fit(Zr)
     print("Variance share of PC1-PC5:", np.round(pca.explained_variance_ratio_[:5], 3))
     pc1 = pd.Series(pca.transform(Zr)[:, 0], index=R.index)
     print("Correlation of PC1 scores with the index return:", round(abs(pc1.corr(rets.loc[R.index, IDX])), 3))
-    load = pd.DataFrame(pca.components_[:2].T, index=stocks, columns=["PC1", "PC2"])
-    load["sector"] = [SECTORS.get(s, "?") for s in stocks]
+    load = pd.DataFrame(pca.components_[:2].T, index=R.columns, columns=["PC1", "PC2"])
+    load["sector"] = [SECTORS.get(s, "?") for s in R.columns]
     load.sort_values("PC2").round(3)
     '''),
     md("PC1 is the market. PC2 often splits defensive from cyclical stocks: look at which sectors sit at each end."),
@@ -176,7 +177,7 @@ Each section ends with a **Your turn** task. There is no single right answer, so
     from scipy.spatial.distance import squareform
 
     feat = pd.DataFrame({"beta": capm["beta"], "vol": summary["volatility"], "mean": summary["mean return"],
-                         "pc1": load["PC1"], "pc2": load["PC2"]}).loc[stocks].dropna()
+                         "pc1": load["PC1"], "pc2": load["PC2"]}).reindex(stocks).dropna()
     km = KMeans(n_clusters=4, n_init=10, random_state=0).fit(StandardScaler().fit_transform(feat))
     print(pd.crosstab(pd.Series(km.labels_, index=feat.index, name="cluster"), pd.Series([SECTORS.get(s, "?") for s in feat.index], index=feat.index, name="sector")))
 

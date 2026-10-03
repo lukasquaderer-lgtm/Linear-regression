@@ -100,6 +100,12 @@ def precision_at_top(y_true, scores, frac=0.10):
     k = int(np.ceil(frac * len(scores)))
     return np.asarray(y_true)[np.argsort(np.asarray(scores))[::-1][:k]].mean()
 top10 = make_scorer(precision_at_top, response_method="predict_proba")
+
+import sklearn
+def l1_logistic(C=1.0):
+    """Lasso (L1) logistic regression. scikit-learn 1.8 replaced penalty='l1' with l1_ratio=1."""
+    new_api = tuple(int(x) for x in sklearn.__version__.split(".")[:2]) >= (1, 8)
+    return LogisticRegression(C=C, solver="liblinear", **({"l1_ratio": 1.0} if new_api else {"penalty": "l1"}))
 '''), code('''
 X_tr, X_te, y_tr, y_te = train_test_split(X, y, test_size=0.25, random_state=0, stratify=y)     # 2) test set locked away
 cv = StratifiedKFold(5, shuffle=True, random_state=0)
@@ -113,7 +119,7 @@ print(f"3) precision in top 10% | random: {rand:.3f} | rule 'rank by PPERSAUT': 
 # 4) model comparison on the same folds
 models = {
     "Logistic (L2)": make_pipeline(StandardScaler(), LogisticRegression(C=0.05, max_iter=2000)),
-    "Logistic (L1)": make_pipeline(StandardScaler(), LogisticRegression(C=0.05, penalty="l1", solver="liblinear")),
+    "Logistic (L1)": make_pipeline(StandardScaler(), l1_logistic(C=0.05)),
     "Random forest": RandomForestClassifier(n_estimators=400, min_samples_leaf=20, random_state=0, n_jobs=-1),
     "Gradient boosting": HistGradientBoostingClassifier(learning_rate=0.05, max_depth=3, random_state=0),
 }
@@ -124,7 +130,7 @@ for name, m in models.items():
 pd.DataFrame(rows, columns=["model", "precision@10%", "± std", "AUC"]).set_index("model").round(3)
 '''), md("All models roughly double or triple the random hit rate, and the fold-to-fold standard deviation is large: with only ~260 buyers in training, differences of 0.01–0.02 are noise. A simple regularised logistic regression is competitive."), code('''
 # 5) tune the logistic model's penalty
-gs = GridSearchCV(make_pipeline(StandardScaler(), LogisticRegression(penalty="l1", solver="liblinear")),
+gs = GridSearchCV(make_pipeline(StandardScaler(), l1_logistic()),
                   {"logisticregression__C": [0.005, 0.01, 0.02, 0.05, 0.1, 0.5]}, cv=cv, scoring=top10).fit(X_tr, y_tr)
 print("5) best C:", gs.best_params_, "| CV precision@10%:", round(gs.best_score_, 3))
 final = gs.best_estimator_

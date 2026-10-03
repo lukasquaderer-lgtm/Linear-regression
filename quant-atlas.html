@@ -3359,12 +3359,14 @@ print(m4.f_test("smb = 0, hml = 0"))    # nested (joint) F-test
 print(m4.aic, m4.bic)` },
   misspec: { nb: '03_misspecification_and_extensions.ipynb', preset: { ds: 'factor_returns', mode: 'reg', o: { y: 'fund_excess', xs: ['mkt_excess', 'smb', 'hml', 'mom'] } }, task: 'Run Breusch–Pagan on the fund regression (it fires), then switch on White robust SEs and compare the t-stats.', code: `from statsmodels.stats.diagnostic import het_breuschpagan
 from statsmodels.stats.outliers_influence import variance_inflation_factor
+df = pd.read_csv("${RAW}factor_returns.csv")
 X = sm.add_constant(df[["mkt_excess", "smb", "hml", "mom"]])
 m = sm.OLS(df["fund_excess"], X).fit()
-print(het_breuschpagan(m.resid, X))                                  # LM, p, F, p
-robust = sm.OLS(df["fund_excess"], X).fit(cov_type="HC1")             # White SEs
-nw = sm.OLS(df["fund_excess"], X).fit(cov_type="HAC", cov_kwds={"maxlags": 4})  # Newey-West
-print([variance_inflation_factor(X.values, i) for i in range(1, X.shape[1])])` },
+print("Breusch-Pagan p-value:", het_breuschpagan(m.resid, X)[1])
+robust = sm.OLS(df["fund_excess"], X).fit(cov_type="HC1")                        # White SEs
+nw = sm.OLS(df["fund_excess"], X).fit(cov_type="HAC", cov_kwds={"maxlags": 4})  # Newey-West SEs
+print(pd.DataFrame({"OLS SE": m.bse, "White SE": robust.bse, "Newey-West SE": nw.bse}))
+print("VIF:", [round(variance_inflation_factor(X.values, i), 2) for i in range(1, X.shape[1])])` },
   extend: { nb: '03_misspecification_and_extensions.ipynb', preset: { ds: 'credit_default', mode: 'logit', o: {} }, task: 'Fit a logistic regression for loan default with purpose dummies; read the odds ratios and the likelihood ratio test.', code: `cr = pd.read_csv("${RAW}credit_default.csv")
 X = pd.get_dummies(cr.drop(columns="default"), columns=["purpose"], drop_first=True, dtype=float)
 logit = sm.Logit(cr["default"], sm.add_constant(X)).fit()
@@ -3392,35 +3394,48 @@ print(adfuller(fx, maxlag=0, autolag=None)[:2])                 # levels: unit r
 print(adfuller(fx.diff().dropna(), maxlag=0, autolag=None)[:2]) # differences: stationary` },
   seasonal: { nb: '04_time_series.ipynb', preset: { ds: 'macro_quarterly', mode: 'ts', o: { col: 'retail_sales', tr: 'logdiff', p: 1, s: 0 } }, task: 'Model retail-sales growth, find the spike at lag 4, add the seasonal lag; then test index returns for ARCH and oil/energy for cointegration.', code: `from statsmodels.tsa.stattools import coint
 from statsmodels.stats.diagnostic import het_arch
+ts = pd.read_csv("${RAW}macro_quarterly.csv")
 g = np.log(ts["retail_sales"]).diff()
 d = pd.DataFrame({"g": g, "l1": g.shift(1), "l4": g.shift(4)}).dropna()
-print(sm.OLS(d["g"], sm.add_constant(d[["l1", "l4"]])).fit().params)
+print(sm.OLS(d["g"], sm.add_constant(d[["l1", "l4"]])).fit().params)   # AR(1) + seasonal lag 4
 print("ARCH p:", het_arch(ts["index_return"] - ts["index_return"].mean(), nlags=1)[1])
 print("coint p:", coint(ts["energy_stock"], ts["oil_price"])[1])` },
   mlbasics: { nb: '05_supervised_ml.ipynb', preset: { ds: 'credit_default', mode: 'logit', o: { split: true } }, task: 'Split the loans into train and test sets, then watch a decision tree overfit as depth grows.', code: `from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.tree import DecisionTreeClassifier
-X_tr, X_te, y_tr, y_te = train_test_split(X, y, test_size=0.25, random_state=0)
+cr = pd.read_csv("${RAW}credit_default.csv")
+X = pd.get_dummies(cr.drop(columns="default"), columns=["purpose"], drop_first=True, dtype=float)
+y = cr["default"]
+X_tr, X_te, y_tr, y_te = train_test_split(X, y, test_size=0.25, random_state=0, stratify=y)
 for depth in [2, 4, 8, 16]:
-    t = DecisionTreeClassifier(max_depth=depth).fit(X_tr, y_tr)
-    print(depth, t.score(X_tr, y_tr), t.score(X_te, y_te))
-print(cross_val_score(DecisionTreeClassifier(max_depth=4), X, y, cv=5).mean())` },
-  supervised: { nb: '05_supervised_ml.ipynb', preset: { ds: 'credit_default', mode: 'logit', o: {} }, task: 'Compare LASSO feature selection, KNN with different k and an SVM on the loan data.', code: `from sklearn.pipeline import make_pipeline
+    t = DecisionTreeClassifier(max_depth=depth, random_state=0).fit(X_tr, y_tr)
+    print(depth, "train", round(t.score(X_tr, y_tr), 3), "test", round(t.score(X_te, y_te), 3))
+print("5-fold CV accuracy:", cross_val_score(DecisionTreeClassifier(max_depth=4, random_state=0), X, y, cv=5).mean())` },
+  supervised: { nb: '05_supervised_ml.ipynb', preset: { ds: 'credit_default', mode: 'logit', o: {} }, task: 'Compare LASSO feature selection, KNN with different k and an SVM on the loan data.', code: `from sklearn.model_selection import train_test_split
+from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LassoCV
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
-lasso = make_pipeline(StandardScaler(), LassoCV(cv=5)).fit(features, target)
+fr = pd.read_csv("${RAW}factor_returns.csv")
+lasso = make_pipeline(StandardScaler(), LassoCV(cv=5)).fit(fr[["mkt_excess", "smb", "hml", "mom"]], fr["fund_excess"])
+print("LASSO coefficients:", lasso[-1].coef_.round(3))      # weak factors shrink to 0
+cr = pd.read_csv("${RAW}credit_default.csv")
+X = pd.get_dummies(cr.drop(columns="default"), columns=["purpose"], drop_first=True, dtype=float)
+X_tr, X_te, y_tr, y_te = train_test_split(X, cr["default"], test_size=0.25, random_state=0, stratify=cr["default"])
 knn = make_pipeline(StandardScaler(), KNeighborsClassifier(n_neighbors=15)).fit(X_tr, y_tr)
 svm = make_pipeline(StandardScaler(), SVC()).fit(X_tr, y_tr)
-print(lasso[-1].coef_, knn.score(X_te, y_te), svm.score(X_te, y_te))` },
-  trees: { nb: '05_supervised_ml.ipynb', preset: null, task: 'Grow a CART tree, print its rules, then compare a random forest and gradient boosting by test AUC.', code: `from sklearn.tree import DecisionTreeClassifier, export_text
+print("test accuracy  KNN:", knn.score(X_te, y_te), "| SVM:", svm.score(X_te, y_te))` },
+  trees: { nb: '05_supervised_ml.ipynb', preset: null, task: 'Grow a CART tree, print its rules, then compare a random forest and gradient boosting by test AUC.', code: `from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier, export_text
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.metrics import roc_auc_score
-tree = DecisionTreeClassifier(max_depth=3).fit(X_tr, y_tr)
-print(export_text(tree, feature_names=list(X.columns)))
-rf = RandomForestClassifier(n_estimators=300, min_samples_leaf=5).fit(X_tr, y_tr)
-gb = GradientBoostingClassifier().fit(X_tr, y_tr)
-print(roc_auc_score(y_te, rf.predict_proba(X_te)[:, 1]), roc_auc_score(y_te, gb.predict_proba(X_te)[:, 1]))` },
+cr = pd.read_csv("${RAW}credit_default.csv")
+X = pd.get_dummies(cr.drop(columns="default"), columns=["purpose"], drop_first=True, dtype=float)
+X_tr, X_te, y_tr, y_te = train_test_split(X, cr["default"], test_size=0.25, random_state=0, stratify=cr["default"])
+print(export_text(DecisionTreeClassifier(max_depth=3, random_state=0).fit(X_tr, y_tr), feature_names=list(X.columns)))
+for m in [RandomForestClassifier(n_estimators=300, min_samples_leaf=5, random_state=0), GradientBoostingClassifier(random_state=0)]:
+    m.fit(X_tr, y_tr)
+    print(type(m).__name__, "test AUC:", round(roc_auc_score(y_te, m.predict_proba(X_te)[:, 1]), 3))` },
   pca: { nb: '06_unsupervised_ml.ipynb', preset: { ds: 'treasury_yields', mode: 'pca', o: {} }, task: 'Run PCA on monthly yield changes and identify the level, slope and curvature components.', code: `from sklearn.decomposition import PCA
 yc = pd.read_csv("${RAW}treasury_yields.csv").set_index("month")
 pca = PCA().fit(yc.diff().dropna())
@@ -3435,16 +3450,22 @@ km = KMeans(n_clusters=5, n_init=10, random_state=0).fit(Z)
 print(pd.crosstab(km.labels_, co["true_sector"]))` },
   neural: { nb: '15_pytorch_deep_learning.ipynb', preset: null, task: 'Build a neural network in PyTorch, train it with a proper loop and early stopping, then try an LSTM on real NYSE trading volume.', code: `import torch
 from torch import nn
-model = nn.Sequential(nn.Linear(9, 32), nn.ReLU(), nn.Dropout(0.2),
-                      nn.Linear(32, 16), nn.ReLU(), nn.Linear(16, 1))
-opt = torch.optim.Adam(model.parameters(), lr=1e-3, weight_decay=1e-4)
+from sklearn.preprocessing import StandardScaler
+cr = pd.read_csv("${RAW}credit_default.csv")
+X = pd.get_dummies(cr.drop(columns="default"), columns=["purpose"], drop_first=True, dtype=float)
+X_t = torch.tensor(StandardScaler().fit_transform(X), dtype=torch.float32)
+y_t = torch.tensor(cr["default"].to_numpy(), dtype=torch.float32).unsqueeze(1)
+model = nn.Sequential(nn.Linear(X_t.shape[1], 32), nn.ReLU(), nn.Linear(32, 1))
+opt = torch.optim.Adam(model.parameters(), lr=1e-2)
 loss_fn = nn.BCEWithLogitsLoss()
 for epoch in range(200):
     opt.zero_grad()
-    loss = loss_fn(model(X_train_t), y_train_t)   # forward pass + loss
-    loss.backward()                                # autograd computes every gradient
-    opt.step()                                     # update the weights` },
-  bigdata: { nb: '07_neural_nets_and_text.ipynb', preset: { ds: 'credit_default', mode: 'logit', o: { split: true } }, task: 'Build a TF-IDF sentiment classifier on headlines, and compute precision, recall and F1 from a confusion matrix.', code: `from sklearn.feature_extraction.text import TfidfVectorizer
+    loss = loss_fn(model(X_t), y_t)   # forward pass + loss
+    loss.backward()                   # autograd computes every gradient
+    opt.step()                        # update the weights
+print("final training loss:", round(loss.item(), 4))   # notebook 15 adds validation and early stopping` },
+  bigdata: { nb: '07_neural_nets_and_text.ipynb', preset: { ds: 'credit_default', mode: 'logit', o: { split: true } }, task: 'Build a TF-IDF sentiment classifier on headlines, and compute precision, recall and F1 from a confusion matrix.', code: `from sklearn.pipeline import make_pipeline
+from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report
 hl = pd.read_csv("${RAW}headlines.csv")

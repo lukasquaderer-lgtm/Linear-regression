@@ -105,8 +105,8 @@ main { min-width: 0; }
 .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
 .btn.small { padding: 5px 11px; font-size: 0.85rem; }
 .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin: 40px 0 14px; }
-.map { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
-@media (max-width: 1000px) { .map { grid-template-columns: 1fr; } }
+.map { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 28px; }
+@media (max-width: 760px) { .map { grid-template-columns: 1fr; } }
 .map-col h3 { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 8px; border-bottom: 2px solid var(--ink); }
 .map-col h3 small { font-family: var(--font-mono); font-size: 0.7rem; color: var(--muted); font-weight: 400; }
 .map-item { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--line); text-decoration: none; color: var(--ink); }
@@ -1856,7 +1856,8 @@ function chip(kind, txt) { return `<span class="chip ${kind}">${txt}</span>`; }
 const GROUPS = [
   { id: 'reg', name: 'Regression', blurb: 'Fitting, testing and fixing linear models' },
   { id: 'ts', name: 'Time series', blurb: 'Trends, AR models, unit roots, ARCH' },
-  { id: 'ml', name: 'Machine learning', blurb: 'Supervised, unsupervised, deep learning, big data' }
+  { id: 'ml', name: 'Machine learning', blurb: 'Supervised, unsupervised, deep learning, big data' },
+  { id: 'pr', name: 'Portfolio and risk', blurb: 'Optimisation, risk parity, VaR, ES, attribution' }
 ];
 
 const TOPICS = [
@@ -2267,6 +2268,69 @@ const TOPICS = [
   traps: [
     'High accuracy on imbalanced data can hide a useless model.',
     'An AUC of 0.5 is a coin flip, not “half good”.'
+  ] },
+/* ===== PORTFOLIO AND RISK ===== */
+{ id: 'portfolio', g: 'pr', title: 'Portfolio construction', reading: 'CFA L3 · Asset allocation (beyond L2 quant)',
+  lede: 'Turn estimates of return and risk into weights, and know why the optimiser’s favourite portfolio usually disappoints.',
+  ideas: [
+    '<b>Portfolio risk depends on covariances.</b> Volatility is √(wᵀΣw), always at most the weighted average of asset volatilities. The gap is the diversification benefit.',
+    '<b>Mean-variance optimisation</b> (Markowitz) finds the lowest-risk portfolio for each target return: the <b>efficient frontier</b>. The tangency (maximum-Sharpe) portfolio combined with cash gives the capital market line.',
+    '<b>The global minimum-variance portfolio</b> needs no expected returns, only the covariance matrix: w = Σ⁻¹1 / 1ᵀΣ⁻¹1 (without constraints).',
+    '<b>Estimation error</b> is the central practical problem. A 15-year average equity return has a standard error of about 4% a year, as large as the premium itself, so max-Sharpe weights jump between corner solutions. Out of sample they often fail to beat 1/N after costs.',
+    '<b>Remedies:</b> shrink the covariance matrix (Ledoit–Wolf), add constraints, use methods that need no expected returns (minimum variance, risk parity), or anchor returns to equilibrium with <b>Black–Litterman</b>.',
+    '<b>Risk contributions</b> RC_i = w_i(Σw)_i / σ_p add up to σ_p. Equal weights are not equal risk: in a 1/N multi-asset portfolio equities often carry 60–75% of the risk. <b>Risk parity</b> equalises the contributions.',
+    '<b>Black–Litterman</b> starts from equilibrium returns implied by market weights, π = δΣw_mkt, and tilts only toward the views you hold, in proportion to your confidence.'
+  ],
+  formulas: [
+    ['Portfolio return and risk', 'E[<i>R<sub>p</sub></i>] = <i>w</i>ᵀ<i>μ</i>,  <i>σ<sub>p</sub></i> = √(<i>w</i>ᵀΣ<i>w</i>)'],
+    ['Two-asset variance', '<i>σ<sub>p</sub></i>² = <i>w</i><sub>1</sub>²<i>σ</i><sub>1</sub>² + <i>w</i><sub>2</sub>²<i>σ</i><sub>2</sub>² + 2<i>w</i><sub>1</sub><i>w</i><sub>2</sub><i>ρσ</i><sub>1</sub><i>σ</i><sub>2</sub>'],
+    ['Global minimum variance', '<i>w</i> = Σ⁻¹<b>1</b> / (<b>1</b>ᵀΣ⁻¹<b>1</b>)<small>Two assets: w₁ = (σ₂² − ρσ₁σ₂) / (σ₁² + σ₂² − 2ρσ₁σ₂)</small>'],
+    ['Sharpe ratio', 'SR = (E[<i>R<sub>p</sub></i>] − <i>R<sub>f</sub></i>) / <i>σ<sub>p</sub></i>'],
+    ['Risk contribution', 'RC<sub><i>i</i></sub> = <i>w<sub>i</sub></i> (Σ<i>w</i>)<sub><i>i</i></sub> / <i>σ<sub>p</sub></i>,  Σ RC<sub><i>i</i></sub> = <i>σ<sub>p</sub></i>'],
+    ['Ledoit–Wolf shrinkage', 'Σ̂ = <i>δ</i>·<i>F</i> + (1 − <i>δ</i>)·<i>S</i>'],
+    ['Black–Litterman prior', '<i>π</i> = <i>δ</i> Σ <i>w</i><sub>mkt</sub>']
+  ],
+  exam: [
+    'Compute the volatility of a two-asset portfolio and the minimum-variance weight.',
+    'Explain why unconstrained mean-variance weights are unstable and how constraints, shrinkage or Black–Litterman help.',
+    'Compute risk contributions and explain why equal weights are not equal risk.',
+    'Describe the starting point and the role of views and confidence in Black–Litterman.'
+  ],
+  traps: [
+    'A better in-sample Sharpe ratio is not evidence of a better portfolio; compare out of sample, after costs.',
+    'Minimum variance and risk parity lower risk, not necessarily risk-adjusted return: they lean on bonds.',
+    'Risk contributions use covariances; a small weight in a volatile, correlated asset can dominate risk.'
+  ] },
+
+{ id: 'risk', g: 'pr', title: 'Risk measurement and attribution', reading: 'CFA L2/L3 · Risk management and performance evaluation',
+  lede: 'How much can we lose, how sure are we, and what actually drove the result?',
+  ideas: [
+    '<b>Value at Risk (VaR):</b> the loss exceeded with a given probability over a horizon (e.g. 1-day 99%). Three methods: <b>historical</b> (empirical quantile), <b>parametric</b> (normal or Student-t), <b>Monte Carlo</b> (simulate a model).',
+    '<b>Expected Shortfall (ES):</b> the average loss beyond VaR. It looks into the tail, is sub-additive (rewards diversification), and replaced VaR for bank market-risk capital under Basel III.',
+    '<b>Fat tails:</b> real returns have excess kurtosis, so normal VaR understates extreme losses. Scaling 1-day VaR by √T assumes independent days, which volatility clustering breaks.',
+    '<b>Backtesting:</b> count VaR exceptions. Kupiec’s test checks the count; independence tests check for clustering. Historical VaR reacts slowly; EWMA adapts fast but with normal tails is breached too often.',
+    '<b>Component VaR</b> splits total parametric VaR across positions; components add up to the total. <b>Stress tests</b> apply historical or hypothetical scenarios that VaR cannot see.',
+    '<b>Performance attribution:</b> Brinson splits active return into allocation, selection and interaction. Returns-based analysis gives tracking error, information ratio and alpha.'
+  ],
+  formulas: [
+    ['Parametric VaR', 'VaR = −(<i>μ</i> + <i>z<sub>α</sub></i> <i>σ</i>) × value,  <i>z</i><sub>0.01</sub> = −2.33, <i>z</i><sub>0.05</sub> = −1.645'],
+    ['Historical VaR and ES', 'VaR = −<i>q</i><sub>1%</sub>(<i>r</i>),  ES = −E[<i>r</i> | <i>r</i> ≤ <i>q</i><sub>1%</sub>]'],
+    ['Square-root-of-time', 'VaR<sub><i>T</i></sub> ≈ VaR<sub>1</sub> × √<i>T</i><small>Assumes independent, identically distributed returns</small>'],
+    ['Kupiec test', 'LR = −2 ln[(1−<i>p</i>)<sup><i>n−x</i></sup><i>p<sup>x</sup></i>] + 2 ln[(1−<i>p̂</i>)<sup><i>n−x</i></sup><i>p̂<sup>x</sup></i>] ~ χ²(1),  <i>p̂</i> = <i>x</i>/<i>n</i>'],
+    ['Component VaR', 'CVaR<sub><i>i</i></sub> = <i>w<sub>i</sub></i> · <i>z</i> (Σ<i>w</i>)<sub><i>i</i></sub> / <i>σ<sub>p</sub></i>'],
+    ['Brinson–Fachler', 'Allocation = (<i>w<sub>p</sub></i> − <i>w<sub>b</sub></i>)(<i>r<sub>b</sub></i> − <i>R<sub>b</sub></i>);  Selection = <i>w<sub>b</sub></i>(<i>r<sub>p</sub></i> − <i>r<sub>b</sub></i>);  Interaction = (<i>w<sub>p</sub></i> − <i>w<sub>b</sub></i>)(<i>r<sub>p</sub></i> − <i>r<sub>b</sub></i>)'],
+    ['Information ratio', 'IR = active return / tracking error']
+  ],
+  exam: [
+    'Compute parametric VaR in currency for a given confidence level and scale it to a longer horizon.',
+    'Explain why ES is preferred to VaR and why normal VaR understates tail risk.',
+    'Judge a VaR model from its number of exceptions.',
+    'Split active return into allocation, selection and interaction effects.'
+  ],
+  traps: [
+    'VaR is not the worst case; it says nothing about how large losses beyond it can be.',
+    'More exceptions than expected means the model underestimates risk, even if the average day looks fine.',
+    'The √T rule is a convenience, not a law; it fails when volatility clusters.'
   ] }
 ];
 const TOPIC_BY_ID = Object.fromEntries(TOPICS.map(t => [t.id, t]));
@@ -2688,7 +2752,13 @@ const QUIZ = [
   ['neural', 'An algorithm learns to execute trades by trying actions and receiving profit or loss as feedback. This is:', ['Supervised learning', 'Unsupervised learning', 'Reinforcement learning', 'Penalized regression'], 2, 'An agent, actions, an environment and a reward signal define reinforcement learning.'],
   ['bigdata', 'TP = 40, FP = 10, FN = 20. Precision and recall are:', ['0.80 and 0.67', '0.67 and 0.80', '0.80 and 0.80', '0.40 and 0.20'], 0, 'Precision = 40 / 50 = 0.80. Recall = 40 / 60 = 0.67. F1 = 0.73.'],
   ['bigdata', 'Converting “increasing”, “increased” and “increases” to “increas” is an example of:', ['Lemmatisation', 'Stemming', 'Tokenisation', 'Named entity recognition'], 1, 'Stemming chops suffixes crudely. Lemmatisation would return the dictionary form “increase”.'],
-  ['bigdata', 'A bank wants to catch as many fraudulent transactions as possible, even at the cost of extra false alarms. Which metric matters most?', ['Precision', 'Recall', 'Accuracy', 'Specificity'], 1, 'Recall measures the share of actual positives you catch; false negatives are the costly error here.']
+  ['bigdata', 'A bank wants to catch as many fraudulent transactions as possible, even at the cost of extra false alarms. Which metric matters most?', ['Precision', 'Recall', 'Accuracy', 'Specificity'], 1, 'Recall measures the share of actual positives you catch; false negatives are the costly error here.'],
+  ['portfolio', 'Asset A has volatility 20%, asset B 10%, correlation 0.2. The volatility of a 50/50 portfolio is closest to:', ['15.0%', '12.0%', '11.2%', '10.0%'], 1, 'σ² = 0.25·0.04 + 0.25·0.01 + 2·0.25·0.2·0.2·0.1 = 0.0145, so σ ≈ 12.0%. 15% ignores diversification.'],
+  ['portfolio', 'Why do unconstrained maximum-Sharpe portfolios often disappoint out of sample?', ['Covariances are impossible to estimate', 'Expected returns are estimated with large errors, which the optimiser amplifies', 'They always hold too much cash', 'They ignore the risk-free rate'], 1, 'The optimiser treats noisy expected returns as truth and bets heavily on estimation error.'],
+  ['portfolio', 'The global minimum-variance portfolio requires estimates of:', ['Expected returns only', 'The covariance matrix only', 'Both expected returns and covariances', 'Market-cap weights'], 1, 'w = Σ⁻¹1 / 1ᵀΣ⁻¹1 uses only the covariance matrix, one reason it is popular in practice.'],
+  ['risk', 'A CHF 50 million portfolio has daily volatility 0.9%. Ignoring the mean, its 1-day 99% parametric VaR (z = 2.33) is closest to:', ['CHF 0.74 million', 'CHF 1.05 million', 'CHF 3.32 million', 'CHF 0.45 million'], 1, '2.33 × 0.9% × 50m = CHF 1.05 million. 0.74m uses the 95% z of 1.645; 3.32m is the 10-day figure.'],
+  ['risk', 'Which statement about Expected Shortfall is correct?', ['It is always smaller than VaR at the same confidence level', 'It averages the losses beyond VaR, so it reflects tail severity', 'It cannot be computed from historical data', 'It assumes returns are normal'], 1, 'ES is the mean loss beyond VaR, so ES ≥ VaR and it captures how bad the tail is.'],
+  ['risk', 'A portfolio returned 9.65% vs a benchmark of 7.95%. Allocation, selection and interaction effects must add up to:', ['9.65%', '7.95%', '1.70%', '0%'], 2, 'Brinson effects decompose the active return exactly: 9.65% − 7.95% = 1.70%.']
 ];
 
 /* ---------- atlas ---------- */
@@ -2723,7 +2793,14 @@ const ATLAS = [
   ['Cointegration (Engle–Granger)', 'Time series · multiple', 'Long-run equilibrium between unit-root series', 'Pairs trading, spot–futures', true, 'seasonal'],
   ['VAR', 'Time series · multiple', 'Each variable regressed on lags of all variables', 'Macro shocks, impulse responses', false],
   ['Kalman filter', 'Time series · state space', 'Recursively updates hidden-state estimates', 'Time-varying beta and hedge ratios', false],
-  ['Cross-validation / grid search', 'Model selection', 'Rotating validation folds; search hyperparameters', 'Tuning any model above', true, 'mlbasics']
+  ['Cross-validation / grid search', 'Model selection', 'Rotating validation folds; search hyperparameters', 'Tuning any model above', true, 'mlbasics'],
+  ['Mean-variance optimisation', 'Portfolio construction', 'Lowest risk for each target return; the efficient frontier', 'Strategic asset allocation', false, 'portfolio'],
+  ['Minimum variance / risk parity', 'Portfolio construction', 'Weights from the covariance matrix only', 'Multi-asset and pension portfolios', false, 'portfolio'],
+  ['Black–Litterman', 'Portfolio construction', 'Equilibrium returns tilted by investor views', 'Tactical views in a strategic portfolio', false, 'portfolio'],
+  ['Ledoit–Wolf shrinkage', 'Estimation', 'Blend the sample covariance with a structured target', 'Stable risk models', false, 'portfolio'],
+  ['VaR and Expected Shortfall', 'Risk measurement', 'Loss quantile and average tail loss', 'Limits, regulatory capital', false, 'risk'],
+  ['Monte Carlo simulation', 'Risk measurement', 'Simulate many scenarios from a fitted model', 'Long-horizon risk, ALM, options', false, 'risk'],
+  ['Brinson attribution', 'Performance', 'Allocation, selection and interaction effects', 'Explaining fund performance', false, 'risk']
 ];
 
 /* ---------- chooser ---------- */
@@ -2778,7 +2855,10 @@ const NOTEBOOKS = [
   ['13_project_market_direction.ipynb', 'Project: can you predict the market’s direction?', 'Real weekly S&P 500 data 1990–2010. Test a trading claim statistically and economically. Open-ended, with a rubric.', ['extend', 'mlbasics', 'supervised'], 'solutions/13_project_market_direction_solution.ipynb'],
   ['14_explainability_shap.ipynb', 'Explaining models: SHAP', 'Permutation importance, SHAP beeswarm and waterfall plots, partial dependence, reason codes for a declined loan, and using SHAP to catch a leak.', ['trees', 'supervised', 'extend']],
   ['15_pytorch_deep_learning.ipynb', 'Deep learning with PyTorch', 'Autograd, the training loop, a neural network with early stopping for loan default, and an LSTM forecasting real NYSE volume.', ['neural', 'mlbasics', 'ar']],
-  ['16_llms_for_finance.ipynb', 'Language models for finance', 'Tokenizers from scratch, sentence embeddings and semantic search, FinBERT, and Claude for sentiment and earnings-call extraction with guaranteed JSON.', ['bigdata', 'neural']]
+  ['16_llms_for_finance.ipynb', 'Language models for finance', 'Tokenizers from scratch, sentence embeddings and semantic search, FinBERT, and Claude for sentiment and earnings-call extraction with guaranteed JSON.', ['bigdata', 'neural']],
+  ['17_portfolio_construction.ipynb', 'Portfolio construction', 'Efficient frontier, estimation error, Ledoit–Wolf shrinkage, risk contributions, risk parity, Black–Litterman and a walk-forward test against 1/N.', ['portfolio']],
+  ['18_risk_and_attribution.ipynb', 'Risk measurement and attribution', 'VaR and ES (historical, parametric, Monte Carlo), Kupiec backtest, component VaR, stress tests, drawdowns, factor risk, Brinson attribution.', ['risk']],
+  ['19_project_pension_portfolio.ipynb', 'Project: a pension fund portfolio', 'Review a Swiss pension fund’s allocation under BVV 2-style rules, propose an alternative, backtest it and write the committee memo. Rubric and model solution.', ['portfolio', 'risk'], 'solutions/19_project_pension_portfolio_solution.ipynb']
 ];
 const DS_META = {
   factor_returns: ['Factor returns', 'Monthly · 120 rows', 'Market, size (SMB), value (HML) and momentum factors, plus one stock and one fund. Use for simple and multiple regression.'],
@@ -3471,7 +3551,25 @@ from sklearn.metrics import classification_report
 hl = pd.read_csv("${RAW}headlines.csv")
 clf = make_pipeline(TfidfVectorizer(ngram_range=(1, 2)), LogisticRegression(max_iter=1000))
 clf.fit(hl["headline"][:200], hl["sentiment"][:200])
-print(classification_report(hl["sentiment"][200:], clf.predict(hl["headline"][200:])))` }
+print(classification_report(hl["sentiment"][200:], clf.predict(hl["headline"][200:])))` },
+  portfolio: { nb: '17_portfolio_construction.ipynb', preset: null, task: 'Estimate inputs, trace the efficient frontier, see estimation error move the weights, then test 1/N, minimum variance, max Sharpe and risk parity out of sample.', code: `from scipy.optimize import minimize
+from sklearn.covariance import LedoitWolf
+r = pd.read_csv("${RAW}asset_returns_daily.csv", index_col=0, parse_dates=True)
+S = LedoitWolf().fit(r.to_numpy()).covariance_ * 252          # shrunk annual covariance
+n = r.shape[1]
+cons = [{"type": "eq", "fun": lambda w: w.sum() - 1}]
+w_mv = minimize(lambda w: w @ S @ w, np.full(n, 1 / n), method="SLSQP", bounds=[(0, 1)] * n, constraints=cons).x
+rc = w_mv * (S @ w_mv) / np.sqrt(w_mv @ S @ w_mv)                 # risk contributions
+print(pd.DataFrame({"min-variance weight": w_mv, "risk share": rc / rc.sum()}, index=r.columns).round(3))` },
+  risk: { nb: '18_risk_and_attribution.ipynb', preset: null, task: 'Compute VaR and ES three ways, backtest the VaR model, decompose risk, run stress tests and attribute performance.', code: `from scipy import stats
+r = pd.read_csv("${RAW}asset_returns_daily.csv", index_col=0, parse_dates=True)
+w = pd.Series(1 / r.shape[1], index=r.columns)
+port = r @ w
+q = np.quantile(port, 0.01)
+print(f"historical VaR99 {-q:.4f} | ES99 {-port[port <= q].mean():.4f} | normal VaR99 {-(port.mean() + stats.norm.ppf(0.01) * port.std()):.4f}")
+var_roll = -port.rolling(250).quantile(0.01).shift(1)              # VaR known the day before
+exc = (port < -var_roll).sum(); days = var_roll.notna().sum()
+print(f"VaR exceptions: {exc} of {days} days ({exc / days:.2%}, expected 1%)")` }
 };
 function diyView(t) {
   const d = TOPIC_DIY[t.id]; if (!d) return '';
@@ -3615,6 +3713,26 @@ const VIGNETTES = [
     ['The model’s F1 score is closest to:', ['0.75', '0.78', '0.90'], 1, 'F1 = 2 × 0.75 × 0.818 / (0.75 + 0.818) = 0.78. 0.90 is accuracy, which is flattered by the many true negatives.'],
     ['An executive age of −5 years is an example of:', ['incompleteness error', 'invalidity error', 'inconsistency error'], 1, 'Invalidity: a value outside a meaningful range. Missing revenues are incompleteness; duplicate transcripts are duplication.'],
     ['Mapping the three words to “increase” is called:', ['stemming', 'lemmatisation', 'tokenisation'], 1, 'Lemmatisation returns the dictionary base form (the lemma). Stemming crudely chops suffixes (e.g. “increas”).']
+  ] },
+{ id: 'v11', title: 'VaR for a Swiss equity portfolio', topics: ['risk'],
+  text: `<p>Marc Huber, a risk analyst, monitors a CHF 50 million Swiss equity portfolio. Its daily returns have a mean close to zero and a standard deviation of 0.9%.</p>
+  <p>He reports a 1-day 99% parametric VaR (z = 2.33, mean ignored) and scales it to 10 days with the square-root-of-time rule. Over the last 250 trading days the portfolio lost more than its 1-day 99% VaR on <b>8 days</b>. The Kupiec likelihood-ratio statistic for this record is 7.73; the 5% critical value of χ²(1) is 3.84.</p>
+  <p>His manager asks whether Expected Shortfall should replace VaR in the monthly risk report.</p>`,
+  qs: [
+    ['The 1-day 99% VaR is closest to:', ['CHF 0.74 million', 'CHF 1.05 million', 'CHF 3.32 million'], 1, 'VaR = 2.33 × 0.9% × 50m = CHF 1.05 million. 0.74m uses the 95% z-value (1.645).'],
+    ['The 10-day 99% VaR and its key assumption are:', ['CHF 3.32 million; daily returns are independent and identically distributed', 'CHF 10.5 million; daily returns are independent', 'CHF 3.32 million; returns are positively autocorrelated'], 0, '1.05m × √10 = CHF 3.32 million. The √T rule assumes i.i.d. returns; volatility clustering violates it.'],
+    ['Based on the backtest, Huber should conclude that the VaR model:', ['is accurate, because 8 is close to 2.5', 'underestimates risk; the Kupiec test rejects it', 'overestimates risk, because exceptions are rare'], 1, 'Expected exceptions = 1% × 250 = 2.5. LR = 7.73 > 3.84, so reject: too many exceptions, the model understates risk.'],
+    ['Which is the best argument for Expected Shortfall?', ['It is always smaller than VaR, so limits are easier to meet', 'It measures the average loss beyond VaR, capturing tail severity', 'It requires no assumptions about the return distribution'], 1, 'ES averages the losses in the tail, so it reflects how bad bad days are; VaR ignores everything beyond its cut-off.']
+  ] },
+{ id: 'v12', title: 'Two-asset allocation and risk budgets', topics: ['portfolio'],
+  text: `<p>A family office holds two funds. Fund A (equities) has an expected volatility of 20%, Fund B (bonds) 10%, and their correlation is 0.2. The current allocation is 50% in each.</p>
+  <p class="cap">Exhibit 1 · Inputs</p>${VT(['Fund', 'Volatility', 'Weight'], [['A (equities)', '20%', '50%'], ['B (bonds)', '10%', '50%']])}
+  <p>The client says: “We are 50/50, so half our risk comes from equities.” The adviser also considers the minimum-variance mix, and a Black–Litterman approach for adding a tactical view.</p>`,
+  qs: [
+    ['The volatility of the 50/50 portfolio is closest to:', ['11.2%', '12.0%', '15.0%'], 1, 'σ² = 0.25·0.04 + 0.25·0.01 + 2·0.25·0.2·0.20·0.10 = 0.0145 → σ = 12.0%. 15% is the weighted average, ignoring diversification.'],
+    ['The share of portfolio risk contributed by Fund A is closest to:', ['50%', '67%', '76%'], 2, 'RC_A = w_A(Σw)_A/σ_p = 0.5 × (0.04·0.5 + 0.004·0.5) / 0.1204 = 0.0914, which is 76% of 0.1204. The client’s 50% confuses weights with risk.'],
+    ['The minimum-variance weight in Fund A is closest to:', ['14%', '20%', '33%'], 0, 'w_A = (σ_B² − ρσ_Aσ_B) / (σ_A² + σ_B² − 2ρσ_Aσ_B) = (0.01 − 0.004) / (0.04 + 0.01 − 0.008) = 0.143.'],
+    ['In Black–Litterman, the expected returns before any views are:', ['the historical average returns of each fund', 'the equilibrium returns implied by market weights and the covariance matrix', 'equal for all assets'], 1, 'π = δΣw_mkt: the returns that would make the market portfolio optimal. Views then tilt this prior according to their confidence.']
   ] }
 ];
 let vigScores = store.get('qma-vig', {});
@@ -3674,7 +3792,7 @@ function homeView() {
   return `<section class="hero"><div class="hero-grid"><div>
       <p class="eyebrow">Regression · Time series · Machine learning</p>
       <h1 style="margin-top:10px">Quant Methods Atlas</h1>
-      <p class="lede">Every major quantitative and machine learning technique on the CFA Level II syllabus: the ideas, the formulas, the exam angle, interactive labs, and real Python notebooks and datasets to code it yourself.</p>
+      <p class="lede">Every major quantitative and machine learning technique on the CFA Level II syllabus, plus portfolio construction and risk: the ideas, the formulas, the exam angle, interactive labs, and real Python notebooks and datasets to code it yourself.</p>
       <div class="hero-actions"><a class="btn primary" href="#${next.id}">${mastered.size ? 'Continue: ' + next.title : 'Start with simple regression'}</a><a class="btn" href="#workbench">Open the data workbench</a></div>
     </div><div><canvas id="heroCv" aria-label="Animated scatter plot with regression line"></canvas></div></div></section>
     <div class="section-head"><h2>Code it yourself</h2><span class="eyebrow">Python · free in Google Colab</span></div>
@@ -3791,7 +3909,7 @@ function atlasView() {
     <div class="tbl-wrap"><table class="data" id="atlasT"><thead><tr><th>Technique</th><th>Family</th><th>Core idea</th><th>Finance use</th><th>Coverage</th></tr></thead><tbody></tbody></table></div></article>`;
 }
 function bindAtlas() {
-  const draw = f => { $('#atlasT tbody').innerHTML = ATLAS.filter(r => f === 'all' || (f === 'cfa') === r[4]).map(([n, fam, idea, use, cfa, link]) => `<tr><td><b>${cfa && link ? `<a href="#${link}">${n}</a>` : n}</b></td><td>${fam}</td><td>${idea}</td><td>${use}</td><td>${cfa ? '<span class="yes">Syllabus</span>' : '<span class="no">Extension</span>'}</td></tr>`).join('');
+  const draw = f => { $('#atlasT tbody').innerHTML = ATLAS.filter(r => f === 'all' || (f === 'cfa') === r[4]).map(([n, fam, idea, use, cfa, link]) => `<tr><td><b>${link ? `<a href="#${link}">${n}</a>` : n}</b></td><td>${fam}</td><td>${idea}</td><td>${use}</td><td>${cfa ? '<span class="yes">Syllabus</span>' : '<span class="no">Extension</span>'}</td></tr>`).join('');
     $$('.seg button').forEach(b => b.setAttribute('aria-pressed', b.dataset.f === f)); };
   $$('.seg button').forEach(b => b.onclick = () => draw(b.dataset.f)); draw('all');
 }

@@ -170,4 +170,39 @@ prices.insert(0, "INDEX", (1000 * (1 + mkt_r).cumprod()).round(2))
 prices.round(2).rename_axis("date").to_csv(OUT / "capstone_prices.csv")
 pd.DataFrame({"ticker": names, "sector": [sectors[n.rstrip("1234")] for n in names]}).to_csv(OUT / "capstone_sectors.csv", index=False)
 
+# 8. Daily multi-asset returns (portfolio construction and risk)
+rng = np.random.default_rng(SEEDS["main"] + 8)
+assets = ["CH_EQUITY", "WORLD_EQUITY", "EM_EQUITY", "CHF_BONDS", "GLOBAL_BONDS", "GOLD", "SWISS_REAL_ESTATE", "COMMODITIES"]
+mu_a = np.array([0.07, 0.08, 0.08, 0.01, 0.02, 0.05, 0.05, 0.03])          # annual expected returns
+vol_a = np.array([0.15, 0.16, 0.21, 0.04, 0.05, 0.15, 0.12, 0.20])         # annual volatilities
+corr = np.array([
+    [1.00, 0.85, 0.70, 0.05, 0.10, 0.05, 0.45, 0.35],
+    [0.85, 1.00, 0.80, 0.00, 0.05, 0.05, 0.40, 0.40],
+    [0.70, 0.80, 1.00, 0.00, 0.05, 0.15, 0.35, 0.50],
+    [0.05, 0.00, 0.00, 1.00, 0.70, 0.20, 0.30, -0.10],
+    [0.10, 0.05, 0.05, 0.70, 1.00, 0.25, 0.25, -0.05],
+    [0.05, 0.05, 0.15, 0.20, 0.25, 1.00, 0.10, 0.35],
+    [0.45, 0.40, 0.35, 0.30, 0.25, 0.10, 1.00, 0.20],
+    [0.35, 0.40, 0.50, -0.10, -0.05, 0.35, 0.20, 1.00]])
+L = np.linalg.cholesky(corr)
+days = pd.bdate_range("2010-01-04", "2024-12-31")
+nd = len(days)
+h = np.empty(nd); h[0] = 1.0; shock = 0.0
+for i in range(1, nd):                                   # common GARCH-style volatility regime
+    h[i] = 0.02 + 0.08 * shock ** 2 + 0.90 * h[i - 1]
+    shock = rng.standard_t(5) / np.sqrt(5 / 3)
+crisis = (days >= "2020-02-20") & (days <= "2020-04-15")    # a pandemic-style shock window
+h[crisis] *= 4
+scale = np.sqrt(h / h.mean())
+z = rng.standard_t(5, size=(nd, len(assets))) / np.sqrt(5 / 3) @ L.T     # fat-tailed, correlated
+equity_like = np.array([1, 1, 1, 0, 0, 0, 0.6, 0.7])
+regime = scale[:, None] * equity_like + (1 - equity_like) * (0.5 + 0.5 * scale[:, None])
+daily = mu_a / 252 + z * regime * vol_a / np.sqrt(252)
+crash = (days >= "2020-02-20") & (days <= "2020-03-16")
+rebound = (days > "2020-03-16") & (days <= "2020-04-15")
+daily[crash] += np.array([-0.014, -0.014, -0.015, 0.0003, 0.0002, -0.002, -0.009, -0.012])   # sell-off
+daily[rebound] += np.array([0.006, 0.007, 0.006, 0.0, 0.0001, 0.002, 0.004, 0.002])          # partial recovery
+ar = pd.DataFrame(daily, index=days, columns=assets).round(6)
+ar.rename_axis("date").to_csv(OUT / "asset_returns_daily.csv")
+
 print("Wrote:", *sorted(p.name for p in OUT.glob("*.csv")))

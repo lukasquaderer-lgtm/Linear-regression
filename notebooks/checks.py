@@ -380,6 +380,79 @@ def _c_16_2(g):
     return ok, "Extract every number in the text (re.findall(r'\\d+(?:\\.\\d+)?', text)), then check each claimed value is among them; return a bool."
 
 
+# ---------- notebooks 17-18: portfolio construction and risk ----------
+PORT_W = {"CH_EQUITY": 0.20, "WORLD_EQUITY": 0.20, "EM_EQUITY": 0.05, "CHF_BONDS": 0.25,
+          "GLOBAL_BONDS": 0.10, "GOLD": 0.05, "SWISS_REAL_ESTATE": 0.10, "COMMODITIES": 0.05}
+
+
+def _assets():
+    return pd.read_csv(DATA + "asset_returns_daily.csv", index_col=0, parse_dates=True)
+
+
+def _e_17_1():
+    r = _assets(); S = r.cov().to_numpy() * 252; w = np.full(r.shape[1], 1 / r.shape[1])
+    return [float(np.sqrt(w @ S @ w))]
+
+
+def _e_17_2():
+    S = _assets().cov().to_numpy() * 252; ones = np.ones(len(S)); x = np.linalg.solve(S, ones)
+    return [x / x.sum()]
+
+
+def _e_17_3():
+    from sklearn.covariance import LedoitWolf
+    return [LedoitWolf().fit(_assets().to_numpy()).shrinkage_]
+
+
+def _e_17_4():
+    r = _assets(); S = r.cov().to_numpy() * 252; w = np.full(r.shape[1], 1 / r.shape[1])
+    rc = w * (S @ w) / np.sqrt(w @ S @ w)
+    return [rc / rc.sum()]
+
+
+def _port():
+    r = _assets()
+    return r[list(PORT_W)] @ pd.Series(PORT_W)
+
+
+def _e_18_1():
+    return [-np.quantile(_port(), 0.01)]
+
+
+def _e_18_2():
+    p = _port(); q = np.quantile(p, 0.01)
+    return [-p[p <= q].mean()]
+
+
+def _e_18_3():
+    from scipy.stats import norm
+    p = _port()
+    return [-(p.mean() + norm.ppf(0.01) * p.std())]
+
+
+def _kupiec_ref(x, n, p):
+    from scipy.stats import chi2
+    pi = x / n
+    ll0 = (n - x) * np.log(1 - p) + x * np.log(p)
+    ll1 = (n - x) * np.log(1 - pi) + (x * np.log(pi) if x > 0 else 0.0)
+    return 1 - chi2.cdf(-2 * (ll0 - ll1), 1)
+
+
+def _c_18_4(g):
+    f = g["kupiec_pvalue"]
+    try:
+        ok = all(abs(float(f(x, n, 0.01)) - _kupiec_ref(x, n, 0.01)) < 1e-6 for x, n in [(2, 250), (8, 250), (15, 500), (5, 500)])
+    except Exception as e:
+        return False, f"kupiec_pvalue raised {type(e).__name__}: {e}"
+    return ok, "LR = −2[ln L(p) − ln L(x/n)] with ln L(q) = (n−x)·ln(1−q) + x·ln(q); p-value = 1 − chi2.cdf(LR, 1)."
+
+
+def _e_18_5():
+    wp = np.array([0.30, 0.20, 0.25, 0.25]); wb = np.array([0.25, 0.30, 0.25, 0.20])
+    rb = np.array([0.06, 0.06, 0.09, 0.12])
+    return [float(((wp - wb) * (rb - wb @ rb)).sum())]
+
+
 # key: (variable names, reference function, absolute tolerances, hint)
 SPECS = {
     "00.1": (["ann_mean", "ann_std"], _e_00_1, [0.01, 0.01], "Annualise the mean with × 12 and the standard deviation with × √12 (np.sqrt(12))."),
@@ -422,6 +495,15 @@ SPECS = {
     "15.2": (["n_params"], lambda: [865], [0], "Count weights and biases of every Linear layer: sum(p.numel() for p in model.parameters())."),
     "16.1": (["cosine"], _c_16_1, "custom", ""),
     "16.2": (["numbers_supported"], _c_16_2, "custom", ""),
+    "17.1": (["ew_vol"], _e_17_1, [1e-5], "Annual covariance = r.cov() * 252; volatility = sqrt(wᵀ Σ w) with w = 1/8 for every asset."),
+    "17.2": (["w_gmv"], _e_17_2, [1e-6], "w = Σ⁻¹1 / (1ᵀΣ⁻¹1): x = np.linalg.solve(S, np.ones(8)); w_gmv = x / x.sum()."),
+    "17.3": (["lw_delta"], _e_17_3, [1e-6], "LedoitWolf().fit(returns.to_numpy()).shrinkage_ on the daily returns."),
+    "17.4": (["rc_pct_ew"], _e_17_4, [1e-6], "Risk contribution RC = w * (Σw) / σ_p; divide by σ_p (their sum) to get shares that add to 1."),
+    "18.1": (["var_hist_99"], _e_18_1, [1e-7], "Historical VaR is the loss at the 1% quantile: -np.quantile(port, 0.01). Report it as a positive number."),
+    "18.2": (["es_hist_99"], _e_18_2, [1e-7], "ES = minus the average of the returns at or below the 1% quantile."),
+    "18.3": (["var_norm_99"], _e_18_3, [1e-7], "Parametric VaR = -(mean + norm.ppf(0.01) * std) using the daily mean and std of the portfolio."),
+    "18.4": (["kupiec_pvalue"], _c_18_4, "custom", ""),
+    "18.5": (["total_allocation"], _e_18_5, [1e-9], "Brinson-Fachler allocation per sector = (w_p − w_b) × (r_b,sector − R_b); sum over sectors. R_b = Σ w_b r_b."),
     "10.3": (["ap_balanced"], _e_10_5, [0.005], "StandardScaler + LogisticRegression(class_weight='balanced', max_iter=1000) on the notebook-05 split; average_precision_score on test."),
 }
 

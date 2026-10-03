@@ -2,8 +2,9 @@
 
 Hands-on study material for the quantitative methods on the CFA Level II syllabus — regression, time series and machine learning — plus portfolio construction and risk, in Python.
 
-- **`notebooks/`** — twenty Jupyter notebooks. 00–07, 09–10 and 14–18 have worked examples and self-checking exercises: run `check("01.1")` after an exercise to get ✅ or ❌ with a hint. 08 is a capstone on real market data; 11–13 and 19 are open-ended projects with a rubric and model solutions in `notebooks/solutions/`.
+- **`notebooks/`** — twenty-three Jupyter notebooks. 00–07, 09–10, 14–18 and 20–21 have worked examples and self-checking exercises: run `check("01.1")` after an exercise to get ✅ or ❌ with a hint. 08 is a capstone on real market data; 11–13 and 19 are open-ended projects with a rubric and model solutions in `notebooks/solutions/`.
 - **`data/`** — six practice datasets (simulated with a fixed seed so everyone gets the same numbers).
+- **`project_template/`** — a tested Python project layout (package, pytest tests, no-look-ahead backtester, example) to start your own project from (notebook 22).
 - **`quant-atlas.html`** — the interactive study guide: topic explanations, formulas, labs, a data workbench, 10 exam-style item sets, a model chooser and practice questions. Open it in any browser.
 
 ## Run the notebooks
@@ -41,6 +42,9 @@ jupyter lab
 | 17 | [Portfolio construction](notebooks/17_portfolio_construction.ipynb) | Efficient frontier, estimation error, Ledoit–Wolf, risk parity, Black–Litterman, walk-forward vs 1/N | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/lukasquaderer-lgtm/Linear-regression/blob/master/notebooks/17_portfolio_construction.ipynb) |
 | 18 | [Risk and attribution](notebooks/18_risk_and_attribution.ipynb) | VaR/ES three ways, Monte Carlo, Kupiec backtest, component VaR, stress tests, Brinson attribution | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/lukasquaderer-lgtm/Linear-regression/blob/master/notebooks/18_risk_and_attribution.ipynb) |
 | 19 | [Project: pension fund portfolio](notebooks/19_project_pension_portfolio.ipynb) | Review a Swiss pension allocation under BVV 2-style rules and write the committee memo | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/lukasquaderer-lgtm/Linear-regression/blob/master/notebooks/19_project_pension_portfolio.ipynb) · [solution](notebooks/solutions/19_project_pension_portfolio_solution.ipynb) |
+| 20 | [Real-world data and SQL](notebooks/20_messy_data_and_sql.ipynb) | SQL in SQLite, cleaning vendor files, corporate actions, FX as-of joins, point-in-time fundamentals, survivorship | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/lukasquaderer-lgtm/Linear-regression/blob/master/notebooks/20_messy_data_and_sql.ipynb) |
+| 21 | [Professional practice](notebooks/21_professional_practice.ipynb) | Functions, modules, pytest, Git, reproducibility, an automated monthly report | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/lukasquaderer-lgtm/Linear-regression/blob/master/notebooks/21_professional_practice.ipynb) |
+| 22 | [Your own project](notebooks/22_your_own_project.ipynb) | Project template, ideas with free data sources, plan, rubric, publishing checklist | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/lukasquaderer-lgtm/Linear-regression/blob/master/notebooks/22_your_own_project.ipynb) |
 
 Projects 11–13 load real datasets bundled with the [ISLP](https://pypi.org/project/ISLP/) package (installed automatically).
 
@@ -57,6 +61,7 @@ Notebook 16's Claude section needs your own Anthropic API key (add it as a Colab
 | `company_fundamentals.csv` | 150 companies | K-means and hierarchical clustering |
 | `headlines.csv` | 300 headlines | Text preparation, TF-IDF, sentiment classification |
 | `asset_returns_daily.csv` | 3,912 days, 8 asset classes | Portfolio construction, VaR/ES, stress tests, attribution |
+| `messy/*.csv` | 10 stocks, 2015–2024 | Deliberately dirty vendor files: prices, corporate actions, ticker changes, FX, fundamentals, index membership |
 | `capstone_prices.csv`, `capstone_sectors.csv` | 180 months, 20 stocks | Fallback for the capstone if the Yahoo Finance download fails |
 
 Load any of them with `pd.read_csv("https://raw.githubusercontent.com/lukasquaderer-lgtm/Linear-regression/master/data/<file>.csv")`.

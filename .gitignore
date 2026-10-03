@@ -1,2 +1,8 @@
 __pycache__/
 .ipynb_checkpoints/
+notebooks/quantkit.py
+notebooks/test_quantkit.py
+notebooks/monthly_report.html
+notebooks/my_project/
+notebooks/qma_repo/
+.pytest_cache/

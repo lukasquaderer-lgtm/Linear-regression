@@ -453,6 +453,95 @@ def _e_18_5():
     return [float(((wp - wb) * (rb - wb @ rb)).sum())]
 
 
+# ---------- notebook 20: messy data and SQL ----------
+def _messy(name, **kw):
+    return pd.read_csv(DATA + "messy/" + name, **kw)
+
+
+def _parse_price_ref(x):
+    if x is None or (isinstance(x, float) and np.isnan(x)) or str(x).strip() == "":
+        return np.nan
+    return float(str(x).replace("'", "").replace(" ", ""))
+
+
+def _clean_prices_ref():
+    raw = _messy("prices_raw.csv", dtype={"close": str})
+    df = raw.drop_duplicates().copy()
+    df["close"] = df["close"].map(_parse_price_ref)
+    tc = _messy("ticker_changes.csv"); df["pid"] = df["ticker"].replace(dict(zip(tc.old_ticker, tc.new_ticker)))
+    df["date"] = pd.to_datetime(df["date"])
+    df = df.dropna(subset=["close"]).sort_values(["pid", "date"])
+    ref = df.groupby("pid")["close"].transform(lambda c: c.rolling(5, center=True, min_periods=1).median())
+    df = df[(df["close"] / ref).between(0.2, 5)]                                   # drop decimal-error ticks
+    return df
+
+
+def _total_returns_ref(pid):
+    df = _clean_prices_ref(); d = df[df.pid == pid].set_index("date")["close"]
+    ca = _messy("corporate_actions.csv", parse_dates=["ex_date"])
+    tc = _messy("ticker_changes.csv"); ca["pid"] = ca["ticker"].replace(dict(zip(tc.old_ticker, tc.new_ticker)))
+    ca = ca[ca.pid == pid]
+    ratio = pd.Series(1.0, index=d.index); div = pd.Series(0.0, index=d.index)
+    for _, a in ca.iterrows():
+        on = d.index[d.index >= a.ex_date]
+        if len(on) == 0: continue
+        if a.action == "split": ratio[on[0]] *= a.value
+        else: div[on[0]] += a.value
+    return (d * ratio + div) / d.shift(1) - 1
+
+
+def _e_20_1():
+    return [int(_messy("prices_raw.csv", dtype={"close": str}).duplicated().sum())]
+
+
+def _e_20_2():
+    raw = _messy("prices_raw.csv", dtype={"close": str})
+    m = (raw.ticker == "JURA") & (raw.date >= "2020-01-01") & (raw.date <= "2020-12-31")
+    return [raw.loc[m, "volume"].mean()]
+
+
+def _c_20_3(g):
+    f = g["parse_price"]
+    try:
+        ok = (abs(f("1'234.50") - 1234.5) < 1e-9 and abs(f("45.3") - 45.3) < 1e-9 and np.isnan(f("")) and np.isnan(f(np.nan))
+              and abs(f(" 99 ") - 99) < 1e-9)
+    except Exception as e:
+        return False, f"parse_price raised {type(e).__name__}: {e}"
+    return ok, "Remove the apostrophes and spaces, then float(); return np.nan for blank or missing values."
+
+
+def _e_20_4():
+    r = _total_returns_ref("BRGN")
+    return [float((1 + r.loc["2019"]).prod() - 1)]
+
+
+def _e_20_5():
+    f = _messy("fundamentals.csv", parse_dates=["report_date"])
+    k = f[(f.ticker == "BRGN") & (f.report_date <= "2020-02-14")].sort_values("report_date").iloc[-1]
+    return [k.net_income_m / k.shares_m]
+
+
+# ---------- notebook 21: professional practice ----------
+def _c_21_1(g):
+    f = g["annualized_vol"]
+    try:
+        r = np.array([0.01, -0.02, 0.015, 0.0, -0.005])
+        ok = abs(float(f(r)) - np.std(r, ddof=1) * np.sqrt(252)) < 1e-9 and abs(float(f(pd.Series(r), periods=12)) - np.std(r, ddof=1) * np.sqrt(12)) < 1e-9
+    except Exception as e:
+        return False, f"annualized_vol raised {type(e).__name__}: {e}"
+    return ok, "Sample standard deviation (ddof=1) times sqrt(periods); `periods` must be an argument with default 252."
+
+
+def _c_21_2(g):
+    f = g["max_drawdown"]
+    try:
+        ok = abs(float(f(np.array([0.10, -0.50, 0.20]))) - (-0.5)) < 1e-9 and abs(float(f(np.array([0.1, 0.1]))) - 0.0) < 1e-12 \
+            and abs(float(f(pd.Series([-0.1, -0.1]))) - (0.9 * 0.9 - 1)) < 1e-9
+    except Exception as e:
+        return False, f"max_drawdown raised {type(e).__name__}: {e}"
+    return ok, "Wealth = cumprod(1 + r) starting from 1; drawdown = wealth / running max − 1, where the running max includes the starting value 1; return the minimum (≤ 0)."
+
+
 # key: (variable names, reference function, absolute tolerances, hint)
 SPECS = {
     "00.1": (["ann_mean", "ann_std"], _e_00_1, [0.01, 0.01], "Annualise the mean with × 12 and the standard deviation with × √12 (np.sqrt(12))."),
@@ -504,6 +593,13 @@ SPECS = {
     "18.3": (["var_norm_99"], _e_18_3, [1e-7], "Parametric VaR = -(mean + norm.ppf(0.01) * std) using the daily mean and std of the portfolio."),
     "18.4": (["kupiec_pvalue"], _c_18_4, "custom", ""),
     "18.5": (["total_allocation"], _e_18_5, [1e-9], "Brinson-Fachler allocation per sector = (w_p − w_b) × (r_b,sector − R_b); sum over sectors. R_b = Σ w_b r_b."),
+    "20.1": (["n_dupes"], _e_20_1, [0], "Read the file with dtype={'close': str} and count fully duplicated rows: raw.duplicated().sum()."),
+    "20.2": (["sql_avg_vol"], _e_20_2, [1e-6], "SELECT AVG(volume) FROM prices WHERE ticker = 'JURA' AND date BETWEEN '2020-01-01' AND '2020-12-31' (on the raw table)."),
+    "20.3": (["parse_price"], _c_20_3, "custom", ""),
+    "20.4": (["tr_brgn_2019"], _e_20_4, [0.005], "Total return each day = (close × split ratio + dividend) / previous close − 1; compound the 2019 days. A raw price return would show a fake −50% on the split day."),
+    "20.5": (["eps_pit"], _e_20_5, [1e-6], "Use the latest report with report_date on or before 2020-02-14 (not the fiscal year end); EPS = net_income_m / shares_m."),
+    "21.1": (["annualized_vol"], _c_21_1, "custom", ""),
+    "21.2": (["max_drawdown"], _c_21_2, "custom", ""),
     "10.3": (["ap_balanced"], _e_10_5, [0.005], "StandardScaler + LogisticRegression(class_weight='balanced', max_iter=1000) on the notebook-05 split; average_precision_score on test."),
 }
 

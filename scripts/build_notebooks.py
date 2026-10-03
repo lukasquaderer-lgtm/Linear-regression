@@ -812,6 +812,8 @@ from llm_nb import F as LLM_F, CELLS as LLM_CELLS
 from portfolio_nb import F as PF_F, CELLS as PF_CELLS
 from risk_nb import F as RISK_F, CELLS as RISK_CELLS
 import project19_nb
+from wrangling_nb import F as WR_F, CELLS as WR_CELLS
+import practice_nb
 notebooks[SCR_F] = SCR_CELLS
 notebooks[WF_F] = WF_CELLS
 notebooks.update(projects_nb.NOTEBOOKS)
@@ -823,6 +825,9 @@ notebooks[PF_F] = PF_CELLS
 notebooks[RISK_F] = RISK_CELLS
 notebooks[project19_nb.F] = project19_nb.CELLS
 notebooks[project19_nb.SOL] = project19_nb.SOL_CELLS
+notebooks[WR_F] = WR_CELLS
+notebooks[practice_nb.F21] = practice_nb.CELLS21
+notebooks[practice_nb.F22] = practice_nb.CELLS22
 (NB / "solutions").mkdir(exist_ok=True)
 
 only = [a for a in sys.argv[1:] if not a.startswith("--")]
@@ -834,7 +839,7 @@ for name, cells in notebooks.items():
     if "--execute" in sys.argv:
         from nbclient import NotebookClient
         NotebookClient(nb, timeout=900, kernel_name="python3", resources={"metadata": {"path": str(path.parent)}}).execute()
-        if name == CAP_F or name in projects_nb.NOTEBOOKS or name == project19_nb.F:  # verified offline with the fallback data; ship it clean so Colab runs on real prices
+        if name == CAP_F or name in projects_nb.NOTEBOOKS or name in (project19_nb.F, practice_nb.F22):  # verified offline with the fallback data; ship it clean so Colab runs on real prices
             for c in nb.cells:
                 if c.cell_type == "code":
                     c.outputs, c.execution_count = [], None

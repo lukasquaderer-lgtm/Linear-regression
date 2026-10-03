@@ -205,4 +205,79 @@ daily[rebound] += np.array([0.006, 0.007, 0.006, 0.0, 0.0001, 0.002, 0.004, 0.00
 ar = pd.DataFrame(daily, index=days, columns=assets).round(6)
 ar.rename_axis("date").to_csv(OUT / "asset_returns_daily.csv")
 
-print("Wrote:", *sorted(p.name for p in OUT.glob("*.csv")))
+# 9. Messy raw market data (data wrangling and SQL): realistic problems on purpose
+rng = np.random.default_rng(SEEDS["main"] + 9)
+MESSY = OUT / "messy"; MESSY.mkdir(exist_ok=True)
+bdays = pd.bdate_range("2015-01-02", "2024-12-31")
+spec = {  # permanent id: (currency, start price, beta, annual dividend yield, listed from, delisted on)
+    "ALPN": ("CHF", 60, 1.0, 0.030, None, None), "BRGN": ("CHF", 180, 0.7, 0.025, None, None),
+    "CRYS": ("CHF", 25, 1.3, 0.040, None, "2023-06-09"), "DELT": ("EUR", 75, 1.1, 0.020, None, None),
+    "EDLW": ("CHF", 95, 0.6, 0.035, None, None), "FJRD": ("USD", 40, 1.2, 0.015, None, None),
+    "GLAC": ("CHF", 30, 1.4, 0.000, "2018-03-01", None), "HELV": ("CHF", 110, 0.9, 0.028, None, None),
+    "IBEX": ("EUR", 150, 1.0, 0.022, None, None), "JURA": ("CHF", 1150, 0.8, 0.018, None, None)}
+splits = {("BRGN", "2019-05-15"): 2.0, ("IBEX", "2021-07-01"): 3.0}
+mkt = rng.normal(0.0003, 0.010, len(bdays))
+rows, actions = [], []
+for tk, (ccy, p0, beta, dy, start, end) in spec.items():
+    days = bdays[(bdays >= (start or "1900")) & (bdays <= (end or "2100"))]
+    m = pd.Series(mkt, index=bdays).loc[days].to_numpy()
+    r = 0.0002 + beta * m + rng.normal(0, 0.012, len(days))              # daily total return
+    if tk == "CRYS":                                                     # most delistings follow a long decline
+        r = r - 0.0015 * (days >= pd.Timestamp("2020-06-01"))
+    ex_dates = set()
+    if dy > 0:
+        for yr in range(2015, 2025):
+            cands = days[(days >= f"{yr}-05-02")]
+            if len(cands) and cands[0].year == yr:
+                ex_dates.add(cands[0])
+    close, prev = [], p0
+    for d, rt in zip(days, r):
+        div = round(prev * dy, 2) if d in ex_dates else 0.0
+        ratio = splits.get((tk, str(d.date())), 1.0)
+        px = (prev * (1 + rt) - div) / ratio
+        name = "HLVT" if (tk == "HELV" and d < pd.Timestamp("2021-01-04")) else tk   # vendor files use the ticker of the day
+        if div:
+            actions.append([name, d.date(), "dividend", div])
+        if ratio != 1.0:
+            actions.append([name, d.date(), "split", ratio])
+        close.append(px); prev = px
+    vol = rng.integers(20_000, 400_000, len(days))
+    for d, c, v in zip(days, close, vol):
+        shown = "HLVT" if (tk == "HELV" and d < pd.Timestamp("2021-01-04")) else tk     # ticker change
+        rows.append([d.date(), shown, round(c, 2), int(v), ccy])
+raw = pd.DataFrame(rows, columns=["date", "ticker", "close", "volume", "currency"])
+raw = raw.sample(frac=0.99, random_state=1).sort_values(["date", "ticker"])          # ~1% of rows missing
+raw["close"] = raw["close"].astype(object)
+for i in raw.index[(raw["ticker"] == "JURA").to_numpy()][::20]:                     # Swiss thousands separator
+    raw.at[i, "close"] = f"{raw.at[i, 'close']:,.2f}".replace(",", "'")
+for i in rng.choice(raw.index, 8, replace=False):                                    # blank prices
+    raw.at[i, "close"] = ""
+for tk, d in [("DELT", "2017-03-14"), ("FJRD", "2020-11-02"), ("EDLW", "2022-08-17")]:  # bad ticks: decimal errors
+    j = raw.index[(raw["ticker"] == tk) & (raw["date"].astype(str) == d)]
+    if len(j):
+        raw.at[j[0], "close"] = round(float(raw.at[j[0], "close"]) * 100, 2)
+raw = pd.concat([raw, raw.sample(n=60, random_state=2)]).sort_values(["date", "ticker"])   # duplicate rows
+raw.to_csv(MESSY / "prices_raw.csv", index=False)
+pd.DataFrame(actions, columns=["ticker", "ex_date", "action", "value"]).sort_values("ex_date").to_csv(MESSY / "corporate_actions.csv", index=False)
+pd.DataFrame([["HLVT", "HELV", "2021-01-04"]], columns=["old_ticker", "new_ticker", "effective_date"]).to_csv(MESSY / "ticker_changes.csv", index=False)
+fx = pd.DataFrame({"date": bdays.date,
+                   "EURCHF": (1.07 * np.exp(np.cumsum(rng.normal(-0.00005, 0.004, len(bdays))))).round(4),
+                   "USDCHF": (0.97 * np.exp(np.cumsum(rng.normal(-0.00003, 0.005, len(bdays))))).round(4)})
+fx.sample(frac=0.97, random_state=3).sort_values("date").to_csv(MESSY / "fx_rates.csv", index=False)  # gaps
+fund = []
+for tk, (ccy, p0, *_rest) in spec.items():
+    shares = 100e6
+    for yr in range(2014, 2024):
+        if tk == "GLAC" and yr < 2018: continue
+        if tk == "CRYS" and yr > 2022: continue
+        if tk == "BRGN" and yr >= 2019: shares = 200e6
+        if tk == "IBEX" and yr >= 2021: shares = 300e6
+        ni = shares * p0 / 16 * (1 + rng.normal(0.05, 0.15)) * (1 + 0.04 * (yr - 2014))
+        rep = pd.Timestamp(f"{yr + 1}-03-01") + pd.Timedelta(days=int(rng.integers(0, 45)))
+        name = "HLVT" if (tk == "HELV" and rep < pd.Timestamp("2021-01-04")) else tk
+        fund.append([name, f"{yr}-12-31", rep.date(), ccy, round(ni / 1e6, 1), shares / 1e6])
+pd.DataFrame(fund, columns=["ticker", "fiscal_year_end", "report_date", "currency", "net_income_m", "shares_m"]).to_csv(MESSY / "fundamentals.csv", index=False)
+pd.DataFrame([[tk, (s or "2015-01-02"), (e or "")] for tk, (c, p, b, d, s, e) in spec.items()],
+             columns=["ticker", "start_date", "end_date"]).to_csv(MESSY / "index_membership.csv", index=False)
+
+print("Wrote:", *sorted(str(p.relative_to(OUT)) for p in OUT.rglob("*.csv")))

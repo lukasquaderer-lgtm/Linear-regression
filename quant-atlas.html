@@ -1,0 +1,1405 @@
+<title>Quant Methods Atlas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&family=STIX+Two+Text:ital,wght@0,400;1,400&display=swap">
+<style>
+/* Layout: sticky syllabus rail on the left, one topic per page on the right; each topic = ideas, formulas, a live lab, exam angle. Graph-paper motif only in the hero. */
+:root {
+  --bg: #eef1f6;
+  --surface: #ffffff;
+  --surface-2: #f5f7fb;
+  --ink: #131a2c;
+  --muted: #586379;
+  --line: #d5dbe6;
+  --grid: rgba(35, 72, 201, 0.07);
+  --accent: #2348c9;
+  --accent-ink: #ffffff;
+  --accent-soft: #e2e8fb;
+  --amber: #b9620f;
+  --good: #1b7a4f;
+  --good-soft: #dff2e8;
+  --bad: #b8372a;
+  --bad-soft: #f9e2df;
+  --warn: #946200;
+  --warn-soft: #fbefd2;
+  --c1: #2348c9; --c2: #c2560f; --c3: #1b7a4f; --c4: #8a3fb8; --c5: #b8372a; --c6: #0f7f8f;
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --font-math: "STIX Two Text", "Cambria Math", "Times New Roman", serif;
+  --radius: 12px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1220; --surface: #151c2d; --surface-2: #1a2236; --ink: #e5e9f2; --muted: #98a3ba; --line: #283250;
+    --grid: rgba(122, 162, 255, 0.07); --accent: #7fa3ff; --accent-ink: #0d1220; --accent-soft: #1f2b4d;
+    --amber: #f0a65a; --good: #55c48d; --good-soft: #15322a; --bad: #ff8073; --bad-soft: #3a1e1f; --warn: #e8b84a; --warn-soft: #352b14;
+    --c1: #7fa3ff; --c2: #f0a65a; --c3: #55c48d; --c4: #c79bf0; --c5: #ff8073; --c6: #4fd0dc;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1220; --surface: #151c2d; --surface-2: #1a2236; --ink: #e5e9f2; --muted: #98a3ba; --line: #283250;
+  --grid: rgba(122, 162, 255, 0.07); --accent: #7fa3ff; --accent-ink: #0d1220; --accent-soft: #1f2b4d;
+  --amber: #f0a65a; --good: #55c48d; --good-soft: #15322a; --bad: #ff8073; --bad-soft: #3a1e1f; --warn: #e8b84a; --warn-soft: #352b14;
+  --c1: #7fa3ff; --c2: #f0a65a; --c3: #55c48d; --c4: #c79bf0; --c5: #ff8073; --c6: #4fd0dc;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 17px/1.6 var(--font-body); }
+a { color: var(--accent); }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+h1, h2, h3 { font-family: var(--font-display); line-height: 1.15; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(2rem, 4.2vw, 2.9rem); font-weight: 800; letter-spacing: -0.02em; }
+h2 { font-size: 1.35rem; font-weight: 700; letter-spacing: -0.01em; }
+h3 { font-size: 1.05rem; font-weight: 700; }
+p { margin: 0; }
+.mono { font-family: var(--font-mono); }
+.eyebrow { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+
+/* top bar */
+.topbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--surface); border-bottom: 1px solid var(--line); }
+.topbar-in { max-width: 1260px; margin: 0 auto; padding-inline: 24px; padding-block: 10px; display: flex; align-items: center; gap: 16px; }
+.brand { display: flex; align-items: baseline; gap: 10px; text-decoration: none; color: var(--ink); min-width: 0; }
+.brand b { font-family: var(--font-display); font-weight: 800; font-size: 1.12rem; letter-spacing: -0.01em; white-space: nowrap; }
+.brand span { font-family: var(--font-mono); font-size: 0.7rem; color: var(--muted); white-space: nowrap; }
+.progress { margin-left: auto; display: flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: 0.75rem; color: var(--muted); }
+.progress .bar { width: 110px; height: 6px; border-radius: 3px; background: var(--accent-soft); overflow: hidden; }
+.progress .bar i { display: block; height: 100%; background: var(--accent); width: 0; transition: width .3s; }
+.menu-btn { display: none; border: 1px solid var(--line); background: var(--surface-2); border-radius: 8px; padding: 6px 12px; font-size: 0.9rem; cursor: pointer; }
+
+/* shell */
+.shell { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 36px; max-width: 1260px; margin: 0 auto; padding-inline: 24px; padding-block: 28px 80px; }
+.nav { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 72px); align-self: start; max-height: calc(100vh - 96px); overflow: auto; padding-right: 4px; }
+.nav h4 { margin: 18px 0 6px; font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.nav h4:first-child { margin-top: 0; }
+.nav a { display: flex; align-items: center; gap: 10px; padding: 6px 10px; border-radius: 8px; color: var(--ink); text-decoration: none; font-size: 0.95rem; line-height: 1.3; }
+.nav a:hover { background: var(--surface); }
+.nav a[aria-current="page"] { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.nav a .dot { flex: none; width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid var(--line); display: grid; place-items: center; }
+.nav a.done .dot { background: var(--good); border-color: var(--good); }
+.nav a.done .dot::after { content: ""; width: 5px; height: 8px; border: solid var(--surface); border-width: 0 2px 2px 0; transform: translateY(-1px) rotate(45deg); }
+.nav a .tag { margin-left: auto; font-family: var(--font-mono); font-size: 0.62rem; color: var(--muted); border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; }
+main { min-width: 0; }
+
+@media (max-width: 880px) {
+  .shell { grid-template-columns: 1fr; padding-inline: 16px; gap: 20px; }
+  .topbar-in { padding-inline: 16px; }
+  .menu-btn { display: inline-block; }
+  .brand span, .progress .bar { display: none; }
+  .nav { display: none; position: static; max-height: none; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; }
+  .nav.open { display: block; }
+}
+
+/* home */
+.hero { position: relative; border: 1px solid var(--line); border-radius: 16px; padding: clamp(22px, 4vw, 40px); overflow: hidden; background-color: var(--surface);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: 22px 22px; }
+.hero-grid { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 28px; align-items: center; }
+.hero .lede { font-size: 1.15rem; color: var(--muted); max-width: 54ch; margin-top: 14px; }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+.hero canvas { width: 100%; display: block; }
+@media (max-width: 760px) { .hero-grid { grid-template-columns: 1fr; } }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: 9px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); text-decoration: none; font-weight: 600; font-size: 0.95rem; cursor: pointer; }
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn.small { padding: 5px 11px; font-size: 0.85rem; }
+.section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin: 40px 0 14px; }
+.map { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+@media (max-width: 1000px) { .map { grid-template-columns: 1fr; } }
+.map-col h3 { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 8px; border-bottom: 2px solid var(--ink); }
+.map-col h3 small { font-family: var(--font-mono); font-size: 0.7rem; color: var(--muted); font-weight: 400; }
+.map-item { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--line); text-decoration: none; color: var(--ink); }
+.map-item:hover b { color: var(--accent); }
+.map-item b { display: block; font-weight: 700; }
+.map-item span { font-size: 0.9rem; color: var(--muted); line-height: 1.45; display: block; }
+.map-item .num { font-family: var(--font-mono); font-size: 0.75rem; color: var(--muted); padding-top: 3px; }
+.map-item.done .num { color: var(--good); font-weight: 600; }
+.lab-tag { display: inline-block; font-family: var(--font-mono); font-size: 0.66rem; color: var(--accent); border: 1px solid var(--accent); border-radius: 4px; padding: 0 5px; margin-left: 6px; vertical-align: 2px; }
+.tools { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 1000px) { .tools { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 480px) { .tools { grid-template-columns: 1fr; } }
+.tool { display: block; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; text-decoration: none; color: var(--ink); }
+.tool:hover { border-color: var(--accent); }
+.tool b { font-family: var(--font-display); font-size: 1.05rem; display: block; margin-bottom: 4px; }
+.tool span { font-size: 0.9rem; color: var(--muted); line-height: 1.45; display: block; }
+
+/* topic */
+.topic { display: grid; gap: 34px; }
+.t-head { display: grid; gap: 10px; max-width: 760px; }
+.t-head .lede { font-size: 1.2rem; color: var(--muted); }
+.prose { max-width: 760px; }
+.ideas { margin: 12px 0 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+.ideas li { position: relative; padding-left: 22px; }
+.ideas li::before { content: ""; position: absolute; left: 4px; top: 0.68em; width: 7px; height: 7px; background: var(--accent); transform: rotate(45deg); }
+.ideas b { font-weight: 700; }
+.formulas { margin: 12px 0 0; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); overflow: hidden; }
+.formulas .row { display: grid; grid-template-columns: minmax(130px, 220px) minmax(0, 1fr); gap: 16px; padding: 12px 16px; border-bottom: 1px solid var(--line); align-items: baseline; }
+.formulas .row:last-child { border-bottom: 0; }
+.formulas dt { font-family: var(--font-mono); font-size: 0.75rem; color: var(--muted); letter-spacing: 0.02em; }
+.formulas dd { margin: 0; font-family: var(--font-math); font-size: 1.15rem; overflow-x: auto; white-space: nowrap; }
+.formulas dd small { font-family: var(--font-body); font-size: 0.85rem; color: var(--muted); white-space: normal; display: block; }
+@media (max-width: 600px) { .formulas .row { grid-template-columns: 1fr; gap: 2px; } }
+.math { font-family: var(--font-math); font-size: 1.08em; }
+.two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+@media (max-width: 760px) { .two { grid-template-columns: 1fr; } }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; min-width: 0; }
+.panel ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 8px; }
+.panel.exam h2 { color: var(--accent); }
+.panel.traps h2 { color: var(--bad); }
+.tbl-wrap { overflow-x: auto; margin-top: 12px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+table.data { border-collapse: collapse; width: 100%; font-size: 0.93rem; }
+table.data th { font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); text-align: left; font-weight: 600; padding: 10px 12px; border-bottom: 1px solid var(--line); background: var(--surface-2); white-space: nowrap; }
+table.data td { padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.data tr:last-child td { border-bottom: 0; }
+table.data td.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+.t-foot { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; border-top: 1px solid var(--line); padding-top: 20px; }
+.t-foot .pn { display: flex; gap: 10px; flex-wrap: wrap; }
+.mark.on { background: var(--good); border-color: var(--good); color: var(--surface); }
+
+/* labs */
+.lab { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: clamp(16px, 2.4vw, 24px); display: grid; gap: 16px; }
+.lab-head { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: baseline; justify-content: space-between; }
+.lab-head p { color: var(--muted); font-size: 0.95rem; max-width: 64ch; }
+.lab-grid { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(250px, 1fr); gap: 20px; }
+@media (max-width: 980px) { .lab-grid { grid-template-columns: 1fr; } }
+.plots { display: grid; gap: 12px; min-width: 0; align-content: start; }
+canvas.plot { width: 100%; display: block; background: var(--surface-2); border-radius: 10px; touch-action: manipulation; }
+.plot-cap { font-family: var(--font-mono); font-size: 0.7rem; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 14px; }
+.plot-cap i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
+.side { display: grid; gap: 16px; align-content: start; min-width: 0; }
+.ctl { display: grid; gap: 4px; }
+.ctl label { display: flex; justify-content: space-between; gap: 8px; font-size: 0.88rem; font-weight: 600; }
+.ctl output { font-family: var(--font-mono); font-weight: 400; color: var(--accent); font-variant-numeric: tabular-nums; }
+.ctl input[type=range] { width: 100%; accent-color: var(--accent); }
+.btns { display: flex; flex-wrap: wrap; gap: 8px; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.seg button { border: 0; background: transparent; padding: 5px 11px; font-size: 0.82rem; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 8px; }
+.stat { background: var(--surface-2); border-radius: 8px; padding: 8px 10px; min-width: 0; }
+.stat .k { font-family: var(--font-mono); font-size: 0.7rem; color: var(--muted); letter-spacing: 0.02em; }
+.stat .v { font-family: var(--font-mono); font-size: 1.05rem; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.verdicts { display: grid; gap: 8px; }
+.verdict { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; align-items: start; font-size: 0.9rem; line-height: 1.4; }
+.chip { font-family: var(--font-mono); font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; padding: 2px 7px; border-radius: 5px; white-space: nowrap; }
+.chip.good { background: var(--good-soft); color: var(--good); }
+.chip.bad { background: var(--bad-soft); color: var(--bad); }
+.chip.warn { background: var(--warn-soft); color: var(--warn); }
+.chip.info { background: var(--accent-soft); color: var(--accent); }
+.note { font-size: 0.9rem; color: var(--muted); line-height: 1.5; }
+.bars { display: grid; gap: 6px; }
+.bars .b { display: grid; grid-template-columns: 44px minmax(0, 1fr) 54px; gap: 8px; align-items: center; font-family: var(--font-mono); font-size: 0.78rem; }
+.bars .track { height: 12px; background: var(--surface-2); border-radius: 3px; overflow: hidden; }
+.bars .fill { height: 100%; background: var(--accent); }
+.bars .b:nth-child(2) .fill { background: var(--amber); }
+.cm { display: grid; grid-template-columns: auto 1fr 1fr; gap: 4px; font-family: var(--font-mono); font-size: 0.8rem; }
+.cm div { padding: 8px; border-radius: 6px; text-align: center; }
+.cm .h { color: var(--muted); font-size: 0.68rem; text-transform: uppercase; letter-spacing: .05em; padding: 4px; }
+.cm .tp, .cm .tn { background: var(--good-soft); color: var(--good); font-weight: 600; }
+.cm .fp, .cm .fn { background: var(--bad-soft); color: var(--bad); font-weight: 600; }
+.cm .cell small { display: block; font-size: 0.62rem; opacity: .8; font-weight: 400; }
+
+/* chooser */
+.chooser { display: grid; gap: 14px; }
+.trail { display: flex; flex-wrap: wrap; gap: 6px; font-size: 0.85rem; color: var(--muted); }
+.trail span { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 2px 8px; }
+.qcard { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 22px; display: grid; gap: 14px; }
+.qcard h2 { font-size: 1.3rem; }
+.opts { display: grid; gap: 8px; }
+.opt { text-align: left; border: 1px solid var(--line); background: var(--surface-2); border-radius: 10px; padding: 12px 14px; cursor: pointer; display: grid; gap: 2px; }
+.opt:hover:not([disabled]) { border-color: var(--accent); }
+.opt b { font-weight: 700; }
+.opt span { font-size: 0.88rem; color: var(--muted); }
+.leaf { border-color: var(--accent); }
+.steps { counter-reset: s; list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 0; }
+.steps li { counter-increment: s; display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.steps li::before { content: counter(s, decimal-leading-zero); font-family: var(--font-mono); color: var(--accent); font-weight: 600; padding-top: 2px; }
+.steps b { display: block; }
+.steps span { color: var(--muted); font-size: 0.93rem; }
+
+/* quiz */
+.quiz-bar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; margin-top: 16px; }
+.score { font-family: var(--font-mono); font-size: 0.9rem; }
+select, input[type=search] { font: inherit; font-size: 0.92rem; padding: 7px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); max-width: 100%; }
+.qlist { display: grid; gap: 14px; margin-top: 16px; }
+.q { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; display: grid; gap: 12px; }
+.q .stem { font-weight: 600; }
+.q .opts .opt { grid-template-columns: 26px minmax(0, 1fr); align-items: baseline; gap: 8px; }
+.q .opt .l { font-family: var(--font-mono); color: var(--muted); }
+.q .opt.right { border-color: var(--good); background: var(--good-soft); }
+.q .opt.wrong { border-color: var(--bad); background: var(--bad-soft); }
+.q .opt[disabled] { cursor: default; }
+.q .why { font-size: 0.93rem; border-top: 1px dashed var(--line); padding-top: 10px; }
+.q .why b { color: var(--good); }
+.q .why.miss b { color: var(--bad); }
+
+.filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 14px; }
+.yes { color: var(--good); font-weight: 600; font-family: var(--font-mono); font-size: 0.8rem; }
+.no { color: var(--muted); font-family: var(--font-mono); font-size: 0.8rem; }
+.fs-group { margin-top: 28px; }
+.fs-group h3 a { color: var(--ink); text-decoration: none; }
+.fs-group h3 a:hover { color: var(--accent); }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+
+<header class="topbar">
+  <div class="topbar-in">
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="nav">Contents</button>
+    <a class="brand" href="#home"><b>Quant Methods Atlas</b><span>CFA L2 quant · ML</span></a>
+    <div class="progress" title="Topics marked as understood"><span id="progTxt">0 / 15</span><div class="bar"><i id="progBar"></i></div></div>
+  </div>
+</header>
+<div class="shell">
+  <nav class="nav" id="nav" aria-label="Topics"></nav>
+  <main id="main"></main>
+</div>
+
+<script>
+/* ---------- utilities ---------- */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+};
+function cssv(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+function colors() {
+  return { ink: cssv('--ink'), muted: cssv('--muted'), line: cssv('--line'), grid: cssv('--line'), accent: cssv('--accent'), amber: cssv('--amber'),
+    good: cssv('--good'), bad: cssv('--bad'), surface: cssv('--surface'), surface2: cssv('--surface-2'),
+    cat: ['--c1', '--c2', '--c3', '--c4', '--c5', '--c6'].map(cssv), mono: cssv('--font-mono') || 'monospace' };
+}
+function rng(seed) { return function () { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function gauss(r) { let u = 0; while (u === 0) u = r(); const v = r(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
+const fmt = (v, d = 3) => (v == null || !isFinite(v)) ? '—' : (Math.abs(v) >= 1e5 ? v.toExponential(2) : v.toFixed(d));
+function fmtTick(v) { if (v === 0) return '0'; const a = Math.abs(v); if (a >= 1000) return v.toFixed(0); if (a >= 10) return +v.toFixed(1) + ''; if (a >= 1) return +v.toFixed(2) + ''; return +v.toFixed(3) + ''; }
+function niceTicks(min, max, count = 5) {
+  const span = max - min; if (!(span > 0)) return [min];
+  const s0 = span / count, mag = Math.pow(10, Math.floor(Math.log10(s0))), e = s0 / mag;
+  const step = e >= 7.5 ? 10 * mag : e >= 3.5 ? 5 * mag : e >= 1.5 ? 2 * mag : mag;
+  const out = []; for (let v = Math.ceil(min / step) * step; v <= max + step * 1e-9; v += step) out.push(+v.toFixed(10)); return out;
+}
+function setupCanvas(cv, aspect, minH = 180, maxH = 440) {
+  const w = cv.clientWidth || 600; const h = Math.max(minH, Math.min(maxH, Math.round(w * aspect)));
+  cv.style.height = h + 'px'; const dpr = window.devicePixelRatio || 1;
+  cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
+  const ctx = cv.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); return { ctx, w, h };
+}
+function frame(ctx, w, h, xd, yd, o = {}) {
+  const m = Object.assign({ l: 46, r: 14, t: 14, b: 30 }, o.m || {});
+  const pw = w - m.l - m.r, ph = h - m.t - m.b;
+  const X = v => m.l + (v - xd[0]) / (xd[1] - xd[0]) * pw;
+  const Y = v => m.t + ph - (v - yd[0]) / (yd[1] - yd[0]) * ph;
+  const C = colors();
+  ctx.clearRect(0, 0, w, h);
+  ctx.font = '11px ' + C.mono; ctx.lineWidth = 1;
+  const xt = o.xTicks || niceTicks(xd[0], xd[1], o.nx || 6), yt = o.yTicks || niceTicks(yd[0], yd[1], o.ny || 5);
+  ctx.globalAlpha = 0.6; ctx.strokeStyle = C.grid;
+  xt.forEach(v => { if (v < xd[0] || v > xd[1]) return; const x = Math.round(X(v)) + .5; ctx.beginPath(); ctx.moveTo(x, m.t); ctx.lineTo(x, m.t + ph); ctx.stroke(); });
+  yt.forEach(v => { if (v < yd[0] || v > yd[1]) return; const y = Math.round(Y(v)) + .5; ctx.beginPath(); ctx.moveTo(m.l, y); ctx.lineTo(m.l + pw, y); ctx.stroke(); });
+  ctx.globalAlpha = 1; ctx.fillStyle = C.muted;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  xt.forEach(v => { if (v < xd[0] || v > xd[1]) return; ctx.fillText((o.xf || fmtTick)(v), X(v), m.t + ph + 7); });
+  ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+  yt.forEach(v => { if (v < yd[0] || v > yd[1]) return; ctx.fillText((o.yf || fmtTick)(v), m.l - 7, Y(v)); });
+  if (o.xLabel) { ctx.textAlign = 'right'; ctx.textBaseline = 'bottom'; ctx.fillText(o.xLabel, m.l + pw - 4, m.t + ph - 4); }
+  if (o.yLabel) { ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.fillText(o.yLabel, m.l + 6, m.t + 4); }
+  return { X, Y, m, pw, ph, C,
+    clip() { ctx.save(); ctx.beginPath(); ctx.rect(m.l, m.t, pw, ph); ctx.clip(); },
+    unclip() { ctx.restore(); } };
+}
+function line(ctx, pts, color, width = 2, dash) { ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = width; if (dash) ctx.setLineDash(dash); ctx.beginPath(); pts.forEach((p, i) => i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])); ctx.stroke(); ctx.restore(); }
+function dot(ctx, x, y, r, fill, stroke) { ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); if (fill) { ctx.fillStyle = fill; ctx.fill(); } if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 1.5; ctx.stroke(); } }
+
+/* stats */
+function gammaln(x) { const c = [76.18009172947146, -86.50532032941677, 24.01409824083091, -1.231739572450155, 0.1208650973866179e-2, -0.5395239384953e-5]; let y = x, tmp = x + 5.5; tmp -= (x + 0.5) * Math.log(tmp); let ser = 1.000000000190015; for (let j = 0; j < 6; j++) ser += c[j] / ++y; return -tmp + Math.log(2.5066282746310005 * ser / x); }
+function betacf(a, b, x) { const FP = 1e-300; let qab = a + b, qap = a + 1, qam = a - 1, c = 1, d = 1 - qab * x / qap; if (Math.abs(d) < FP) d = FP; d = 1 / d; let h = d; for (let m = 1; m <= 300; m++) { const m2 = 2 * m; let aa = m * (b - m) * x / ((qam + m2) * (a + m2)); d = 1 + aa * d; if (Math.abs(d) < FP) d = FP; c = 1 + aa / c; if (Math.abs(c) < FP) c = FP; d = 1 / d; h *= d * c; aa = -(a + m) * (qab + m) * x / ((a + m2) * (qap + m2)); d = 1 + aa * d; if (Math.abs(d) < FP) d = FP; c = 1 + aa / c; if (Math.abs(c) < FP) c = FP; d = 1 / d; const del = d * c; h *= del; if (Math.abs(del - 1) < 3e-14) break; } return h; }
+function ibeta(x, a, b) { if (x <= 0) return 0; if (x >= 1) return 1; const bt = Math.exp(gammaln(a + b) - gammaln(a) - gammaln(b) + a * Math.log(x) + b * Math.log(1 - x)); return x < (a + 1) / (a + b + 2) ? bt * betacf(a, b, x) / a : 1 - bt * betacf(b, a, 1 - x) / b; }
+const tP = (t, df) => ibeta(df / (df + t * t), df / 2, 0.5); // two-tailed p
+function tCrit(df, alpha = 0.05) { let lo = 0, hi = 60; for (let i = 0; i < 60; i++) { const mid = (lo + hi) / 2; if (tP(mid, df) > alpha) lo = mid; else hi = mid; } return (lo + hi) / 2; }
+function erf(x) { const s = Math.sign(x); x = Math.abs(x); const t = 1 / (1 + 0.3275911 * x); const y = 1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-x * x); return s * y; }
+const Phi = z => 0.5 * (1 + erf(z / Math.SQRT2));
+function ols1(x, y) {
+  const n = x.length; let mx = 0, my = 0; for (let i = 0; i < n; i++) { mx += x[i]; my += y[i]; } mx /= n; my /= n;
+  let sxx = 0, sxy = 0, sst = 0; for (let i = 0; i < n; i++) { const dx = x[i] - mx, dy = y[i] - my; sxx += dx * dx; sxy += dx * dy; sst += dy * dy; }
+  const b1 = sxy / sxx, b0 = my - b1 * mx; let sse = 0; const e = new Array(n);
+  for (let i = 0; i < n; i++) { e[i] = y[i] - (b0 + b1 * x[i]); sse += e[i] * e[i]; }
+  const ssr = sst - sse, see = Math.sqrt(sse / (n - 2)), sb1 = see / Math.sqrt(sxx);
+  return { n, mx, my, sxx, b0, b1, sse, ssr, sst, r2: sst > 0 ? ssr / sst : 0, see, sb1, t: b1 / sb1, e };
+}
+function acf(a, lags) { const n = a.length; const m = a.reduce((s, v) => s + v, 0) / n; let d = 0; for (const v of a) d += (v - m) ** 2; const out = []; for (let k = 1; k <= lags; k++) { let s = 0; for (let i = k; i < n; i++) s += (a[i] - m) * (a[i - k] - m); out.push(s / d); } return out; }
+function solve(A, b) { const n = b.length; const M = A.map((r, i) => [...r, b[i]]); for (let c = 0; c < n; c++) { let p = c; for (let r = c + 1; r < n; r++) if (Math.abs(M[r][c]) > Math.abs(M[p][c])) p = r; [M[c], M[p]] = [M[p], M[c]]; const piv = M[c][c] || 1e-300; for (let r = c + 1; r < n; r++) { const f = M[r][c] / piv; for (let k = c; k <= n; k++) M[r][k] -= f * M[c][k]; } } const x = new Array(n).fill(0); for (let r = n - 1; r >= 0; r--) { let s = M[r][n]; for (let k = r + 1; k < n; k++) s -= M[r][k] * x[k]; x[r] = s / (M[r][r] || 1e-300); } return x; }
+
+/* controls */
+function slider(id, label, min, max, step, val, f = v => v) {
+  return `<div class="ctl"><label for="${id}"><span>${label}</span><output id="${id}-o">${f(val)}</output></label><input type="range" id="${id}" min="${min}" max="${max}" step="${step}" value="${val}"></div>`;
+}
+function bindSlider(root, id, f, cb) { const el = $('#' + id, root), o = $('#' + id + '-o', root); el.addEventListener('input', () => { o.textContent = f(+el.value); cb(+el.value); }); return el; }
+function stat(k, v, id) { return `<div class="stat"><div class="k">${k}</div><div class="v" ${id ? `id="${id}"` : ''}>${v}</div></div>`; }
+function chip(kind, txt) { return `<span class="chip ${kind}">${txt}</span>`; }
+
+/* ---------- content ---------- */
+const GROUPS = [
+  { id: 'reg', name: 'Regression', blurb: 'Fitting, testing and fixing linear models' },
+  { id: 'ts', name: 'Time series', blurb: 'Trends, AR models, unit roots, ARCH' },
+  { id: 'ml', name: 'Machine learning', blurb: 'Supervised, unsupervised, deep learning, big data' }
+];
+
+const TOPICS = [
+/* ===== REGRESSION ===== */
+{ id: 'slr', g: 'reg', title: 'Simple linear regression', reading: 'Foundation for everything else', lab: 'reg',
+  lede: 'Fit the straight line that minimises the sum of squared vertical errors, then ask whether the slope is real or noise.',
+  ideas: [
+    '<b>Y</b> is the dependent (explained) variable, <b>X</b> the independent (explanatory) variable. Ordinary least squares (OLS) chooses <span class="math"><i>b̂</i><sub>0</sub></span> and <span class="math"><i>b̂</i><sub>1</sub></span> to minimise Σ(<i>Y</i> − <i>Ŷ</i>)².',
+    '<b>Four assumptions:</b> the relationship is linear; residual variance is constant (homoskedastic); residuals are independent; residuals are normally distributed.',
+    '<b>Slope</b> is the expected change in Y for a one-unit change in X. <b>Intercept</b> is the value of Y when X = 0, which may be economically meaningless.',
+    '<b>Variance decomposition:</b> total variation (SST) = explained (SSR) + unexplained (SSE). Everything in the ANOVA table comes from these three numbers.',
+    'In a simple regression, <span class="math"><i>R</i>² = <i>r</i>²</span> (the squared correlation) and the slope’s <span class="math"><i>F</i> = <i>t</i>²</span>.',
+    '<b>Functional forms:</b> log-lin (ln Y on X), lin-log (Y on ln X), and log-log (ln Y on ln X, where the slope is an elasticity). Use them when the scatter curves.'
+  ],
+  formulas: [
+    ['Slope', '<i>b̂</i><sub>1</sub> = Cov(<i>X</i>,<i>Y</i>) / Var(<i>X</i>) = Σ(<i>X<sub>i</sub></i> − <i>X̄</i>)(<i>Y<sub>i</sub></i> − <i>Ȳ</i>) / Σ(<i>X<sub>i</sub></i> − <i>X̄</i>)²'],
+    ['Intercept', '<i>b̂</i><sub>0</sub> = <i>Ȳ</i> − <i>b̂</i><sub>1</sub><i>X̄</i>'],
+    ['Coefficient of determination', '<i>R</i>² = SSR / SST = 1 − SSE / SST'],
+    ['Standard error of estimate', 'SEE = √[ SSE / (<i>n</i> − 2) ] = √MSE'],
+    ['Slope t-test', '<i>t</i> = (<i>b̂</i><sub>1</sub> − <i>B</i><sub>1</sub>) / <i>s</i><sub><i>b̂</i>1</sub>,  df = <i>n</i> − 2<small>with <i>s</i><sub>b̂1</sub> = SEE / √Σ(<i>X<sub>i</sub></i> − <i>X̄</i>)²</small>'],
+    ['F-statistic', '<i>F</i> = MSR / MSE = (SSR / 1) / [SSE / (<i>n</i> − 2)]'],
+    ['Prediction interval', '<i>Ŷ<sub>f</sub></i> ± <i>t<sub>c</sub></i> · <i>s<sub>f</sub></i>,  <i>s<sub>f</sub></i>² = SEE²[1 + 1/<i>n</i> + (<i>X<sub>f</sub></i> − <i>X̄</i>)² / ((<i>n</i> − 1)<i>s<sub>X</sub></i>²)]']
+  ],
+  exam: [
+    'Fill in a missing cell of an ANOVA table: SST, SSE, R², SEE or F from the others.',
+    'Test H₀: b₁ = 0 with a t-test and state reject / fail to reject at a given significance level.',
+    'Interpret a log-lin slope (≈ % change in Y per unit of X) and a log-log slope (elasticity).',
+    'Recognise that the prediction interval widens as X<sub>f</sub> moves away from X̄.'
+  ],
+  traps: [
+    'A significant slope says nothing about causation.',
+    'High R² does not mean the assumptions hold; always look at the residuals.',
+    'Forecasting with an X far outside the sample is extrapolation; the interval understates the risk.'
+  ] },
+
+{ id: 'mlr', g: 'reg', title: 'Multiple regression', reading: 'CFA L2 · Basics of multiple regression',
+  lede: 'Several explanatory variables at once. Each slope is the effect of that variable holding all the others constant.',
+  ideas: [
+    '<b>Partial slope coefficient:</b> the change in Y for a one-unit change in X<sub>j</sub>, holding the other X’s constant.',
+    'Adds one assumption: <b>no exact linear relationship</b> among the independent variables.',
+    '<b>R² never falls</b> when you add a variable, even a useless one. Compare models with adjusted R², AIC or BIC instead.',
+    'The <b>F-test</b> asks whether all slopes are jointly zero. Individual <b>t-tests</b> ask about one coefficient at a time.',
+    '<b>Nested models:</b> to test whether a group of q variables adds value, compare the restricted model (without them) with the unrestricted model using a joint F-test.',
+    'Diagnostic plots: residuals against each X and against the fitted values reveal non-linearity and heteroskedasticity.'
+  ],
+  formulas: [
+    ['Model', '<i>Y<sub>i</sub></i> = <i>b</i><sub>0</sub> + <i>b</i><sub>1</sub><i>X</i><sub>1<i>i</i></sub> + … + <i>b<sub>k</sub>X<sub>ki</sub></i> + <i>ε<sub>i</sub></i>'],
+    ['Adjusted R²', '<i>R̄</i>² = 1 − [(<i>n</i> − 1) / (<i>n</i> − <i>k</i> − 1)] · (1 − <i>R</i>²)'],
+    ['Overall F-test', '<i>F</i> = (SSR / <i>k</i>) / [SSE / (<i>n</i> − <i>k</i> − 1)],  df = <i>k</i>, <i>n</i> − <i>k</i> − 1'],
+    ['Joint F (nested)', '<i>F</i> = [(SSE<sub>R</sub> − SSE<sub>U</sub>) / <i>q</i>] / [SSE<sub>U</sub> / (<i>n</i> − <i>k</i> − 1)]<small>q = number of restrictions; k from the unrestricted model</small>'],
+    ['Akaike (AIC)', 'AIC = <i>n</i> ln(SSE / <i>n</i>) + 2(<i>k</i> + 1)<small>Lower is better. Preferred when the goal is prediction.</small>'],
+    ['Schwarz (BIC)', 'BIC = <i>n</i> ln(SSE / <i>n</i>) + ln(<i>n</i>)(<i>k</i> + 1)<small>Lower is better. Heavier penalty; preferred for best goodness of fit.</small>'],
+    ['SEE', 'SEE = √[ SSE / (<i>n</i> − <i>k</i> − 1) ]']
+  ],
+  exam: [
+    'Compute adjusted R² and explain why it fell after adding a weak variable (its |t| < 1).',
+    'Pick the better model from a table of AIC / BIC values (lowest wins; AIC for forecasting, BIC for fit).',
+    'Set up a joint F-test: identify restricted vs unrestricted model, q, and the degrees of freedom.',
+    'Interpret a coefficient using the words “holding other variables constant”.'
+  ],
+  traps: [
+    'Adjusted R² can be negative and has no “percentage explained” meaning.',
+    'The F-test is always one-tailed.',
+    'Comparing R² across models with different numbers of variables rewards over-fitting.'
+  ] },
+
+{ id: 'misspec', g: 'reg', title: 'Model misspecification', reading: 'CFA L2 · Evaluating regression model fit',
+  lede: 'For each violation, know three things: what it does to the coefficients and standard errors, how to detect it, and how to fix it.',
+  ideas: [
+    '<b>Misspecification forms:</b> omitting an important variable (biased and inconsistent coefficients if it is correlated with the included X’s), wrong functional form, inappropriate scaling, and pooling data from different regimes.',
+    '<b>Conditional heteroskedasticity</b> (error variance changes with X) leaves coefficients unbiased but makes standard errors unreliable, usually too small. t-stats are inflated, leading to Type I errors. Unconditional heteroskedasticity is not a problem.',
+    '<b>Serial correlation</b> (errors correlated across time). Without a lagged dependent variable, coefficients stay consistent but positive serial correlation makes standard errors too small. With a lagged Y as a regressor, the coefficients themselves become inconsistent.',
+    '<b>Multicollinearity</b> (X’s highly correlated with each other) leaves coefficients unbiased but inflates their standard errors. t-stats are too small, leading to Type II errors. Classic symptom: high R² and a significant F, yet no significant t-stats.'
+  ],
+  table: { head: ['Problem', 'Effect on inference', 'Detect', 'Fix'], rows: [
+    ['Conditional heteroskedasticity', 'SE too small → t too big → false significance', 'Breusch–Pagan: <span class="math"><i>n</i>·<i>R</i>²</span> from regressing ε̂² on the X’s, χ² with k df (one-tailed)', 'White (heteroskedasticity-robust) standard errors'],
+    ['Serial correlation', 'SE too small if positive; coefficients inconsistent if lagged Y included', 'Durbin–Watson (first order) or Breusch–Godfrey (higher orders)', 'Newey–West (HAC) standard errors; model the dynamics'],
+    ['Multicollinearity', 'SE too big → t too small → miss real effects', 'VIF > 5 worrying, > 10 serious; high R² + significant F + insignificant t’s', 'Drop a correlated variable, use a different proxy, add data'],
+    ['Omitted variable', 'Biased and inconsistent coefficients', 'Theory, residual patterns', 'Include the variable']
+  ] },
+  formulas: [
+    ['Breusch–Pagan', 'BP = <i>n</i> × <i>R</i>²<sub>resid</sub>  ~  χ²(<i>k</i>)'],
+    ['Durbin–Watson', 'DW ≈ 2(1 − <i>r</i>)<small>DW ≈ 2: none; DW < 2: positive serial correlation; DW > 2: negative</small>'],
+    ['Variance inflation factor', 'VIF<sub><i>j</i></sub> = 1 / (1 − <i>R</i>²<sub><i>j</i></sub>)<small>R²<sub>j</sub> from regressing X<sub>j</sub> on the other X’s</small>']
+  ],
+  exam: [
+    'Vignette gives BP inputs; compute n·R² and compare with the χ² critical value.',
+    '“High R², significant F, no significant t’s” → multicollinearity.',
+    'Match each problem to its correction (robust SE vs Newey–West vs dropping variables).',
+    'State the direction of the error: Type I (heteroskedasticity, serial correlation) vs Type II (multicollinearity).'
+  ],
+  traps: [
+    'Robust standard errors change the SEs, not the coefficient estimates.',
+    'BP and the F-test are one-tailed; DW has an inconclusive zone.',
+    'Multicollinearity does not bias coefficients.'
+  ] },
+
+{ id: 'extend', g: 'reg', title: 'Influence, dummies and logistic regression', reading: 'CFA L2 · Extensions of multiple regression',
+  lede: 'Find the observations that move the line, encode categories with dummies, and switch to logistic regression when Y is binary.',
+  ideas: [
+    '<b>High-leverage point:</b> extreme X value. <b>Outlier:</b> extreme Y value (large residual). <b>Influential observation:</b> one whose exclusion materially changes the estimated regression.',
+    '<b>Dummy variables</b> take 0 or 1. With an intercept, use n − 1 dummies for n categories, or you hit perfect collinearity (the dummy variable trap). Each dummy’s coefficient is measured relative to the omitted base category.',
+    'An <b>intercept dummy</b> shifts the line up or down. A <b>slope dummy</b> (D × X) changes the slope for the flagged group.',
+    '<b>Logistic regression</b> models the log-odds of a binary outcome. It is estimated by maximum likelihood, not OLS. A coefficient is the change in log-odds for a one-unit change in X; e<sup>b</sup> is the odds ratio.',
+    'Logistic fit is judged with the <b>likelihood ratio test</b> and a pseudo-R², which is only useful for comparing models on the same data.'
+  ],
+  formulas: [
+    ['Leverage', '<i>h<sub>ii</sub></i> > 3 · (<i>k</i> + 1) / <i>n</i>  → high leverage'],
+    ['Studentised residual', '|<i>t<sub>i</sub></i>*| > critical <i>t</i> (df = <i>n</i> − <i>k</i> − 2)  → outlier'],
+    ['Cook’s distance', '<i>D<sub>i</sub></i> > 0.5 may be influential; > 1 likely; or > 2√(<i>k</i>/<i>n</i>)'],
+    ['Dummy model', '<i>Y</i> = <i>b</i><sub>0</sub> + <i>d</i><sub>0</sub><i>D</i> + <i>b</i><sub>1</sub><i>X</i> + <i>d</i><sub>1</sub>(<i>D</i>·<i>X</i>) + <i>ε</i>'],
+    ['Logistic (log-odds)', 'ln[<i>p</i> / (1 − <i>p</i>)] = <i>b</i><sub>0</sub> + <i>b</i><sub>1</sub><i>X</i><sub>1</sub> + … + <i>b<sub>k</sub>X<sub>k</sub></i>'],
+    ['Probability', '<i>p</i> = 1 / (1 + e<sup>−(<i>b</i>0 + <i>b</i>1<i>X</i>1 + …)</sup>)'],
+    ['Likelihood ratio', 'LR = −2(ln <i>L</i><sub>R</sub> − ln <i>L</i><sub>U</sub>)  ~  χ²(<i>q</i>)']
+  ],
+  exam: [
+    'Count dummies: quarterly seasonality with an intercept needs 3 dummies.',
+    'Interpret a dummy coefficient as the difference from the base category.',
+    'Convert a logistic coefficient to an odds ratio with e<sup>b</sup>.',
+    'Classify a flagged observation as leverage, outlier, or influential from given thresholds.'
+  ],
+  traps: [
+    'An outlier is not automatically influential, and a high-leverage point can sit right on the line.',
+    'Logistic coefficients are not changes in probability.'
+  ] },
+
+/* ===== TIME SERIES ===== */
+{ id: 'trend', g: 'ts', title: 'Trend models', reading: 'CFA L2 · Time-series analysis',
+  lede: 'The simplest forecast: regress the series on time. Linear for constant amounts, log-linear for constant growth rates.',
+  ideas: [
+    '<b>Linear trend:</b> the series grows by a constant amount b₁ each period.',
+    '<b>Log-linear trend:</b> the series grows at a constant rate. Use it when the plot curves upward (exponential growth), as with sales or prices over long spans. Growth per period = e<sup>b₁</sup> − 1.',
+    'A trend model is just a regression, so the regression assumptions apply. The key check is <b>serial correlation in the residuals</b> with the Durbin–Watson test.',
+    'If the residuals are serially correlated, the trend model is misspecified. Move to an autoregressive model.'
+  ],
+  formulas: [
+    ['Linear trend', '<i>y<sub>t</sub></i> = <i>b</i><sub>0</sub> + <i>b</i><sub>1</sub><i>t</i> + <i>ε<sub>t</sub></i>'],
+    ['Log-linear trend', 'ln <i>y<sub>t</sub></i> = <i>b</i><sub>0</sub> + <i>b</i><sub>1</sub><i>t</i> + <i>ε<sub>t</sub></i>  ⇒  <i>ŷ<sub>t</sub></i> = e<sup><i>b</i>0 + <i>b</i>1<i>t</i></sup>'],
+    ['DW check', 'DW significantly below 2  ⇒  positive serial correlation  ⇒  model misspecified']
+  ],
+  exam: [
+    'Choose linear vs log-linear from a description or plot of the data.',
+    'Compute a forecast from a log-linear model (remember to exponentiate).',
+    'Conclude that a significant DW statistic means the trend model is inadequate.'
+  ],
+  traps: [
+    'Forgetting to take e<sup>(…)</sup> of a log-linear forecast.',
+    'Financial series almost always fail the DW test in a pure trend model.'
+  ] },
+
+{ id: 'ar', g: 'ts', title: 'Autoregressive models', reading: 'CFA L2 · Time-series analysis', lab: 'ar',
+  lede: 'Use the series’ own past to forecast its future. Valid only when the series is covariance stationary.',
+  ideas: [
+    'An <b>AR(p)</b> model regresses x<sub>t</sub> on its own p previous values.',
+    '<b>Covariance stationary</b> means three things are constant and finite over time: the mean, the variance, and the covariance with its own leads and lags.',
+    'Check the model by testing <b>residual autocorrelations</b>. Each has standard error 1/√T. If none is significant, the model is correctly specified. If some are, add lags.',
+    'A stationary AR(1) has a <b>mean-reverting level</b>. Above it, the model forecasts a fall; below it, a rise.',
+    'Multi-period forecasts use the <b>chain rule of forecasting</b>: feed each forecast into the next. Uncertainty grows with the horizon.',
+    'Compare models <b>out-of-sample</b> with RMSE; the lower RMSE wins. Coefficients can be <b>unstable</b> across sample periods, so prefer a period with a stable regime.'
+  ],
+  formulas: [
+    ['AR(1)', '<i>x<sub>t</sub></i> = <i>b</i><sub>0</sub> + <i>b</i><sub>1</sub><i>x</i><sub><i>t</i>−1</sub> + <i>ε<sub>t</sub></i>'],
+    ['Mean-reverting level', 'MRL = <i>b</i><sub>0</sub> / (1 − <i>b</i><sub>1</sub>)<small>Exists only when |b₁| < 1</small>'],
+    ['Residual autocorrelation test', '<i>t</i> = <i>ρ̂</i><sub><i>ε</i>,<i>k</i></sub> / (1 / √<i>T</i>),  df = <i>T</i> − 2'],
+    ['Two-step forecast', '<i>x̂</i><sub><i>t</i>+2</sub> = <i>b̂</i><sub>0</sub> + <i>b̂</i><sub>1</sub><i>x̂</i><sub><i>t</i>+1</sub>'],
+    ['Root mean squared error', 'RMSE = √[ Σ(actual − forecast)² / <i>n</i> ]']
+  ],
+  exam: [
+    'Compute the mean-reverting level and say whether the next forecast rises or falls.',
+    'Do a two-step chain-rule forecast.',
+    'Given a table of residual autocorrelations and T, decide whether the model is correctly specified.',
+    'Pick between two models using out-of-sample RMSE (not in-sample).'
+  ],
+  traps: [
+    'Using the Durbin–Watson test on an AR model. It is invalid there; test residual autocorrelations with t-stats instead.',
+    'Assuming a series is stationary because the AR coefficient looks significant.'
+  ] },
+
+{ id: 'unitroot', g: 'ts', title: 'Random walks and unit roots', reading: 'CFA L2 · Time-series analysis', lab: 'ar',
+  lede: 'When b₁ = 1 the series has no anchor. Test for it with Dickey–Fuller and fix it by first-differencing.',
+  ideas: [
+    '<b>Random walk:</b> this period’s value equals last period’s plus an unpredictable error. With a <b>drift</b>, a constant b₀ is added each period.',
+    'b₁ = 1 is a <b>unit root</b>. The series is not covariance stationary, its variance grows without bound, and the mean-reverting level b₀ / 0 is undefined.',
+    'You cannot test b₁ = 1 with an ordinary t-test because the estimate is biased under the null. Use the <b>Dickey–Fuller test</b>: subtract x<sub>t−1</sub> from both sides and test whether g₁ = b₁ − 1 equals zero, using DF critical values (more negative than usual, about −2.9 at 5% with a constant).',
+    '<b>Fix:</b> model the first difference y<sub>t</sub> = x<sub>t</sub> − x<sub>t−1</sub>. For a random walk the differenced series is stationary, and it can then be modelled as an AR process.',
+    'Exchange rates and asset prices often behave like random walks.'
+  ],
+  formulas: [
+    ['Random walk', '<i>x<sub>t</sub></i> = <i>x</i><sub><i>t</i>−1</sub> + <i>ε<sub>t</sub></i>'],
+    ['With drift', '<i>x<sub>t</sub></i> = <i>b</i><sub>0</sub> + <i>x</i><sub><i>t</i>−1</sub> + <i>ε<sub>t</sub></i>'],
+    ['Dickey–Fuller', '<i>x<sub>t</sub></i> − <i>x</i><sub><i>t</i>−1</sub> = <i>b</i><sub>0</sub> + <i>g</i><sub>1</sub><i>x</i><sub><i>t</i>−1</sub> + <i>ε<sub>t</sub></i>,  <i>g</i><sub>1</sub> = <i>b</i><sub>1</sub> − 1<small>H₀: g₁ = 0 (unit root). Reject only if t is below the DF critical value.</small>'],
+    ['First difference', '<i>y<sub>t</sub></i> = <i>x<sub>t</sub></i> − <i>x</i><sub><i>t</i>−1</sub>']
+  ],
+  exam: [
+    '“Fail to reject H₀ in the Dickey–Fuller test” → unit root → first-difference the data.',
+    'Explain why the mean-reverting level is undefined for a random walk.',
+    'Identify the null and alternative hypotheses of the DF test.'
+  ],
+  traps: [
+    'In DF, the null is the unit root. Rejecting it is evidence of stationarity.',
+    'A random walk with drift still has a unit root.'
+  ] },
+
+{ id: 'seasonal', g: 'ts', title: 'Seasonality, ARCH and multiple series', reading: 'CFA L2 · Time-series analysis',
+  lede: 'Add a seasonal lag when one season echoes the same season last year, model volatility clustering with ARCH, and check cointegration before regressing one series on another.',
+  ideas: [
+    '<b>Seasonality</b> shows up as a significant residual autocorrelation at the seasonal lag: lag 4 for quarterly data, lag 12 for monthly. Fix it by adding that lag as a regressor.',
+    '<b>ARCH</b> (autoregressive conditional heteroskedasticity): the variance of the error depends on the previous squared error, so calm and volatile periods cluster. Test by regressing squared residuals on lagged squared residuals; a significant a₁ means ARCH is present.',
+    'If ARCH is present, the standard errors of the coefficients are wrong. Use generalised least squares or an ARCH-type model, which can also <b>forecast next period’s variance</b>.',
+    '<b>Regressing one time series on another</b> is only valid if neither has a unit root, or if both do and they are <b>cointegrated</b> (share a long-run equilibrium). Test with Engle–Granger: run a DF test on the regression residuals using Engle–Granger critical values.'
+  ],
+  table: { head: ['Unit root in Y?', 'Unit root in X?', 'Cointegrated?', 'Regression valid?'], rows: [
+    ['No', 'No', '—', '<span class="yes">Yes</span>'],
+    ['Yes', 'No', '—', '<span class="no">No</span>'],
+    ['No', 'Yes', '—', '<span class="no">No</span>'],
+    ['Yes', 'Yes', 'No', '<span class="no">No (spurious)</span>'],
+    ['Yes', 'Yes', 'Yes', '<span class="yes">Yes (long-run relation)</span>']
+  ] },
+  formulas: [
+    ['Seasonal AR', '<i>x<sub>t</sub></i> = <i>b</i><sub>0</sub> + <i>b</i><sub>1</sub><i>x</i><sub><i>t</i>−1</sub> + <i>b</i><sub>2</sub><i>x</i><sub><i>t</i>−4</sub> + <i>ε<sub>t</sub></i>  (quarterly)'],
+    ['ARCH(1) test', '<i>ε̂</i>²<sub><i>t</i></sub> = <i>a</i><sub>0</sub> + <i>a</i><sub>1</sub><i>ε̂</i>²<sub><i>t</i>−1</sub> + <i>u<sub>t</sub></i>'],
+    ['Variance forecast', '<i>σ̂</i>²<sub><i>t</i>+1</sub> = <i>â</i><sub>0</sub> + <i>â</i><sub>1</sub><i>ε̂</i>²<sub><i>t</i></sub>']
+  ],
+  exam: [
+    'Spot the seasonal lag in a residual autocorrelation table and write the corrected model.',
+    'Forecast next-period variance from ARCH(1) estimates.',
+    'Use the unit-root / cointegration table to judge whether a regression of two series is valid.'
+  ],
+  traps: [
+    'Adding a seasonal lag to a model is not the same as using seasonal dummies; know which the question uses.',
+    'Engle–Granger uses its own critical values, not standard DF values.'
+  ] },
+
+/* ===== MACHINE LEARNING ===== */
+{ id: 'mlbasics', g: 'ml', title: 'ML foundations and overfitting', reading: 'CFA L2 · Machine learning', lab: 'overfit',
+  lede: 'Machine learning trades interpretability for flexibility. The central risk is a model that memorises noise.',
+  ideas: [
+    '<b>Supervised learning</b> uses labelled data: a target (Y) and features (X). Continuous targets are regression problems; categorical targets are classification problems.',
+    '<b>Unsupervised learning</b> has no target. It finds structure: dimension reduction and clustering.',
+    '<b>Deep learning</b> and <b>reinforcement learning</b> can be supervised or unsupervised and handle very complex tasks.',
+    'Data is split into <b>training</b>, <b>validation</b> (to tune) and <b>test</b> (final out-of-sample check) samples.',
+    '<b>Overfitting:</b> the model learns noise. In-sample error is low but out-of-sample error is high. <b>Underfitting:</b> the model is too simple to capture the pattern.',
+    'Total out-of-sample error = <b>bias error</b> (underfit, model too simple) + <b>variance error</b> (overfit, model too complex) + <b>base error</b> (irreducible noise).',
+    'Control overfitting by limiting complexity (penalties, pruning) and by <b>k-fold cross-validation</b>: split the data into k parts, train on k − 1, validate on the remaining one, rotate, and average.'
+  ],
+  formulas: [
+    ['Error decomposition', 'Out-of-sample error = bias error + variance error + base error'],
+    ['k-fold cross-validation', 'CV error = (1/<i>k</i>) Σ<sub><i>j</i></sub> error on fold <i>j</i> when trained on the other <i>k</i> − 1 folds']
+  ],
+  exam: [
+    'Diagnose a model from in-sample vs out-of-sample accuracy (both low = bias; gap = variance).',
+    'Name the remedy: reduce complexity / add penalty for overfit; add features or flexibility for underfit.',
+    'Explain why the test sample must not be used for tuning.'
+  ],
+  traps: [
+    'Perfect in-sample fit is a warning sign, not a success.',
+    'Base error cannot be reduced by any model.'
+  ] },
+
+{ id: 'supervised', g: 'ml', title: 'Penalized regression, SVM and KNN', reading: 'CFA L2 · Machine learning',
+  lede: 'Three supervised workhorses: regression that punishes complexity, a classifier that maximises the margin, and a classifier that asks the neighbours.',
+  ideas: [
+    '<b>Penalized regression (LASSO)</b> minimises SSE plus a penalty λ times the sum of absolute coefficients. It shrinks some coefficients to exactly zero, so it performs <b>feature selection</b>. λ is a hyperparameter; λ = 0 gives OLS. Ridge uses squared coefficients and shrinks without zeroing.',
+    '<b>Support vector machine (SVM):</b> a linear classifier that finds the boundary with the widest margin between two classes. The points on the margin are the support vectors. A <b>soft margin</b> tolerates some misclassification; kernels handle non-linear boundaries.',
+    '<b>K-nearest neighbours (KNN):</b> classify a new point by majority vote of its k closest training points. Non-parametric and intuitive, but sensitive to the distance metric, feature scaling and irrelevant features.',
+    'Choosing k: too small fits noise (high variance); too large blurs real distinctions (high bias). An even k can produce ties in binary problems.',
+    'Finance uses: LASSO for selecting factors from many candidates; SVM for credit default or bankruptcy classification; KNN for bond rating prediction and finding comparable companies.'
+  ],
+  formulas: [
+    ['LASSO objective', 'min Σ(<i>Y<sub>i</sub></i> − <i>Ŷ<sub>i</sub></i>)² + <i>λ</i> Σ|<i>b<sub>k</sub></i>|'],
+    ['Ridge objective', 'min Σ(<i>Y<sub>i</sub></i> − <i>Ŷ<sub>i</sub></i>)² + <i>λ</i> Σ<i>b<sub>k</sub></i>²'],
+    ['Euclidean distance', '<i>d</i> = √Σ(<i>x<sub>j</sub></i> − <i>x′<sub>j</sub></i>)²']
+  ],
+  exam: [
+    'Explain how LASSO reduces overfitting and why it can drop variables.',
+    'Identify which algorithm fits a vignette: “classify with a maximum-margin boundary” → SVM.',
+    'Explain the effect of increasing k in KNN.'
+  ],
+  traps: [
+    'λ is chosen by the analyst (via cross-validation), not estimated by the model.',
+    'KNN needs standardised features; otherwise the feature with the largest scale dominates.'
+  ] },
+
+{ id: 'trees', g: 'ml', title: 'Decision trees and ensembles', reading: 'CFA L2 · Machine learning',
+  lede: 'A tree splits the data with yes/no questions. Many trees together, built cleverly, beat any single one.',
+  ideas: [
+    '<b>CART</b> (classification and regression trees) splits on one feature at a time at each node, choosing the split that most reduces impurity (Gini or entropy for classification, SSE for regression). Terminal nodes hold the prediction.',
+    'Trees are <b>interpretable</b> and handle non-linear relationships and interactions, but a deep tree overfits. Control it with maximum depth, minimum observations per leaf, or <b>pruning</b>.',
+    '<b>Ensemble learning</b> combines many models. Averaging reduces variance and usually improves out-of-sample accuracy.',
+    '<b>Voting classifier:</b> different algorithms vote. <b>Bagging</b> (bootstrap aggregating): train the same algorithm on many bootstrap samples, then average or vote.',
+    '<b>Random forest:</b> bagged trees that also consider only a random subset of features at each split, which de-correlates the trees and sharply reduces overfitting. Cost: less interpretable.',
+    '<b>Boosting:</b> train models sequentially, each one focusing on the errors of the previous ones (AdaBoost re-weights misclassified points; gradient boosting fits the residuals).'
+  ],
+  formulas: [
+    ['Gini impurity', 'Gini = 1 − Σ <i>p<sub>i</sub></i>²'],
+    ['Entropy', 'H = −Σ <i>p<sub>i</sub></i> log₂ <i>p<sub>i</sub></i>'],
+    ['Bagged prediction', '<i>ŷ</i> = (1/<i>B</i>) Σ<sub><i>b</i></sub> <i>ŷ</i><sub>(<i>b</i>)</sub>  (regression) or majority vote (classification)']
+  ],
+  exam: [
+    'Explain how random forests reduce overfitting relative to a single tree.',
+    'Distinguish bagging (parallel, bootstrap samples) from boosting (sequential, focus on errors).',
+    'Recognise that CART output is easy to visualise and explain to clients.'
+  ],
+  traps: [
+    'A random forest is not more interpretable than a tree.',
+    'Bagging samples rows with replacement; the random feature subset is the extra step in a random forest.'
+  ] },
+
+{ id: 'pca', g: 'ml', title: 'Principal components analysis', reading: 'CFA L2 · Machine learning', lab: 'pca',
+  lede: 'Replace many correlated features with a few uncorrelated composites that keep most of the information.',
+  ideas: [
+    '<b>Unsupervised dimension reduction.</b> PCA rotates the axes so the first new axis (PC1) points along the direction of greatest variance, PC2 along the greatest remaining variance at right angles, and so on.',
+    '<b>Eigenvectors</b> are the directions (the new axes, as weights on the original features). <b>Eigenvalues</b> are the variance explained along each one.',
+    'The principal components are <b>uncorrelated</b> with each other, which removes multicollinearity among features.',
+    'Choose how many to keep with a <b>scree plot</b> of variance explained; typically keep enough to explain 85–95% of total variance.',
+    '<b>Standardise first</b> when features are in different units, otherwise the largest-scale feature dominates.',
+    'Downside: components are blends of the original features and are hard to interpret. Classic finance example: three components of yield-curve changes, often read as level, slope and curvature, explain most of the variation.'
+  ],
+  formulas: [
+    ['Share of variance', 'Proportion explained by PC<sub><i>j</i></sub> = <i>λ<sub>j</sub></i> / Σ<i>λ</i>'],
+    ['Component score', 'PC<sub>1</sub> = <i>w</i><sub>11</sub><i>x</i><sub>1</sub> + <i>w</i><sub>12</sub><i>x</i><sub>2</sub> + … ,  with ‖<i>w</i>‖ = 1']
+  ],
+  exam: [
+    'Compute the proportion of variance explained from eigenvalues.',
+    'Decide how many components to keep from a scree plot or a cumulative-variance table.',
+    'State that PCA is unsupervised and that components are uncorrelated.'
+  ],
+  traps: [
+    'PCA does not use the target variable.',
+    'More components always explain more variance; the question is how few you need.'
+  ] },
+
+{ id: 'clustering', g: 'ml', title: 'Clustering', reading: 'CFA L2 · Machine learning', lab: 'kmeans',
+  lede: 'Group observations so members of a cluster are alike and clusters differ from each other, without any labels.',
+  ideas: [
+    '<b>K-means:</b> choose k, place k centroids, assign each point to its nearest centroid, move each centroid to the mean of its points, and repeat until assignments stop changing.',
+    'K-means is fast and scales to large data, but you must choose k in advance and results depend on the starting centroids. The <b>elbow method</b> plots within-cluster sum of squares against k and looks for the bend.',
+    '<b>Hierarchical clustering</b> builds a hierarchy without fixing k. <b>Agglomerative</b> (bottom-up) starts with each point as its own cluster and merges the closest pair repeatedly. <b>Divisive</b> (top-down) starts with one cluster and splits.',
+    'A <b>dendrogram</b> shows the merge history; cutting it at a given height gives a set of clusters.',
+    'Finance uses: data-driven peer groups and sector classifications, and checking whether a “diversified” portfolio is really spread across distinct clusters.'
+  ],
+  formulas: [
+    ['Within-cluster sum of squares', 'WCSS = Σ<sub>clusters</sub> Σ<sub><i>i</i>∈<i>c</i></sub> ‖<i>x<sub>i</sub></i> − <i>μ<sub>c</sub></i>‖²'],
+    ['Centroid update', '<i>μ<sub>c</sub></i> = (1/|<i>c</i>|) Σ<sub><i>i</i>∈<i>c</i></sub> <i>x<sub>i</sub></i>']
+  ],
+  exam: [
+    'Describe the k-means steps in order.',
+    'Contrast k-means (preset k) with hierarchical clustering (no preset k, dendrogram).',
+    'Agglomerative vs divisive: which direction each one works.'
+  ],
+  traps: [
+    'WCSS always falls as k rises; the minimum is not the answer.',
+    'Clustering finds groups; it does not tell you what they mean.'
+  ] },
+
+{ id: 'neural', g: 'ml', title: 'Neural networks, deep and reinforcement learning', reading: 'CFA L2 · Machine learning',
+  lede: 'Layers of simple nodes that, stacked deep enough, can approximate almost any non-linear relationship.',
+  ideas: [
+    'A neural network has an <b>input layer</b> (one node per feature), one or more <b>hidden layers</b>, and an <b>output layer</b>.',
+    'Each node applies a <b>summation operator</b> (weighted sum of inputs plus a bias) and then an <b>activation function</b> (sigmoid, tanh, ReLU) that adds non-linearity.',
+    '<b>Learning:</b> forward propagation produces a prediction, the error is measured, and <b>backpropagation</b> adjusts the weights by gradient descent. The <b>learning rate</b> sets the size of each step.',
+    '<b>Hyperparameters</b> set by the analyst: number of hidden layers, nodes per layer, activation function, learning rate, number of training epochs.',
+    '<b>Deep learning nets</b> have many hidden layers (often 20+) and power image recognition, speech and natural language processing.',
+    '<b>Reinforcement learning:</b> an agent takes actions in an environment and learns by trial and error to maximise cumulative reward, with no labelled data. Examples: game-playing systems, trade execution.'
+  ],
+  formulas: [
+    ['Node output', '<i>a</i> = <i>f</i>( Σ <i>w<sub>i</sub>x<sub>i</sub></i> + <i>b</i> )'],
+    ['Activations', 'ReLU(<i>z</i>) = max(0, <i>z</i>);  sigmoid(<i>z</i>) = 1 / (1 + e<sup>−<i>z</i></sup>)'],
+    ['Gradient descent', '<i>w</i> ← <i>w</i> − <i>η</i> · ∂Loss / ∂<i>w</i>']
+  ],
+  exam: [
+    'Identify the summation operator and activation function in a node.',
+    'Explain what the learning rate does and the trade-off of setting it too high or too low.',
+    'Match a task to RL (agent, reward) vs deep learning (complex pattern recognition).'
+  ],
+  traps: [
+    'Without a non-linear activation, a stack of layers is just a linear model.',
+    'Neural nets need large data sets and are prone to overfitting; they are hard to interpret.'
+  ] },
+
+{ id: 'bigdata', g: 'ml', title: 'Big data projects and model evaluation', reading: 'CFA L2 · Big data projects', lab: 'roc',
+  lede: 'Most of the work is preparing data. Then you judge the model with a confusion matrix, not a single accuracy number.',
+  ideas: [
+    '<b>Big data characteristics:</b> volume, variety, velocity, and veracity (credibility of the data).',
+    '<b>Structured data project steps:</b> conceptualisation, data collection, data preparation and wrangling, data exploration, model training. Text projects follow the same arc: text problem formulation, data curation, text preparation and wrangling, text exploration, model training.',
+    '<b>Data cleansing</b> fixes incompleteness, invalidity, inaccuracy, inconsistency, non-uniformity and duplication. <b>Wrangling</b> covers extraction, aggregation, filtration, selection and conversion; outliers can be trimmed or winsorised.',
+    '<b>Scaling:</b> normalisation squeezes values into [0, 1] and is sensitive to outliers; standardisation converts to z-scores and suits roughly normal data.',
+    '<b>Text preparation:</b> tokenisation, lowercasing, removing stop words and punctuation, stemming (crude suffix removal) or lemmatisation (dictionary base form), then a bag-of-words or n-gram representation in a document term matrix.',
+    '<b>Feature selection</b> keeps informative features (frequency, chi-square, mutual information); <b>feature engineering</b> creates new ones (n-grams, named entity recognition).',
+    '<b>Evaluation:</b> confusion matrix, precision, recall, accuracy, F1 score, the ROC curve with its AUC, and RMSE for continuous targets. Tune hyperparameters with grid search.'
+  ],
+  formulas: [
+    ['Precision', 'P = TP / (TP + FP)<small>Of everything flagged positive, how much was right. Matters when false positives are costly.</small>'],
+    ['Recall (sensitivity)', 'R = TP / (TP + FN)<small>Of all true positives, how many we caught. Matters when false negatives are costly.</small>'],
+    ['Accuracy', '(TP + TN) / (TP + FP + TN + FN)'],
+    ['F1 score', 'F1 = 2 · P · R / (P + R)<small>Better than accuracy when classes are unequal.</small>'],
+    ['False positive rate', 'FPR = FP / (FP + TN)<small>ROC plots recall (TPR) against FPR.</small>'],
+    ['Normalisation', '(<i>X<sub>i</sub></i> − <i>X</i><sub>min</sub>) / (<i>X</i><sub>max</sub> − <i>X</i><sub>min</sub>)'],
+    ['Standardisation', '(<i>X<sub>i</sub></i> − <i>μ</i>) / <i>σ</i>'],
+    ['TF–IDF', 'TF × ln(total documents / documents containing the term)']
+  ],
+  exam: [
+    'Compute precision, recall, accuracy and F1 from a confusion matrix.',
+    'Pick the metric that matters: catching every default (recall) vs avoiding false alarms (precision).',
+    'Order the steps of a big data project and classify a data error (e.g. a negative age is invalidity).',
+    'Stemming vs lemmatisation; normalisation vs standardisation.'
+  ],
+  traps: [
+    'High accuracy on imbalanced data can hide a useless model.',
+    'An AUC of 0.5 is a coin flip, not “half good”.'
+  ] }
+];
+const TOPIC_BY_ID = Object.fromEntries(TOPICS.map(t => [t.id, t]));
+
+/* ---------- labs ---------- */
+const LABS = {};
+
+LABS.reg = {
+  title: 'Regression lab',
+  intro: 'Set the true line and the noise, then see what OLS recovers. Turn up heteroskedasticity to watch the Breusch–Pagan test fire, or tap the chart to plant an influential point.',
+  html: `<div class="lab-grid"><div class="plots">
+      <canvas class="plot" id="regPlot" aria-label="Scatter plot with the fitted regression line"></canvas>
+      <div class="plot-cap"><span><i style="background:var(--accent)"></i>OLS fit</span><span><i style="background:var(--muted)"></i>True line (dashed)</span><span><i style="background:var(--amber)"></i>Your points: tap the chart to add</span></div>
+      <canvas class="plot" id="regResid" aria-label="Residuals plotted against X"></canvas>
+      <div class="plot-cap"><span>Residuals vs X. A fan shape means conditional heteroskedasticity.</span></div>
+      <div class="tbl-wrap"><table class="data" id="regAnova"></table></div>
+    </div><div class="side">
+      ${slider('rgB1', 'True slope', -2, 3, 0.1, 1.2, v => v.toFixed(1))}
+      ${slider('rgB0', 'True intercept', -5, 10, 0.5, 2, v => v.toFixed(1))}
+      ${slider('rgS', 'Noise σ', 0.2, 6, 0.1, 2, v => v.toFixed(1))}
+      ${slider('rgH', 'Heteroskedasticity', 0, 2, 0.1, 0, v => v.toFixed(1))}
+      ${slider('rgN', 'Sample size n', 10, 200, 1, 40, v => v)}
+      <div class="btns"><button class="btn small" id="rgNew">New sample</button><button class="btn small" id="rgClr">Clear my points</button></div>
+      <div class="stats" id="rgStats"></div>
+      <div class="verdicts" id="rgVerd"></div>
+    </div></div>`,
+  init(root) {
+    const s = { b1: 1.2, b0: 2, sig: 2, het: 0, n: 40, seed: 7, extra: [] };
+    let base = [], dom = null;
+    const gen = () => { const r = rng(s.seed); base = []; for (let i = 0; i < s.n; i++) { const x = r() * 10; const sd = s.sig * (1 + s.het * 0.18 * x); base.push([x, s.b0 + s.b1 * x + Math.max(0.05, sd) * gauss(r)]); }
+      const ys = base.map(p => p[1]); const lo = Math.min(...ys), hi = Math.max(...ys), pad = (hi - lo) * 0.12 + 0.5; dom = [lo - pad, hi + pad]; };
+    const cv = $('#regPlot', root), cr = $('#regResid', root);
+    function draw() {
+      const pts = base.concat(s.extra); const x = pts.map(p => p[0]), y = pts.map(p => p[1]);
+      const o = ols1(x, y); const n = o.n, df = n - 2;
+      const yd = [Math.min(dom[0], ...s.extra.map(p => p[1] - 1)), Math.max(dom[1], ...s.extra.map(p => p[1] + 1))];
+      let { ctx, w, h } = setupCanvas(cv, 0.58, 220, 400);
+      const F = frame(ctx, w, h, [0, 10], yd, { xLabel: 'X', yLabel: 'Y' });
+      cv._inv = (px, py) => [(px - F.m.l) / F.pw * 10, yd[0] + (F.m.t + F.ph - py) / F.ph * (yd[1] - yd[0])];
+      F.clip();
+      line(ctx, [[F.X(0), F.Y(s.b0)], [F.X(10), F.Y(s.b0 + s.b1 * 10)]], F.C.muted, 1.5, [5, 5]);
+      base.forEach(p => dot(ctx, F.X(p[0]), F.Y(p[1]), 3.2, F.C.muted));
+      line(ctx, [[F.X(0), F.Y(o.b0)], [F.X(10), F.Y(o.b0 + o.b1 * 10)]], F.C.accent, 2.5);
+      s.extra.forEach(p => dot(ctx, F.X(p[0]), F.Y(p[1]), 6, F.C.amber, F.C.surface));
+      F.unclip();
+      ({ ctx, w, h } = setupCanvas(cr, 0.28, 130, 200));
+      const em = Math.max(1, ...o.e.map(Math.abs)) * 1.1;
+      const R = frame(ctx, w, h, [0, 10], [-em, em], { ny: 4 });
+      line(ctx, [[R.X(0), R.Y(0)], [R.X(10), R.Y(0)]], R.C.ink, 1);
+      pts.forEach((p, i) => dot(ctx, R.X(p[0]), R.Y(o.e[i]), i >= base.length ? 5 : 2.8, i >= base.length ? R.C.amber : R.C.accent));
+      // stats
+      const p = tP(Math.abs(o.t), df), tc = tCrit(df);
+      const F_ = (o.ssr / 1) / (o.sse / df);
+      const e2 = o.e.map(v => v * v); const aux = ols1(x, e2); const bp = n * aux.r2;
+      $('#rgStats', root).innerHTML = stat('b̂₀', fmt(o.b0)) + stat('b̂₁', fmt(o.b1)) + stat('R²', fmt(o.r2)) + stat('SEE', fmt(o.see)) + stat('t (b̂₁)', fmt(o.t, 2)) + stat('p-value', o.t ? (p < 0.0001 ? '<0.0001' : fmt(p, 4)) : '—') + stat('F', fmt(F_, 2)) + stat('BP = nR²', fmt(bp, 2));
+      $('#rgVerd', root).innerHTML =
+        `<div class="verdict">${Math.abs(o.t) > tc ? chip('good', 'Reject H₀') : chip('warn', 'Fail to reject')}<span>Slope test at 5%: |t| = ${fmt(Math.abs(o.t), 2)} vs critical ${fmt(tc, 2)} (df ${df}).</span></div>` +
+        `<div class="verdict">${bp > 3.841 ? chip('bad', 'Hetero') : chip('good', 'OK')}<span>Breusch–Pagan: ${fmt(bp, 2)} vs χ²(1) critical 3.84. ${bp > 3.841 ? 'Use White robust standard errors.' : 'No evidence of conditional heteroskedasticity.'}</span></div>` +
+        `<div class="verdict">${chip('info', 'Check')}<span>F = ${fmt(F_, 2)} and t² = ${fmt(o.t * o.t, 2)} are equal in simple regression.</span></div>`;
+      $('#regAnova', root).innerHTML = `<thead><tr><th>Source</th><th>df</th><th>Sum of squares</th><th>Mean square</th><th>F</th></tr></thead><tbody>
+        <tr><td>Regression</td><td class="num">1</td><td class="num">${fmt(o.ssr, 2)}</td><td class="num">${fmt(o.ssr, 2)}</td><td class="num">${fmt(F_, 2)}</td></tr>
+        <tr><td>Error</td><td class="num">${df}</td><td class="num">${fmt(o.sse, 2)}</td><td class="num">${fmt(o.sse / df, 2)}</td><td></td></tr>
+        <tr><td>Total</td><td class="num">${n - 1}</td><td class="num">${fmt(o.sst, 2)}</td><td></td><td></td></tr></tbody>`;
+    }
+    const regen = () => { gen(); draw(); };
+    bindSlider(root, 'rgB1', v => v.toFixed(1), v => { s.b1 = v; regen(); });
+    bindSlider(root, 'rgB0', v => v.toFixed(1), v => { s.b0 = v; regen(); });
+    bindSlider(root, 'rgS', v => v.toFixed(1), v => { s.sig = v; regen(); });
+    bindSlider(root, 'rgH', v => v.toFixed(1), v => { s.het = v; regen(); });
+    bindSlider(root, 'rgN', v => v, v => { s.n = v; regen(); });
+    $('#rgNew', root).onclick = () => { s.seed++; regen(); };
+    $('#rgClr', root).onclick = () => { s.extra = []; draw(); };
+    cv.addEventListener('pointerdown', e => { const r = cv.getBoundingClientRect(); const [x, y] = cv._inv(e.clientX - r.left, e.clientY - r.top); if (x >= 0 && x <= 10) { s.extra.push([x, y]); draw(); } });
+    regen(); return draw;
+  }
+};
+
+LABS.ar = {
+  title: 'Time-series lab',
+  intro: 'Simulate an AR(1) process, then estimate it the way the exam does. Push b₁ to 1.0 to create a random walk and watch the Dickey–Fuller test fail to reject. Add ARCH to see volatility clustering.',
+  html: `<div class="btns" id="arPre">
+      <button class="btn small" data-p="0.5,1,1,0">Mean-reverting</button>
+      <button class="btn small" data-p="0.92,0.4,1,0">Persistent</button>
+      <button class="btn small" data-p="1,0,1,0">Random walk</button>
+      <button class="btn small" data-p="1,0.15,1,0">Walk with drift</button>
+      <button class="btn small" data-p="-0.6,3,1,0">Oscillating</button>
+      <button class="btn small" data-p="0.3,1,1,0.8">ARCH clustering</button></div>
+    <div class="lab-grid"><div class="plots">
+      <canvas class="plot" id="arPlot" aria-label="Simulated time series"></canvas>
+      <div class="plot-cap"><span><i style="background:var(--accent)"></i>x<sub>t</sub></span><span><i style="background:var(--amber)"></i>Estimated mean-reverting level</span></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><span class="eyebrow">Autocorrelation, lags 1–15</span>
+        <div class="seg" role="group" aria-label="Autocorrelation source"><button id="arAcfS" aria-pressed="true">Series</button><button id="arAcfR" aria-pressed="false">AR(1) residuals</button></div></div>
+      <canvas class="plot" id="arAcf" aria-label="Autocorrelation bars with significance band"></canvas>
+      <div class="plot-cap"><span>Shaded band = ±2/√T. Bars outside it are significant at roughly 5%.</span></div>
+    </div><div class="side">
+      ${slider('arB1', 'b₁ (persistence)', -0.9, 1, 0.01, 0.5, v => v.toFixed(2))}
+      ${slider('arB0', 'b₀ (intercept / drift)', 0, 3, 0.05, 1, v => v.toFixed(2))}
+      ${slider('arS', 'Error σ', 0.2, 3, 0.1, 1, v => v.toFixed(1))}
+      ${slider('arA', 'ARCH a₁', 0, 0.9, 0.05, 0, v => v.toFixed(2))}
+      <div class="btns"><button class="btn small" id="arNew">New draw</button></div>
+      <div class="stats" id="arStats"></div>
+      <div class="verdicts" id="arVerd"></div>
+    </div></div>`,
+  init(root) {
+    const T = 240; const s = { b1: 0.5, b0: 1, sig: 1, a1: 0, seed: 11, acfMode: 'S' };
+    let x = [];
+    const sim = () => { const r = rng(s.seed); const burn = s.b1 < 1 ? 60 : 0; let prev = s.b1 < 1 ? s.b0 / (1 - s.b1) : 0, ep = 0; const a0 = s.sig * s.sig * (1 - s.a1); x = [];
+      for (let t = 0; t < T + burn; t++) { const hv = a0 + s.a1 * ep * ep; const e = Math.sqrt(hv) * gauss(r); const v = s.b0 + s.b1 * prev + e; if (t >= burn) x.push(v); prev = v; ep = e; } };
+    const cv = $('#arPlot', root), ca = $('#arAcf', root);
+    function draw() {
+      const X = x.slice(0, -1), Y = x.slice(1); const o = ols1(X, Y);
+      const mrl = Math.abs(o.b1) < 0.995 ? o.b0 / (1 - o.b1) : null;
+      const dfT = (o.b1 - 1) / o.sb1;
+      const rac = acf(o.e, 15); const se = 1 / Math.sqrt(o.e.length);
+      const e2 = o.e.map(v => v * v); const arch = ols1(e2.slice(0, -1), e2.slice(1)); const archT = arch.b1 / arch.sb1;
+      let lo = Math.min(...x), hi = Math.max(...x); if (mrl != null && mrl > lo - (hi - lo) && mrl < hi + (hi - lo)) { lo = Math.min(lo, mrl); hi = Math.max(hi, mrl); }
+      const pad = (hi - lo) * 0.08 + 0.1;
+      let { ctx, w, h } = setupCanvas(cv, 0.42, 200, 340);
+      const F = frame(ctx, w, h, [0, T], [lo - pad, hi + pad], { xLabel: 't' });
+      F.clip();
+      if (mrl != null) line(ctx, [[F.X(0), F.Y(mrl)], [F.X(T), F.Y(mrl)]], F.C.amber, 1.5, [6, 4]);
+      line(ctx, x.map((v, i) => [F.X(i), F.Y(v)]), F.C.accent, 1.5);
+      F.unclip();
+      const vals = s.acfMode === 'S' ? acf(x, 15) : rac;
+      ({ ctx, w, h } = setupCanvas(ca, 0.3, 140, 220));
+      const A = frame(ctx, w, h, [0.3, 15.7], [-1, 1], { xTicks: [1, 3, 5, 7, 9, 11, 13, 15], yTicks: [-1, -0.5, 0, 0.5, 1] });
+      const band = 2 * se; ctx.fillStyle = A.C.accent; ctx.globalAlpha = 0.12; ctx.fillRect(A.m.l, A.Y(band), A.pw, A.Y(-band) - A.Y(band)); ctx.globalAlpha = 1;
+      line(ctx, [[A.m.l, A.Y(0)], [A.m.l + A.pw, A.Y(0)]], A.C.ink, 1);
+      const bw = Math.max(4, A.pw / 15 * 0.5);
+      vals.forEach((v, i) => { ctx.fillStyle = Math.abs(v) > band ? A.C.bad : A.C.accent; const y0 = A.Y(0), y1 = A.Y(v); ctx.fillRect(A.X(i + 1) - bw / 2, Math.min(y0, y1), bw, Math.max(1, Math.abs(y1 - y0))); });
+      const sigLags = rac.map((v, i) => Math.abs(v) > band ? i + 1 : 0).filter(Boolean);
+      $('#arStats', root).innerHTML = stat('b̂₀', fmt(o.b0)) + stat('b̂₁', fmt(o.b1)) + stat('MRL b̂₀/(1−b̂₁)', mrl == null ? 'undefined' : fmt(mrl, 2)) + stat('DF t (g₁)', fmt(dfT, 2)) + stat('ρ̂ resid lag 1', fmt(rac[0], 3)) + stat('ARCH a₁ t', fmt(archT, 2));
+      const unit = dfT > -2.88;
+      $('#arVerd', root).innerHTML =
+        `<div class="verdict">${unit ? chip('bad', 'Unit root') : chip('good', 'Stationary')}<span>Dickey–Fuller: t = ${fmt(dfT, 2)} vs critical ≈ −2.88. ${unit ? 'Fail to reject H₀ (g₁ = 0). First-difference the series before modelling.' : 'Reject H₀. The AR(1) model and its mean-reverting level are usable.'}</span></div>` +
+        `<div class="verdict">${sigLags.length ? chip('warn', 'Misspecified?') : chip('good', 'White noise')}<span>${sigLags.length ? 'Significant residual autocorrelation at lag ' + sigLags.join(', ') + '. Add lags (or expect ~1 false alarm in 15 at 5%).' : 'No residual autocorrelation is significant. AR(1) captures the dynamics.'}</span></div>` +
+        `<div class="verdict">${archT > 1.97 ? chip('bad', 'ARCH') : chip('good', 'No ARCH')}<span>Regress ε̂²<sub>t</sub> on ε̂²<sub>t−1</sub>: t = ${fmt(archT, 2)}. ${archT > 1.97 ? 'Variance clusters; coefficient SEs are unreliable. Use GLS or an ARCH model.' : 'Error variance looks constant over time.'}</span></div>`;
+    }
+    const sl = {};
+    const re = () => { sim(); draw(); };
+    sl.b1 = bindSlider(root, 'arB1', v => v.toFixed(2), v => { s.b1 = v; re(); });
+    sl.b0 = bindSlider(root, 'arB0', v => v.toFixed(2), v => { s.b0 = v; re(); });
+    sl.sig = bindSlider(root, 'arS', v => v.toFixed(1), v => { s.sig = v; re(); });
+    sl.a1 = bindSlider(root, 'arA', v => v.toFixed(2), v => { s.a1 = v; re(); });
+    $('#arNew', root).onclick = () => { s.seed++; re(); };
+    $$('#arPre button', root).forEach(b => b.onclick = () => { const [b1, b0, sg, a1] = b.dataset.p.split(',').map(Number); Object.assign(s, { b1, b0, sig: sg, a1 });
+      [['b1', b1, 2], ['b0', b0, 2], ['sig', sg, 1], ['a1', a1, 2]].forEach(([k, v, d]) => { sl[k].value = v; $('#' + sl[k].id + '-o', root).textContent = v.toFixed(d); }); re(); });
+    const setMode = m => { s.acfMode = m; $('#arAcfS', root).setAttribute('aria-pressed', m === 'S'); $('#arAcfR', root).setAttribute('aria-pressed', m === 'R'); draw(); };
+    $('#arAcfS', root).onclick = () => setMode('S'); $('#arAcfR', root).onclick = () => setMode('R');
+    re(); return draw;
+  }
+};
+
+LABS.pca = {
+  title: 'PCA lab',
+  intro: 'Two correlated features. The arrows are the eigenvectors, scaled by the square root of their eigenvalues. Raise the correlation and watch PC1 absorb almost all the variance.',
+  html: `<div class="lab-grid"><div class="plots">
+      <canvas class="plot" id="pcaPlot" aria-label="Scatter of two features with principal component axes"></canvas>
+      <div class="plot-cap"><span><i style="background:var(--accent)"></i>PC1</span><span><i style="background:var(--amber)"></i>PC2</span><span>Projection shows each point compressed onto PC1</span></div>
+      <span class="eyebrow">Yield-curve example (stylised loadings)</span>
+      <canvas class="plot" id="pcaYc" aria-label="Stylised level, slope and curvature loadings across maturities"></canvas>
+    </div><div class="side">
+      ${slider('pcR', 'Correlation ρ', -0.95, 0.95, 0.05, 0.75, v => v.toFixed(2))}
+      ${slider('pcSx', 'Std. dev. of X₁', 0.4, 2, 0.05, 1.3, v => v.toFixed(2))}
+      <div class="seg" role="group" aria-label="Projection"><button id="pcOff" aria-pressed="true">Original</button><button id="pcOn" aria-pressed="false">Project onto PC1</button></div>
+      <div><span class="eyebrow">Variance explained</span><div class="bars" id="pcBars" style="margin-top:8px"></div></div>
+      <div class="stats" id="pcStats"></div>
+      <p class="note" id="pcNote"></p>
+    </div></div>`,
+  init(root) {
+    const s = { rho: 0.75, sx: 1.3, proj: false }; const r = rng(3); const Z = []; for (let i = 0; i < 260; i++) Z.push([gauss(r), gauss(r)]);
+    const cv = $('#pcaPlot', root), cy = $('#pcaYc', root);
+    function draw() {
+      const P = Z.map(([a, b]) => [s.sx * a, s.rho * a + Math.sqrt(1 - s.rho * s.rho) * b]);
+      const n = P.length; const mx = P.reduce((t, p) => t + p[0], 0) / n, my = P.reduce((t, p) => t + p[1], 0) / n;
+      let a = 0, b = 0, c = 0; P.forEach(([x, y]) => { a += (x - mx) ** 2; b += (x - mx) * (y - my); c += (y - my) ** 2; }); a /= n - 1; b /= n - 1; c /= n - 1;
+      const tr = (a + c) / 2, dsc = Math.sqrt(((a - c) / 2) ** 2 + b * b); const l1 = tr + dsc, l2 = tr - dsc;
+      let v1 = Math.abs(b) > 1e-9 ? [b, l1 - a] : (a >= c ? [1, 0] : [0, 1]); const nv = Math.hypot(...v1); v1 = [v1[0] / nv, v1[1] / nv]; if (v1[0] < 0) v1 = [-v1[0], -v1[1]]; const v2 = [-v1[1], v1[0]];
+      let { ctx, w, h } = setupCanvas(cv, 0.7, 240, 420);
+      const m = { l: 40, r: 14, t: 14, b: 28 }; const ph = h - m.t - m.b, pw = w - m.l - m.r; const half = 4.2, hx = half * pw / ph;
+      const F = frame(ctx, w, h, [-hx, hx], [-half, half], { m, xLabel: 'X₁', yLabel: 'X₂' });
+      F.clip();
+      const cx = F.X(mx), cyy = F.Y(my);
+      if (s.proj) { const L = 8; line(ctx, [[F.X(mx - v1[0] * L), F.Y(my - v1[1] * L)], [F.X(mx + v1[0] * L), F.Y(my + v1[1] * L)]], F.C.accent, 1, [3, 4]); }
+      P.forEach(([x, y]) => { if (s.proj) { const t = (x - mx) * v1[0] + (y - my) * v1[1]; const px = mx + t * v1[0], py = my + t * v1[1]; ctx.globalAlpha = 0.25; line(ctx, [[F.X(x), F.Y(y)], [F.X(px), F.Y(py)]], F.C.muted, 1); ctx.globalAlpha = 1; dot(ctx, F.X(px), F.Y(py), 2.6, F.C.accent); } else dot(ctx, F.X(x), F.Y(y), 2.6, F.C.muted); });
+      const arrow = (v, len, col) => { const ex = F.X(mx + v[0] * len), ey = F.Y(my + v[1] * len); line(ctx, [[cx, cyy], [ex, ey]], col, 3); const ang = Math.atan2(ey - cyy, ex - cx); ctx.fillStyle = col; ctx.beginPath(); ctx.moveTo(ex, ey); ctx.lineTo(ex - 11 * Math.cos(ang - 0.4), ey - 11 * Math.sin(ang - 0.4)); ctx.lineTo(ex - 11 * Math.cos(ang + 0.4), ey - 11 * Math.sin(ang + 0.4)); ctx.closePath(); ctx.fill(); };
+      arrow(v1, 2 * Math.sqrt(l1), F.C.accent); arrow(v2, Math.max(0.15, 2 * Math.sqrt(Math.max(l2, 0))), F.C.amber);
+      F.unclip();
+      const tot = l1 + l2;
+      $('#pcBars', root).innerHTML = [['PC1', l1], ['PC2', l2]].map(([k, l]) => `<div class="b"><span>${k}</span><div class="track"><div class="fill" style="width:${(l / tot * 100).toFixed(1)}%"></div></div><span>${(l / tot * 100).toFixed(1)}%</span></div>`).join('');
+      $('#pcStats', root).innerHTML = stat('λ₁', fmt(l1, 2)) + stat('λ₂', fmt(l2, 2)) + stat('PC1 weights', `${fmt(v1[0], 2)}, ${fmt(v1[1], 2)}`) + stat('Corr(PC1,PC2)', '0.00');
+      $('#pcNote', root).textContent = l1 / tot > 0.9 ? 'PC1 alone keeps over 90% of the variance. You could drop to one dimension and lose little.' : l1 / tot < 0.65 ? 'Variance is spread across both components. Reducing to one would throw away a lot of information.' : 'PC1 dominates, but PC2 still carries a meaningful share.';
+      ({ ctx, w, h } = setupCanvas(cy, 0.36, 150, 230));
+      const mats = [0.25, 1, 2, 3, 5, 7, 10, 20, 30]; const xi = mats.map((_, i) => i);
+      const Ld = [[0.33, 0.34, 0.35, 0.35, 0.35, 0.34, 0.33, 0.31, 0.3], [-0.48, -0.36, -0.22, -0.12, 0.02, 0.12, 0.22, 0.38, 0.45], [0.42, 0.18, -0.08, -0.25, -0.36, -0.3, -0.12, 0.2, 0.38]];
+      const Y = frame(ctx, w, h, [-0.3, 8.6], [-0.6, 0.6], { xTicks: xi, xf: i => mats[i] < 1 ? '3m' : mats[i] + 'y', yTicks: [-0.5, 0, 0.5], m: { r: 70 } });
+      const names = ['Level', 'Slope', 'Curvature'], cols = [Y.C.accent, Y.C.amber, Y.C.cat[2]];
+      Ld.forEach((L, k) => { line(ctx, L.map((v, i) => [Y.X(i), Y.Y(v)]), cols[k], 2.2); ctx.fillStyle = cols[k]; ctx.font = '600 11px ' + Y.C.mono; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText(names[k], Y.X(8) + 8, Y.Y(L[8]) + (k === 0 ? -8 : k === 2 ? 8 : 0)); });
+    }
+    bindSlider(root, 'pcR', v => v.toFixed(2), v => { s.rho = v; draw(); });
+    bindSlider(root, 'pcSx', v => v.toFixed(2), v => { s.sx = v; draw(); });
+    const setP = on => { s.proj = on; $('#pcOn', root).setAttribute('aria-pressed', on); $('#pcOff', root).setAttribute('aria-pressed', !on); draw(); };
+    $('#pcOn', root).onclick = () => setP(true); $('#pcOff', root).onclick = () => setP(false);
+    draw(); return draw;
+  }
+};
+
+LABS.kmeans = {
+  title: 'K-means lab',
+  intro: 'Step through the algorithm one iteration at a time: assign every point to its nearest centroid, then move each centroid to the mean of its points. The elbow chart shows why picking k is a judgment call.',
+  html: `<div class="lab-grid"><div class="plots">
+      <canvas class="plot" id="kmPlot" aria-label="Points coloured by cluster with centroids"></canvas>
+      <div class="plot-cap"><span>Large outlined markers are centroids. Grey points are not yet assigned.</span></div>
+      <span class="eyebrow">Elbow method: WCSS by k</span>
+      <canvas class="plot" id="kmElbow" aria-label="Within-cluster sum of squares for k from 1 to 6"></canvas>
+    </div><div class="side">
+      ${slider('kmK', 'k (clusters to find)', 1, 6, 1, 3, v => v)}
+      ${slider('kmG', 'True groups in data', 2, 6, 1, 4, v => v)}
+      <div class="btns"><button class="btn small primary" id="kmStep">Step</button><button class="btn small" id="kmRun">Run to convergence</button><button class="btn small" id="kmInit">New start</button><button class="btn small" id="kmData">New data</button></div>
+      <div class="stats" id="kmStats"></div>
+      <p class="note" id="kmNote"></p>
+    </div></div>`,
+  init(root) {
+    const s = { k: 3, g: 4, seed: 5, iseed: 1 }; let P = [], C = [], asg = null, it = 0, done = false, elbow = [], timer = null;
+    const genData = () => { const r = rng(s.seed); P = []; const ctrs = []; for (let i = 0; i < s.g; i++) { let c, ok = false, tries = 0; while (!ok && tries++ < 200) { c = [0.12 + r() * 0.76, 0.12 + r() * 0.76]; ok = ctrs.every(d => Math.hypot(d[0] - c[0], d[1] - c[1]) > 0.22); } ctrs.push(c); for (let j = 0; j < 45; j++) P.push([c[0] + gauss(r) * 0.055, c[1] + gauss(r) * 0.055]); } computeElbow(); };
+    const nearest = (p, cs) => { let bi = 0, bd = Infinity; cs.forEach((c, i) => { const d = (p[0] - c[0]) ** 2 + (p[1] - c[1]) ** 2; if (d < bd) { bd = d; bi = i; } }); return bi; };
+    const wcss = (cs, a) => P.reduce((t, p, i) => t + (p[0] - cs[a[i]][0]) ** 2 + (p[1] - cs[a[i]][1]) ** 2, 0);
+    const initC = (k, r) => { const idx = new Set(); while (idx.size < k) idx.add(Math.floor(r() * P.length)); return [...idx].map(i => P[i].slice()); };
+    function iterate(cs) { const a = P.map(p => nearest(p, cs)); const nc = cs.map((c, j) => { const m = P.filter((_, i) => a[i] === j); return m.length ? [m.reduce((t, p) => t + p[0], 0) / m.length, m.reduce((t, p) => t + p[1], 0) / m.length] : c; }); return { a, nc }; }
+    function computeElbow() { elbow = []; for (let k = 1; k <= 6; k++) { let best = Infinity; for (let rep = 0; rep < 6; rep++) { let cs = initC(k, rng(100 + rep * 7 + k)); let a; for (let i = 0; i < 40; i++) { const r = iterate(cs); a = r.a; cs = r.nc; } best = Math.min(best, wcss(cs, a)); } elbow.push(best); } }
+    const reset = () => { stop(); C = initC(s.k, rng(s.iseed * 31 + s.k)); asg = null; it = 0; done = false; draw(); };
+    function step() { if (done) return; const { a, nc } = iterate(C); const moved = nc.some((c, j) => Math.hypot(c[0] - C[j][0], c[1] - C[j][1]) > 1e-7); const same = asg && a.every((v, i) => v === asg[i]); asg = a; C = nc; it++; if (!moved || same) done = true; draw(); }
+    const stop = () => { if (timer) { clearInterval(timer); timer = null; } };
+    const cv = $('#kmPlot', root), ce = $('#kmElbow', root);
+    function draw() {
+      let { ctx, w, h } = setupCanvas(cv, 0.68, 240, 420);
+      const m = { l: 14, r: 14, t: 14, b: 14 }; const pw = w - 28, ph = h - 28; const sc = Math.min(pw, ph); const ox = m.l + (pw - sc) / 2, oy = m.t + (ph - sc) / 2;
+      const C_ = colors(); ctx.clearRect(0, 0, w, h);
+      ctx.strokeStyle = C_.line; ctx.strokeRect(ox + .5, oy + .5, sc, sc);
+      const X = v => ox + v * sc, Y = v => oy + (1 - v) * sc;
+      P.forEach((p, i) => dot(ctx, X(p[0]), Y(p[1]), 3.2, asg ? C_.cat[asg[i] % 6] : C_.muted));
+      C.forEach((c, j) => { const x = X(c[0]), y = Y(c[1]); ctx.save(); ctx.translate(x, y); ctx.rotate(Math.PI / 4); ctx.fillStyle = C_.cat[j % 6]; ctx.strokeStyle = C_.surface; ctx.lineWidth = 2.5; ctx.fillRect(-8, -8, 16, 16); ctx.strokeRect(-8, -8, 16, 16); ctx.restore(); });
+      ({ ctx, w, h } = setupCanvas(ce, 0.32, 140, 210));
+      const mx = Math.max(...elbow) * 1.08;
+      const E = frame(ctx, w, h, [0.6, 6.4], [0, mx], { xTicks: [1, 2, 3, 4, 5, 6], ny: 3, xLabel: 'k' });
+      line(ctx, elbow.map((v, i) => [E.X(i + 1), E.Y(v)]), E.C.accent, 2);
+      elbow.forEach((v, i) => dot(ctx, E.X(i + 1), E.Y(v), i + 1 === s.k ? 6 : 3.5, i + 1 === s.k ? E.C.amber : E.C.accent, i + 1 === s.k ? E.C.surface : null));
+      const cur = asg ? wcss(C, asg) : null;
+      $('#kmStats', root).innerHTML = stat('Iteration', it) + stat('WCSS', cur == null ? '—' : fmt(cur, 3)) + stat('Status', done ? 'Converged' : asg ? 'Running' : 'Ready');
+      $('#kmNote', root).textContent = !asg ? 'Press Step. The first step assigns every point to its nearest centroid and moves the centroids.' : done ? (s.k === s.g ? `Converged in ${it} iterations. k matches the true number of groups, which is where the elbow bends.` : `Converged in ${it} iterations. Try “New start”: k-means can land in a different local optimum depending on the starting centroids.`) : 'Each step: reassign points, then move centroids to the mean of their cluster.';
+    }
+    bindSlider(root, 'kmK', v => v, v => { s.k = v; reset(); });
+    bindSlider(root, 'kmG', v => v, v => { s.g = v; genData(); reset(); });
+    $('#kmStep', root).onclick = () => { stop(); step(); };
+    $('#kmRun', root).onclick = () => { stop(); if (matchMedia('(prefers-reduced-motion: reduce)').matches) { let g = 0; while (!done && g++ < 100) step(); return; } timer = setInterval(() => { step(); if (done) stop(); }, 380); };
+    $('#kmInit', root).onclick = () => { s.iseed++; reset(); };
+    $('#kmData', root).onclick = () => { s.seed++; genData(); reset(); };
+    genData(); reset(); return draw;
+  },
+  cleanup() {}
+};
+
+LABS.overfit = {
+  title: 'Overfitting lab',
+  intro: 'Fit polynomials of rising degree to 15 noisy training points. Training error always falls; test error falls, then explodes. Add a ridge penalty λ to pull a complex model back toward sanity.',
+  html: `<div class="lab-grid"><div class="plots">
+      <canvas class="plot" id="ofPlot" aria-label="Training points, true function and fitted polynomial"></canvas>
+      <div class="plot-cap"><span><i style="background:var(--accent)"></i>Fitted model</span><span><i style="background:var(--muted)"></i>True function (dashed)</span><span><i style="background:var(--amber)"></i>Training points</span></div>
+      <span class="eyebrow">Fitting curve: error vs complexity</span>
+      <canvas class="plot" id="ofErr" aria-label="Training and test RMSE by polynomial degree"></canvas>
+      <div class="plot-cap"><span><i style="background:var(--amber)"></i>Training RMSE (in-sample)</span><span><i style="background:var(--accent)"></i>Test RMSE (out-of-sample)</span></div>
+    </div><div class="side">
+      ${slider('ofD', 'Model complexity (degree)', 1, 12, 1, 3, v => v)}
+      ${slider('ofL', 'Penalty λ', 0, 8, 1, 0, v => ['0 (OLS)', '1e-6', '1e-5', '1e-4', '0.001', '0.01', '0.1', '1', '10'][v])}
+      <div class="btns"><button class="btn small" id="ofNew">New training sample</button></div>
+      <div class="stats" id="ofStats"></div>
+      <div class="verdicts" id="ofVerd"></div>
+    </div></div>`,
+  init(root) {
+    const LAM = [0, 1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 0.1, 1, 10];
+    const f = x => 0.85 * Math.sin(3 * x) + 0.35 * x; const s = { d: 3, li: 0, seed: 21 };
+    let tr = [], te = [];
+    const gen = () => { const r = rng(s.seed); tr = []; for (let i = 0; i < 15; i++) { const x = -1 + 2 * r(); tr.push([x, f(x) + 0.3 * gauss(r)]); } const r2 = rng(999); te = []; for (let i = 0; i < 300; i++) { const x = -1 + 2 * r2(); te.push([x, f(x) + 0.3 * gauss(r2)]); } };
+    const cheb = (x, d) => { const T = [1, x]; for (let k = 2; k <= d; k++) T.push(2 * x * T[k - 1] - T[k - 2]); return T.slice(0, d + 1); };
+    const fit = (d, lam) => { const p = d + 1; const A = Array.from({ length: p }, () => new Array(p).fill(0)), b = new Array(p).fill(0);
+      tr.forEach(([x, y]) => { const t = cheb(x, d); for (let i = 0; i < p; i++) { b[i] += t[i] * y; for (let j = 0; j < p; j++) A[i][j] += t[i] * t[j]; } });
+      for (let i = 1; i < p; i++) A[i][i] += Math.max(lam, 1e-10) * tr.length; return solve(A, b); };
+    const pred = (w, x) => cheb(x, w.length - 1).reduce((t, v, i) => t + v * w[i], 0);
+    const rmse = (w, D) => Math.sqrt(D.reduce((t, [x, y]) => t + (pred(w, x) - y) ** 2, 0) / D.length);
+    const cv = $('#ofPlot', root), ce = $('#ofErr', root);
+    function draw() {
+      const lam = LAM[s.li]; const w = fit(s.d, lam);
+      let { ctx, w: W, h } = setupCanvas(cv, 0.55, 220, 380);
+      const F = frame(ctx, W, h, [-1, 1], [-2.2, 2.2], { xLabel: 'x', yLabel: 'y' });
+      F.clip();
+      te.forEach(([x, y]) => { ctx.globalAlpha = 0.18; dot(ctx, F.X(x), F.Y(y), 2, F.C.muted); }); ctx.globalAlpha = 1;
+      const xs = Array.from({ length: 240 }, (_, i) => -1 + 2 * i / 239);
+      line(ctx, xs.map(x => [F.X(x), F.Y(f(x))]), F.C.muted, 1.5, [5, 5]);
+      line(ctx, xs.map(x => [F.X(x), F.Y(Math.max(-5, Math.min(5, pred(w, x))))]), F.C.accent, 2.5);
+      tr.forEach(([x, y]) => dot(ctx, F.X(x), F.Y(y), 4.5, F.C.amber, F.C.surface));
+      F.unclip();
+      const errs = []; for (let d = 1; d <= 12; d++) { const wd = fit(d, lam); errs.push([rmse(wd, tr), rmse(wd, te)]); }
+      const ymax = Math.min(2, Math.max(...errs.map(e => e[1])) * 1.1);
+      ({ ctx, w: W, h } = setupCanvas(ce, 0.34, 150, 230));
+      const E = frame(ctx, W, h, [0.5, 12.5], [0, ymax], { xTicks: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], ny: 4, xLabel: 'degree' });
+      E.clip();
+      ctx.fillStyle = E.C.accent; ctx.globalAlpha = 0.08; ctx.fillRect(E.X(s.d - 0.5), E.m.t, E.X(s.d + 0.5) - E.X(s.d - 0.5), E.ph); ctx.globalAlpha = 1;
+      line(ctx, errs.map((e, i) => [E.X(i + 1), E.Y(Math.min(e[0], ymax))]), E.C.amber, 2);
+      line(ctx, errs.map((e, i) => [E.X(i + 1), E.Y(Math.min(e[1], ymax))]), E.C.accent, 2);
+      errs.forEach((e, i) => { dot(ctx, E.X(i + 1), E.Y(Math.min(e[0], ymax)), 3, E.C.amber); dot(ctx, E.X(i + 1), E.Y(Math.min(e[1], ymax)), 3, E.C.accent); });
+      E.unclip();
+      const [trE, teE] = errs[s.d - 1]; const best = errs.reduce((bi, e, i) => e[1] < errs[bi][1] ? i : bi, 0) + 1;
+      $('#ofStats', root).innerHTML = stat('Train RMSE', fmt(trE)) + stat('Test RMSE', fmt(teE)) + stat('Gap', fmt(teE - trE)) + stat('Best degree', best);
+      const gap = teE - trE; let kind, msg;
+      if (trE > 0.42) { kind = chip('warn', 'Underfit'); msg = 'Both errors are high. Bias error dominates: the model is too simple for the pattern.'; }
+      else if (gap > 0.15 || teE > errs[best - 1][1] * 1.35) { kind = chip('bad', 'Overfit'); msg = 'Training error is low but test error is much higher. Variance error dominates: the model is fitting noise. Reduce complexity or raise λ.'; }
+      else { kind = chip('good', 'Good fit'); msg = 'Test error is close to the minimum. What remains is mostly base error (noise σ = 0.30).'; }
+      $('#ofVerd', root).innerHTML = `<div class="verdict">${kind}<span>${msg}</span></div>`;
+    }
+    bindSlider(root, 'ofD', v => v, v => { s.d = v; draw(); });
+    bindSlider(root, 'ofL', v => ['0 (OLS)', '1e-6', '1e-5', '1e-4', '0.001', '0.01', '0.1', '1', '10'][v], v => { s.li = v; draw(); });
+    $('#ofNew', root).onclick = () => { s.seed++; gen(); draw(); };
+    gen(); draw(); return draw;
+  }
+};
+
+LABS.roc = {
+  title: 'Classifier evaluation lab',
+  intro: 'A model scores each loan; anything above the threshold is flagged as a default. Move the threshold and watch precision and recall trade off along the ROC curve.',
+  html: `<div class="lab-grid"><div class="plots">
+      <canvas class="plot" id="rocDist" aria-label="Score distributions for defaulters and non-defaulters with threshold"></canvas>
+      <div class="plot-cap"><span><i style="background:var(--muted)"></i>Non-defaults (negatives)</span><span><i style="background:var(--accent)"></i>Defaults (positives)</span><span><i style="background:var(--amber)"></i>Threshold</span></div>
+      <canvas class="plot" id="rocCurve" aria-label="ROC curve with the current operating point"></canvas>
+    </div><div class="side">
+      ${slider('rcT', 'Threshold', -2, 5, 0.05, 1.2, v => v.toFixed(2))}
+      ${slider('rcD', 'Model skill (separation d′)', 0, 3.5, 0.05, 1.8, v => v.toFixed(2))}
+      ${slider('rcP', 'Default rate in portfolio', 0.02, 0.5, 0.01, 0.2, v => Math.round(v * 100) + '%')}
+      <div><span class="eyebrow">Confusion matrix · 1,000 loans</span>
+      <div class="cm" id="rcCm" style="margin-top:8px"></div></div>
+      <div class="stats" id="rcStats"></div>
+      <p class="note" id="rcNote"></p>
+    </div></div>`,
+  init(root) {
+    const s = { t: 1.2, d: 1.8, p: 0.2 }; const pdf = z => Math.exp(-z * z / 2) / Math.sqrt(2 * Math.PI);
+    const cv = $('#rocDist', root), cr = $('#rocCurve', root);
+    function draw() {
+      const N = 1000, Pn = Math.round(N * s.p), Nn = N - Pn;
+      const TP = Math.round(Pn * (1 - Phi(s.t - s.d))), FN = Pn - TP, FP = Math.round(Nn * (1 - Phi(s.t))), TN = Nn - FP;
+      const prec = TP + FP ? TP / (TP + FP) : NaN, rec = Pn ? TP / Pn : NaN, acc = (TP + TN) / N, f1 = 2 * prec * rec / (prec + rec), fpr = FP / Nn, auc = Phi(s.d / Math.SQRT2);
+      let { ctx, w, h } = setupCanvas(cv, 0.38, 170, 280);
+      const xd = [-3.5, 6.5]; const ymax = Math.max(pdf(0) * (1 - s.p), pdf(0) * s.p) * 1.15;
+      const F = frame(ctx, w, h, xd, [0, ymax], { yTicks: [], xLabel: 'model score', m: { l: 14 } });
+      const xs = Array.from({ length: 300 }, (_, i) => xd[0] + (xd[1] - xd[0]) * i / 299);
+      const area = (fn, col, from) => { ctx.fillStyle = col; ctx.globalAlpha = 0.22; ctx.beginPath(); ctx.moveTo(F.X(from), F.Y(0)); xs.filter(x => x >= from).forEach(x => ctx.lineTo(F.X(x), F.Y(fn(x)))); ctx.lineTo(F.X(xd[1]), F.Y(0)); ctx.closePath(); ctx.fill(); ctx.globalAlpha = 1; };
+      const nF = x => (1 - s.p) * pdf(x), pF = x => s.p * pdf(x - s.d);
+      area(nF, F.C.muted, s.t); area(pF, F.C.accent, s.t);
+      line(ctx, xs.map(x => [F.X(x), F.Y(nF(x))]), F.C.muted, 2); line(ctx, xs.map(x => [F.X(x), F.Y(pF(x))]), F.C.accent, 2);
+      line(ctx, [[F.X(s.t), F.m.t], [F.X(s.t), F.Y(0)]], F.C.amber, 2);
+      ctx.fillStyle = F.C.amber; ctx.font = '600 11px ' + F.C.mono; ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.fillText('flag ▶', F.X(s.t) + 5, F.m.t + 2);
+      ({ ctx, w, h } = setupCanvas(cr, 0.62, 200, 320));
+      const pad = { l: 46, r: 14, t: 14, b: 32 }; const side = Math.min(w - pad.l - pad.r, h - pad.t - pad.b);
+      const R = frame(ctx, pad.l + side + pad.r, h, [0, 1], [0, 1], { m: { l: pad.l, r: pad.r, t: pad.t, b: h - pad.t - side }, nx: 5, ny: 5, xLabel: 'FPR', yLabel: 'Recall (TPR)' });
+      line(ctx, [[R.X(0), R.Y(0)], [R.X(1), R.Y(1)]], R.C.muted, 1, [4, 4]);
+      const pts = []; for (let t = 8; t >= -6; t -= 0.05) pts.push([1 - Phi(t), 1 - Phi(t - s.d)]);
+      ctx.fillStyle = R.C.accent; ctx.globalAlpha = 0.1; ctx.beginPath(); ctx.moveTo(R.X(0), R.Y(0)); pts.forEach(p => ctx.lineTo(R.X(p[0]), R.Y(p[1]))); ctx.lineTo(R.X(1), R.Y(0)); ctx.closePath(); ctx.fill(); ctx.globalAlpha = 1;
+      line(ctx, pts.map(p => [R.X(p[0]), R.Y(p[1])]), R.C.accent, 2.5);
+      dot(ctx, R.X(1 - Phi(s.t)), R.Y(1 - Phi(s.t - s.d)), 6, R.C.amber, R.C.surface);
+      ctx.fillStyle = R.C.ink; ctx.font = '600 12px ' + R.C.mono; ctx.textAlign = 'right'; ctx.textBaseline = 'bottom'; ctx.fillText('AUC ' + auc.toFixed(3), R.X(1) - 6, R.Y(0) - 6);
+      $('#rcCm', root).innerHTML = `<div></div><div class="h">Actual default</div><div class="h">Actual no default</div>
+        <div class="h" style="text-align:right">Flagged</div><div class="cell tp">${TP}<small>TP</small></div><div class="cell fp">${FP}<small>FP · Type I</small></div>
+        <div class="h" style="text-align:right">Not flagged</div><div class="cell fn">${FN}<small>FN · Type II</small></div><div class="cell tn">${TN}<small>TN</small></div>`;
+      $('#rcStats', root).innerHTML = stat('Precision', fmt(prec)) + stat('Recall', fmt(rec)) + stat('Accuracy', fmt(acc)) + stat('F1', fmt(f1)) + stat('FPR', fmt(fpr)) + stat('AUC', fmt(auc));
+      const allNeg = Nn / N;
+      $('#rcNote', root).textContent = `A model that never flags anything would score ${(allNeg * 100).toFixed(0)}% accuracy here. ` + (rec > 0.85 ? 'You are catching almost every default, at the cost of many false alarms (low precision).' : prec > 0.8 ? 'Few false alarms (high precision), but many defaults slip through (low recall).' : 'Lower the threshold to raise recall; raise it to raise precision.');
+    }
+    bindSlider(root, 'rcT', v => v.toFixed(2), v => { s.t = v; draw(); });
+    bindSlider(root, 'rcD', v => v.toFixed(2), v => { s.d = v; draw(); });
+    bindSlider(root, 'rcP', v => Math.round(v * 100) + '%', v => { s.p = v; draw(); });
+    draw(); return draw;
+  }
+};
+
+/* ---------- quiz ---------- */
+const QUIZ = [
+  ['slr', 'A simple regression with n = 32 has SSR = 60 and SSE = 40. What is R²?', ['0.40', '0.60', '0.67', '1.50'], 1, 'R² = SSR / SST = 60 / (60 + 40) = 0.60.'],
+  ['slr', 'Same regression (n = 32, SSE = 40). What is the standard error of estimate?', ['1.118', '1.155', '1.333', '0.894'], 1, 'SEE = √[SSE / (n − 2)] = √(40 / 30) = 1.155.'],
+  ['slr', 'In a log-log regression the slope is 0.8. The best interpretation is:', ['A 1-unit rise in X raises Y by 0.8 units', 'A 1% rise in X raises Y by about 0.8%', 'A 1-unit rise in X raises Y by about 80%', 'X explains 80% of the variation in Y'], 1, 'In a log-log model the slope is an elasticity: % change in Y per 1% change in X.'],
+  ['slr', 'A slope t-statistic is 1.85 with 30 degrees of freedom; the two-tailed 5% critical value is 2.04. You should:', ['Reject H₀: b₁ = 0', 'Fail to reject H₀: b₁ = 0', 'Conclude the slope equals 1.85', 'Switch to a one-tailed F-test'], 1, '|1.85| < 2.04, so the slope is not significantly different from zero at 5%.'],
+  ['mlr', 'n = 60, k = 4, R² = 0.40. Adjusted R² is closest to:', ['0.356', '0.400', '0.344', '0.373'], 0, '1 − (59 / 55)(1 − 0.40) = 1 − 1.0727 × 0.60 = 0.356.'],
+  ['mlr', 'Which criterion should you prefer when the main goal is forecasting?', ['BIC', 'AIC', 'Unadjusted R²', 'Durbin–Watson'], 1, 'AIC is preferred for prediction; BIC (heavier penalty) for goodness of fit. Lower is better for both.'],
+  ['mlr', 'Restricted SSE = 120, unrestricted SSE = 100, q = 2 restrictions, n = 50, k = 5. The joint F-statistic is:', ['2.20', '4.40', '8.80', '0.20'], 1, 'F = [(120 − 100) / 2] / [100 / (50 − 5 − 1)] = 10 / 2.273 = 4.40.'],
+  ['misspec', 'A regression has R² = 0.88 and a significant F-statistic, but no slope is individually significant. The most likely problem is:', ['Conditional heteroskedasticity', 'Serial correlation', 'Multicollinearity', 'An omitted variable'], 2, 'Classic multicollinearity: inflated standard errors make every t small even though the variables jointly explain a lot.'],
+  ['misspec', 'n = 100, k = 3. Regressing squared residuals on the X’s gives R² = 0.08. The χ²(3) 5% critical value is 7.815. Conclusion:', ['No heteroskedasticity', 'Conditional heteroskedasticity is present', 'Multicollinearity is present', 'The test is inconclusive'], 1, 'BP = n × R² = 100 × 0.08 = 8.0 > 7.815, so reject homoskedasticity.'],
+  ['misspec', 'The correct remedy for serial correlation in a regression with no lagged dependent variable is:', ['White standard errors', 'Newey–West standard errors', 'Dropping an independent variable', 'Log-transforming Y'], 1, 'Newey–West (HAC) standard errors correct for serial correlation and heteroskedasticity.'],
+  ['misspec', 'A Durbin–Watson statistic of 0.9 suggests:', ['Positive serial correlation', 'Negative serial correlation', 'No serial correlation', 'Multicollinearity'], 0, 'DW ≈ 2(1 − r) → r ≈ 0.55. Values well below 2 indicate positive serial correlation.'],
+  ['misspec', 'Regressing X₂ on the other independent variables gives R² = 0.90. The VIF for X₂ is:', ['0.90', '1.11', '9.0', '10.0'], 3, 'VIF = 1 / (1 − 0.90) = 10, a serious level of multicollinearity.'],
+  ['extend', 'To capture quarterly seasonality in a model with an intercept, how many dummy variables do you need?', ['2', '3', '4', '5'], 1, 'n − 1 = 3. Using 4 with an intercept creates perfect collinearity (the dummy variable trap).'],
+  ['extend', 'In a logistic regression, a coefficient of 0.5 means a one-unit rise in X:', ['Raises the probability by 0.5', 'Multiplies the odds by about 1.65', 'Raises the odds by 50%', 'Raises the log-odds by 50%'], 1, 'The log-odds rise by 0.5; the odds ratio is e^0.5 ≈ 1.65.'],
+  ['trend', 'A sales series grows at a roughly constant percentage each year and curves upward on a plot. The better trend model is:', ['Linear trend', 'Log-linear trend', 'AR(1)', 'Random walk'], 1, 'Constant growth rate = exponential growth, which is linear in logs.'],
+  ['ar', 'An AR(1) model has b₀ = 1.2 and b₁ = 0.4. The current value is 3.0. Which is correct?', ['MRL = 2.0 and the next forecast is lower', 'MRL = 2.0 and the next forecast is higher', 'MRL = 3.0 and the series stays flat', 'MRL is undefined'], 0, 'MRL = 1.2 / (1 − 0.4) = 2.0. Since 3.0 is above it, the forecast falls: 1.2 + 0.4 × 3 = 2.4.'],
+  ['ar', 'Same model (b₀ = 1.2, b₁ = 0.4, x_t = 3.0). The two-period-ahead forecast is:', ['2.40', '2.16', '2.00', '1.92'], 1, 'x̂(t+1) = 2.40; x̂(t+2) = 1.2 + 0.4 × 2.40 = 2.16.'],
+  ['ar', 'With T = 100 observations, a residual autocorrelation at lag 1 is 0.25. What does this tell you?', ['Not significant; model is fine', 'Significant (t = 2.5); model is misspecified', 'Significant; series has a unit root', 'Cannot be tested in AR models'], 1, 'Standard error = 1/√100 = 0.1, so t = 2.5 > ~1.98. Add lags.'],
+  ['ar', 'Which is NOT a requirement for covariance stationarity?', ['Constant, finite mean', 'Constant, finite variance', 'Constant covariance with leads and lags', 'Normally distributed errors'], 3, 'Covariance stationarity concerns mean, variance and autocovariance, not normality.'],
+  ['unitroot', 'In the Dickey–Fuller test, the null hypothesis is:', ['g₁ = 0, the series has a unit root', 'g₁ < 0, the series is stationary', 'b₁ = 0', 'The residuals are white noise'], 0, 'H₀: g₁ = b₁ − 1 = 0, i.e. a unit root. Rejecting it supports stationarity.'],
+  ['unitroot', 'A series has a unit root. The standard fix before fitting an AR model is to:', ['Add a time trend', 'Take the first difference', 'Use robust standard errors', 'Add a seasonal lag'], 1, 'First differencing a random walk yields a stationary series.'],
+  ['seasonal', 'Quarterly AR(1) residuals show a significant autocorrelation only at lag 4. You should:', ['Add x(t−4) as a regressor', 'First-difference the series', 'Use Newey–West errors', 'Switch to a log-linear trend'], 0, 'A spike at the seasonal lag calls for a seasonal lag term.'],
+  ['seasonal', 'Both Y and X have unit roots and are not cointegrated. A regression of Y on X is:', ['Valid', 'Valid if R² is high', 'Likely spurious', 'Valid after robust SEs'], 2, 'Without cointegration the relationship is spurious; t-stats and R² are meaningless.'],
+  ['seasonal', 'In an ARCH(1) test the coefficient a₁ on the lagged squared residual is significant. This means:', ['Error variance depends on last period’s squared error', 'The series has a unit root', 'The model needs a seasonal lag', 'The errors are normally distributed'], 0, 'That is the definition of ARCH(1). Use GLS or an ARCH model; you can also forecast next-period variance.'],
+  ['mlbasics', 'A model is 98% accurate on training data and 61% accurate on test data. The main issue is:', ['Bias error (underfitting)', 'Variance error (overfitting)', 'Base error', 'Class imbalance'], 1, 'A big gap between in-sample and out-of-sample performance is the signature of overfitting.'],
+  ['mlbasics', 'The main purpose of k-fold cross-validation is to:', ['Increase the training set by duplicating data', 'Estimate out-of-sample error while using all data for training and validation', 'Reduce base error', 'Label unlabelled data'], 1, 'Each fold takes a turn as validation set; averaging gives a less biased estimate of out-of-sample error.'],
+  ['supervised', 'What distinguishes LASSO from ordinary least squares?', ['It cannot handle many features', 'Its penalty can shrink some coefficients exactly to zero', 'It is an unsupervised method', 'It maximises the margin between classes'], 1, 'The absolute-value penalty performs feature selection by zeroing weak coefficients.'],
+  ['supervised', 'Making k very small in KNN tends to:', ['Underfit the data', 'Overfit (high variance, sensitive to noise)', 'Remove the need for scaling', 'Turn KNN into clustering'], 1, 'With k = 1 every prediction copies a single neighbour, including its noise.'],
+  ['trees', 'A random forest reduces overfitting relative to a single tree mainly by:', ['Pruning every tree to depth 1', 'Averaging many trees grown on bootstrap samples with random feature subsets', 'Training trees sequentially on the previous errors', 'Using a linear activation function'], 1, 'Bagging plus random feature selection produces de-correlated trees whose average has lower variance.'],
+  ['trees', 'Boosting differs from bagging because boosting:', ['Trains models in parallel on bootstrap samples', 'Trains models sequentially, each focusing on prior errors', 'Uses unlabelled data', 'Always uses SVMs'], 1, 'Boosting is sequential; bagging is parallel.'],
+  ['pca', 'Eigenvalues of three principal components are 3.0, 1.5 and 0.5. PC1 explains:', ['30%', '50%', '60%', '75%'], 2, '3.0 / (3.0 + 1.5 + 0.5) = 60%.'],
+  ['pca', 'Which statement about principal components is true?', ['They are chosen to predict the target', 'They are uncorrelated with each other', 'They are easy to interpret economically', 'PC2 explains more variance than PC1'], 1, 'Components are orthogonal, hence uncorrelated. PCA is unsupervised and components are hard to interpret.'],
+  ['clustering', 'A key requirement of k-means that hierarchical clustering avoids is:', ['Labelled training data', 'Specifying the number of clusters in advance', 'A distance measure', 'Standardised features'], 1, 'Hierarchical clustering builds the full tree; you choose how many clusters by cutting the dendrogram.'],
+  ['neural', 'In a neural network node, the activation function:', ['Sums the weighted inputs', 'Adds non-linearity to the weighted sum', 'Sets the learning rate', 'Splits the data into folds'], 1, 'The summation operator computes the weighted sum; the activation function transforms it non-linearly.'],
+  ['neural', 'An algorithm learns to execute trades by trying actions and receiving profit or loss as feedback. This is:', ['Supervised learning', 'Unsupervised learning', 'Reinforcement learning', 'Penalized regression'], 2, 'An agent, actions, an environment and a reward signal define reinforcement learning.'],
+  ['bigdata', 'TP = 40, FP = 10, FN = 20. Precision and recall are:', ['0.80 and 0.67', '0.67 and 0.80', '0.80 and 0.80', '0.40 and 0.20'], 0, 'Precision = 40 / 50 = 0.80. Recall = 40 / 60 = 0.67. F1 = 0.73.'],
+  ['bigdata', 'Converting “increasing”, “increased” and “increases” to “increas” is an example of:', ['Lemmatisation', 'Stemming', 'Tokenisation', 'Named entity recognition'], 1, 'Stemming chops suffixes crudely. Lemmatisation would return the dictionary form “increase”.'],
+  ['bigdata', 'A bank wants to catch as many fraudulent transactions as possible, even at the cost of extra false alarms. Which metric matters most?', ['Precision', 'Recall', 'Accuracy', 'Specificity'], 1, 'Recall measures the share of actual positives you catch; false negatives are the costly error here.']
+];
+
+/* ---------- atlas ---------- */
+const ATLAS = [
+  ['OLS / multiple regression', 'Supervised · regression', 'Fits a linear relation by minimising squared errors', 'Factor models, beta, hedonic pricing', true, 'slr'],
+  ['Logistic regression', 'Supervised · classification', 'Models log-odds of a binary outcome by maximum likelihood', 'Default prediction, M&A target prediction', true, 'extend'],
+  ['LASSO / ridge', 'Supervised · regression', 'Regression with a penalty that shrinks coefficients', 'Selecting factors from hundreds of candidates', true, 'supervised'],
+  ['Elastic net', 'Supervised · regression', 'Mix of LASSO and ridge penalties', 'Many correlated predictors', false],
+  ['Support vector machine', 'Supervised · classification', 'Maximum-margin boundary; kernels for curves', 'Credit classification, bankruptcy', true, 'supervised'],
+  ['K-nearest neighbours', 'Supervised · both', 'Predicts from the k most similar observations', 'Bond ratings, comparable companies', true, 'supervised'],
+  ['Naive Bayes', 'Supervised · classification', 'Bayes’ rule assuming features are independent', 'Fast text and news sentiment', false],
+  ['CART', 'Supervised · both', 'Recursive yes/no splits that reduce impurity', 'Explainable credit decisions', true, 'trees'],
+  ['Random forest', 'Supervised · ensemble', 'Many de-correlated bagged trees, averaged', 'Return prediction, fraud', true, 'trees'],
+  ['Gradient boosting (XGBoost, LightGBM)', 'Supervised · ensemble', 'Sequential trees that each fit the remaining errors', 'Tabular prediction competitions, credit scoring', true, 'trees'],
+  ['PCA', 'Unsupervised · dimension reduction', 'Rotates to uncorrelated directions of max variance', 'Yield-curve factors, risk models', true, 'pca'],
+  ['t-SNE / UMAP', 'Unsupervised · visualisation', 'Non-linear 2-D maps that keep neighbours close', 'Visualising fund or stock similarity', false],
+  ['Autoencoder', 'Unsupervised · deep learning', 'Neural net that compresses then reconstructs input', 'Anomaly detection, non-linear factors', false],
+  ['K-means', 'Unsupervised · clustering', 'k centroids, assign and update until stable', 'Peer groups, customer segments', true, 'clustering'],
+  ['Hierarchical clustering', 'Unsupervised · clustering', 'Merge or split clusters into a dendrogram', 'Hierarchical risk parity, sector maps', true, 'clustering'],
+  ['DBSCAN', 'Unsupervised · clustering', 'Density-based clusters; finds outliers; no k needed', 'Detecting unusual trades', false],
+  ['Gaussian mixture / hidden Markov model', 'Unsupervised · regimes', 'Probabilistic clusters; HMM adds time dynamics', 'Bull/bear regime detection', false],
+  ['Neural network (MLP)', 'Supervised · deep learning', 'Layers of weighted sums with non-linear activations', 'Non-linear return or default models', true, 'neural'],
+  ['CNN', 'Deep learning', 'Convolutions detect local patterns', 'Satellite imagery, chart images', false],
+  ['RNN / LSTM', 'Deep learning · sequences', 'Networks with memory over time steps', 'Volatility and sequence forecasting', false],
+  ['Transformers / LLMs', 'Deep learning · language', 'Attention-based models of text', 'Earnings-call and filing analysis', false],
+  ['Reinforcement learning', 'Agent-based', 'Learns actions that maximise cumulative reward', 'Trade execution, dynamic hedging', true, 'neural'],
+  ['Linear / log-linear trend', 'Time series', 'Regression on time', 'Long-run growth of sales or GDP', true, 'trend'],
+  ['AR(p)', 'Time series', 'Regression on own lags', 'Inflation, spreads, mean reversion', true, 'ar'],
+  ['ARIMA / SARIMA', 'Time series', 'AR + differencing + moving average (+ seasonal)', 'Macro and sales forecasting', false],
+  ['ARCH', 'Time series · volatility', 'Variance depends on past squared errors', 'Volatility clustering', true, 'seasonal'],
+  ['GARCH', 'Time series · volatility', 'ARCH plus lagged variance; persistent volatility', 'VaR, option pricing, risk', false],
+  ['Cointegration (Engle–Granger)', 'Time series · multiple', 'Long-run equilibrium between unit-root series', 'Pairs trading, spot–futures', true, 'seasonal'],
+  ['VAR', 'Time series · multiple', 'Each variable regressed on lags of all variables', 'Macro shocks, impulse responses', false],
+  ['Kalman filter', 'Time series · state space', 'Recursively updates hidden-state estimates', 'Time-varying beta and hedge ratios', false],
+  ['Cross-validation / grid search', 'Model selection', 'Rotating validation folds; search hyperparameters', 'Tuning any model above', true, 'mlbasics']
+];
+
+/* ---------- chooser ---------- */
+const TREE = {
+  start: { q: 'What are you trying to do?', o: [['Predict a known target', 'I have labelled data (Y is observed)', 'sup'], ['Find structure without a target', 'No labels: summarise or group', 'unsup'], ['Forecast a single series over time', 'Values indexed by date', 'L_ts']] },
+  sup: { q: 'What kind of target?', o: [['Continuous number', 'Returns, prices, spreads → regression', 'reg'], ['Category', 'Default / no default, rating class → classification', 'cls']] },
+  reg: { q: 'How complex is the data?', o: [['Roughly linear, manageable number of features', '', 'L_linreg'], ['Non-linear, interactions, many features', '', 'L_nonlin']] },
+  cls: { q: 'How complex is the data?', o: [['Roughly linear boundary', '', 'L_lincls'], ['Non-linear, interactions, many features', '', 'L_nonlin']] },
+  unsup: { q: 'What do you want?', o: [['Fewer features', 'Many correlated variables → a few composites', 'L_pca'], ['Groups of similar observations', 'Peer groups, segments', 'clu']] },
+  clu: { q: 'What do you know about the groups?', o: [['I know how many groups I want', '', 'L_km'], ['I do not know how many', '', 'L_hc'], ['The data is very complex (images, text)', '', 'L_dl']] },
+  L_linreg: { leaf: 'Linear regression or penalized regression (LASSO)', why: 'Interpretable coefficients. Use LASSO when there are many candidate features and you want automatic selection.', link: 'supervised' },
+  L_lincls: { leaf: 'Logistic regression, SVM or KNN', why: 'Logistic gives interpretable odds ratios; SVM finds the widest-margin boundary; KNN needs no model form but needs scaled features.', link: 'supervised' },
+  L_nonlin: { leaf: 'CART, random forest or neural network', why: 'CART if you must explain each decision; random forest or boosting for accuracy with limited tuning; neural nets for very large, complex data.', link: 'trees' },
+  L_pca: { leaf: 'Principal components analysis', why: 'Produces uncorrelated components ranked by variance explained. Keep the few that explain most of it.', link: 'pca' },
+  L_km: { leaf: 'K-means clustering', why: 'Fast and scalable when k is known. Check the elbow and try several starting points.', link: 'clustering' },
+  L_hc: { leaf: 'Hierarchical clustering', why: 'Builds a dendrogram, so you choose the number of clusters afterwards.', link: 'clustering' },
+  L_dl: { leaf: 'Neural networks / deep learning', why: 'Learns its own features from raw, high-dimensional data, at the cost of interpretability and data hunger.', link: 'neural' },
+  L_ts: { leaf: 'Follow the time-series workflow below', why: 'Start with a trend model, test residuals, check stationarity, then build up an AR model with any seasonal and ARCH terms.', link: 'ar' }
+};
+const TS_STEPS = [
+  ['Plot the series', 'Look for trend, curvature, seasonality and changes in volatility.'],
+  ['Fit a trend model if there is a trend', 'Linear for constant amounts, log-linear for constant growth.'],
+  ['Test trend residuals with Durbin–Watson', 'No serial correlation → the trend model may be enough. Otherwise move on.'],
+  ['Check covariance stationarity', 'Dickey–Fuller test. A unit root means you first-difference the series.'],
+  ['Fit an AR(1) to the (possibly differenced) series', 'Estimate b₀ and b₁; compute the mean-reverting level.'],
+  ['Test residual autocorrelations', 't = ρ / (1/√T). Add lags until none are significant.'],
+  ['Check for seasonality', 'A spike at lag 4 (quarterly) or 12 (monthly) → add the seasonal lag.'],
+  ['Test for ARCH', 'Regress squared residuals on their lag. If significant, use GLS / an ARCH model.'],
+  ['Compare models out-of-sample', 'Lowest RMSE wins. Check coefficient stability across sub-periods.'],
+  ['Regressing one series on another?', 'Check both for unit roots; if both have them, test for cointegration.']
+];
+
+/* ---------- app ---------- */
+let mastered = new Set(store.get('qma-mastered', []));
+let currentRedraw = null;
+const ROUTES = ['home', 'chooser', 'formulas', 'quiz', 'atlas', ...TOPICS.map(t => t.id)];
+
+function renderNav(active) {
+  const grp = g => TOPICS.filter(t => t.g === g.id).map(t => `<a href="#${t.id}" class="${mastered.has(t.id) ? 'done' : ''}" ${active === t.id ? 'aria-current="page"' : ''}><span class="dot"></span>${t.title}${t.lab ? '<span class="tag">lab</span>' : ''}</a>`).join('');
+  $('#nav').innerHTML = `<h4>Start</h4><a href="#home" ${active === 'home' ? 'aria-current="page"' : ''}><span class="dot"></span>Overview</a>` +
+    GROUPS.map(g => `<h4>${g.name}</h4>${grp(g)}`).join('') +
+    `<h4>Practice and reference</h4>
+     <a href="#chooser" ${active === 'chooser' ? 'aria-current="page"' : ''}><span class="dot"></span>Model chooser</a>
+     <a href="#formulas" ${active === 'formulas' ? 'aria-current="page"' : ''}><span class="dot"></span>Formula sheet</a>
+     <a href="#quiz" ${active === 'quiz' ? 'aria-current="page"' : ''}><span class="dot"></span>Practice questions</a>
+     <a href="#atlas" ${active === 'atlas' ? 'aria-current="page"' : ''}><span class="dot"></span>Technique atlas</a>`;
+  const n = mastered.size; $('#progTxt').textContent = `${n} / ${TOPICS.length} understood`; $('#progBar').style.width = (n / TOPICS.length * 100) + '%';
+}
+
+function homeView() {
+  const next = TOPICS.find(t => !mastered.has(t.id)) || TOPICS[0];
+  return `<section class="hero"><div class="hero-grid"><div>
+      <p class="eyebrow">Regression · Time series · Machine learning</p>
+      <h1 style="margin-top:10px">Quant Methods Atlas</h1>
+      <p class="lede">Every major quantitative and machine learning technique on the CFA Level II syllabus, explained, with the formulas, the exam angle, and interactive labs where you can break the models yourself.</p>
+      <div class="hero-actions"><a class="btn primary" href="#${next.id}">${mastered.size ? 'Continue: ' + next.title : 'Start with simple regression'}</a><a class="btn" href="#quiz">Practice questions</a></div>
+    </div><div><canvas id="heroCv" aria-label="Animated scatter plot with regression line"></canvas></div></div></section>
+    <div class="section-head"><h2>Curriculum map</h2><span class="eyebrow">${TOPICS.filter(t => t.lab).length} topics include a live lab</span></div>
+    <div class="map">${GROUPS.map(g => { const ts = TOPICS.filter(t => t.g === g.id); return `<div class="map-col"><h3>${g.name}<small>${ts.filter(t => mastered.has(t.id)).length}/${ts.length}</small></h3>${ts.map(t => `<a class="map-item ${mastered.has(t.id) ? 'done' : ''}" href="#${t.id}"><span class="num">${mastered.has(t.id) ? '✓' : String(TOPICS.indexOf(t) + 1).padStart(2, '0')}</span><div><b>${t.title}${t.lab ? '<span class="lab-tag">LAB</span>' : ''}</b><span>${t.lede}</span></div></a>`).join('')}</div>`; }).join('')}</div>
+    <div class="section-head"><h2>Practice and reference</h2></div>
+    <div class="tools">
+      <a class="tool" href="#chooser"><b>Model chooser</b><span>Answer three questions and get the right algorithm, plus the full time-series workflow.</span></a>
+      <a class="tool" href="#formulas"><b>Formula sheet</b><span>Every formula on one searchable page, grouped by topic.</span></a>
+      <a class="tool" href="#quiz"><b>Practice questions</b><span>${QUIZ.length} exam-style questions with worked explanations.</span></a>
+      <a class="tool" href="#atlas"><b>Technique atlas</b><span>${ATLAS.length} techniques, on and beyond the syllabus, with finance use cases.</span></a>
+    </div>`;
+}
+function heroAnim() {
+  const cv = $('#heroCv'); if (!cv) return null;
+  const r = rng(4); const pts = Array.from({ length: 46 }, () => { const x = r() * 10; return [x, 1.5 + 0.7 * x + gauss(r) * 1.3]; });
+  const o = ols1(pts.map(p => p[0]), pts.map(p => p[1]));
+  return () => {
+    const { ctx, w, h } = setupCanvas(cv, 0.72, 200, 320);
+    const F = frame(ctx, w, h, [0, 10], [-1, 11], { nx: 5, ny: 4, m: { l: 30 } });
+    F.clip();
+    pts.forEach(p => { const yh = o.b0 + o.b1 * p[0]; ctx.globalAlpha = 0.35; line(ctx, [[F.X(p[0]), F.Y(p[1])], [F.X(p[0]), F.Y(yh)]], F.C.amber, 1); ctx.globalAlpha = 1; });
+    pts.forEach(p => dot(ctx, F.X(p[0]), F.Y(p[1]), 3.4, F.C.muted));
+    line(ctx, [[F.X(0), F.Y(o.b0)], [F.X(10), F.Y(o.b0 + o.b1 * 10)]], F.C.accent, 3);
+    F.unclip();
+    ctx.fillStyle = F.C.ink; ctx.font = '600 12px ' + F.C.mono; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+    ctx.fillText(`Ŷ = ${o.b0.toFixed(2)} + ${o.b1.toFixed(2)}X   R² = ${o.r2.toFixed(2)}`, F.m.l + 8, F.m.t + 6);
+  };
+}
+
+function topicView(t) {
+  const g = GROUPS.find(x => x.id === t.g); const i = TOPICS.indexOf(t); const prev = TOPICS[i - 1], next = TOPICS[i + 1];
+  const lab = t.lab ? LABS[t.lab] : null;
+  return `<article class="topic">
+    <header class="t-head"><p class="eyebrow">${g.name} · ${t.reading}</p><h1>${t.title}</h1><p class="lede">${t.lede}</p></header>
+    <section class="prose"><h2>Core ideas</h2><ul class="ideas">${t.ideas.map(x => `<li>${x}</li>`).join('')}</ul></section>
+    ${t.table ? `<section><h2>At a glance</h2><div class="tbl-wrap"><table class="data"><thead><tr>${t.table.head.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${t.table.rows.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div></section>` : ''}
+    <section><h2>Formulas</h2><dl class="formulas">${t.formulas.map(([k, v]) => `<div class="row"><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl></section>
+    ${lab ? `<section class="lab" id="lab"><div class="lab-head"><h2>${lab.title}</h2><p>${lab.intro}</p></div>${lab.html}</section>` : ''}
+    <div class="two"><section class="panel exam"><h2>How the exam tests it</h2><ul>${t.exam.map(x => `<li>${x}</li>`).join('')}</ul></section>
+      <section class="panel traps"><h2>Common traps</h2><ul>${t.traps.map(x => `<li>${x}</li>`).join('')}</ul></section></div>
+    <footer class="t-foot"><button class="btn mark ${mastered.has(t.id) ? 'on' : ''}" id="markBtn">${mastered.has(t.id) ? '✓ Understood' : 'Mark as understood'}</button>
+      <div class="pn">${prev ? `<a class="btn" href="#${prev.id}">← ${prev.title}</a>` : ''}${next ? `<a class="btn primary" href="#${next.id}">${next.title} →</a>` : `<a class="btn primary" href="#quiz">Practice questions →</a>`}</div></footer>
+  </article>`;
+}
+
+function chooserView() {
+  return `<article class="topic"><header class="t-head"><p class="eyebrow">Practice and reference</p><h1>Model chooser</h1><p class="lede">Which technique fits the problem? Answer a few questions. This follows the selection logic the CFA curriculum uses for machine learning algorithms.</p></header>
+    <div class="chooser" id="chooser"></div>
+    <section><h2>Time-series workflow</h2><p class="note" style="margin-top:6px">The order matters: each step only makes sense once the previous test has passed.</p>
+    <ol class="steps">${TS_STEPS.map(([a, b]) => `<li><div><b>${a}</b><span>${b}</span></div></li>`).join('')}</ol></section></article>`;
+}
+function runChooser() {
+  const root = $('#chooser'); const path = [];
+  const show = id => {
+    const n = TREE[id];
+    const trail = path.length ? `<div class="trail">${path.map(p => `<span>${p}</span>`).join('')}</div>` : '';
+    if (n.leaf) {
+      root.innerHTML = trail + `<div class="qcard leaf"><p class="eyebrow">Recommended</p><h2>${n.leaf}</h2><p>${n.why}</p><div class="btns"><a class="btn primary" href="#${n.link}">Study ${TOPIC_BY_ID[n.link].title}</a><button class="btn" id="chRestart">Start over</button></div></div>`;
+      $('#chRestart').onclick = () => { path.length = 0; show('start'); };
+      return;
+    }
+    root.innerHTML = trail + `<div class="qcard"><p class="eyebrow">Question ${path.length + 1}</p><h2>${n.q}</h2><div class="opts">${n.o.map((o, i) => `<button class="opt" data-i="${i}"><b>${o[0]}</b>${o[1] ? `<span>${o[1]}</span>` : ''}</button>`).join('')}</div>${path.length ? '<div><button class="btn small" id="chRestart">Start over</button></div>' : ''}</div>`;
+    $$('.opt', root).forEach(b => b.onclick = () => { const o = n.o[+b.dataset.i]; path.push(o[0]); show(o[2]); });
+    const rs = $('#chRestart'); if (rs) rs.onclick = () => { path.length = 0; show('start'); };
+  };
+  show('start');
+}
+
+function formulasView() {
+  return `<article class="topic"><header class="t-head"><p class="eyebrow">Practice and reference</p><h1>Formula sheet</h1><p class="lede">Every formula from every topic. Filter by name or symbol.</p>
+    <div class="filters"><label for="fsQ" class="eyebrow">Filter</label><input type="search" id="fsQ" placeholder="e.g. VIF, F-test, recall"></div></header>
+    <div id="fsList">${GROUPS.map(g => `<section class="fs-group" data-g><p class="eyebrow">${g.name}</p>${TOPICS.filter(t => t.g === g.id).map(t => `<div class="fs-topic" style="margin-top:14px"><h3><a href="#${t.id}">${t.title}</a></h3><dl class="formulas">${t.formulas.map(([k, v]) => `<div class="row"><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl></div>`).join('')}</section>`).join('')}</div></article>`;
+}
+function bindFormulas() {
+  const q = $('#fsQ');
+  q.addEventListener('input', () => { const v = q.value.trim().toLowerCase();
+    $$('.fs-topic').forEach(tp => { let any = false; $$('.row', tp).forEach(r => { const hit = !v || r.textContent.toLowerCase().includes(v) || $('h3', tp).textContent.toLowerCase().includes(v); r.hidden = !hit; any = any || hit; }); tp.hidden = !any; });
+    $$('.fs-group').forEach(g => g.hidden = !$$('.fs-topic', g).some(t => !t.hidden)); });
+}
+
+function quizView() {
+  return `<article class="topic"><header class="t-head"><p class="eyebrow">Practice and reference</p><h1>Practice questions</h1><p class="lede">Exam-style multiple choice. Pick an answer to see the worked solution.</p>
+    <div class="quiz-bar"><div class="filters" style="margin:0"><label for="qzF" class="eyebrow">Topic</label><select id="qzF"><option value="">All topics (${QUIZ.length})</option>${GROUPS.map(g => `<optgroup label="${g.name}">${TOPICS.filter(t => t.g === g.id).map(t => `<option value="${t.id}">${t.title} (${QUIZ.filter(q => q[0] === t.id).length})</option>`).join('')}</optgroup>`).join('')}</select><button class="btn small" id="qzShuf">Shuffle</button><button class="btn small" id="qzReset">Reset</button></div>
+    <span class="score" id="qzScore"></span></div></header><div class="qlist" id="qzList"></div></article>`;
+}
+function bindQuiz() {
+  let order = QUIZ.map((_, i) => i); const ans = {};
+  const draw = () => {
+    const f = $('#qzF').value; const ids = order.filter(i => !f || QUIZ[i][0] === f);
+    $('#qzList').innerHTML = ids.map((qi, n) => { const [tid, stem, opts, a, why] = QUIZ[qi]; const chosen = ans[qi];
+      return `<div class="q" data-q="${qi}"><p class="eyebrow">${n + 1} · ${TOPIC_BY_ID[tid].title}</p><p class="stem">${stem}</p><div class="opts">${opts.map((o, j) => { const cls = chosen == null ? '' : j === a ? 'right' : j === chosen ? 'wrong' : ''; return `<button class="opt ${cls}" data-j="${j}" ${chosen != null ? 'disabled' : ''}><span class="l">${'ABCD'[j]}</span><span>${o}</span></button>`; }).join('')}</div>${chosen != null ? `<p class="why ${chosen === a ? '' : 'miss'}"><b>${chosen === a ? 'Correct.' : 'Not quite. Answer: ' + 'ABCD'[a] + '.'}</b> ${why} <a href="#${tid}">Review topic</a></p>` : ''}</div>`; }).join('');
+    $$('.q').forEach(qe => $$('.opt', qe).forEach(b => b.onclick = () => { ans[+qe.dataset.q] = +b.dataset.j; draw(); }));
+    const done = ids.filter(i => ans[i] != null); const right = done.filter(i => ans[i] === QUIZ[i][3]).length;
+    $('#qzScore').textContent = `${right} correct of ${done.length} answered · ${ids.length} shown`;
+  };
+  $('#qzF').onchange = draw;
+  $('#qzShuf').onclick = () => { for (let i = order.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [order[i], order[j]] = [order[j], order[i]]; } draw(); };
+  $('#qzReset').onclick = () => { for (const k in ans) delete ans[k]; order = QUIZ.map((_, i) => i); draw(); };
+  draw();
+}
+
+function atlasView() {
+  return `<article class="topic"><header class="t-head"><p class="eyebrow">Practice and reference</p><h1>Technique atlas</h1><p class="lede">The major techniques in quantitative finance and machine learning, what each does, and where it shows up in practice. Rows marked “Syllabus” are covered in depth in this atlas.</p>
+    <div class="filters"><div class="seg" role="group" aria-label="Filter techniques"><button data-f="all" aria-pressed="true">All</button><button data-f="cfa" aria-pressed="false">On the syllabus</button><button data-f="beyond" aria-pressed="false">Beyond the syllabus</button></div></div></header>
+    <div class="tbl-wrap"><table class="data" id="atlasT"><thead><tr><th>Technique</th><th>Family</th><th>Core idea</th><th>Finance use</th><th>Coverage</th></tr></thead><tbody></tbody></table></div></article>`;
+}
+function bindAtlas() {
+  const draw = f => { $('#atlasT tbody').innerHTML = ATLAS.filter(r => f === 'all' || (f === 'cfa') === r[4]).map(([n, fam, idea, use, cfa, link]) => `<tr><td><b>${cfa && link ? `<a href="#${link}">${n}</a>` : n}</b></td><td>${fam}</td><td>${idea}</td><td>${use}</td><td>${cfa ? '<span class="yes">Syllabus</span>' : '<span class="no">Extension</span>'}</td></tr>`).join('');
+    $$('.seg button').forEach(b => b.setAttribute('aria-pressed', b.dataset.f === f)); };
+  $$('.seg button').forEach(b => b.onclick = () => draw(b.dataset.f)); draw('all');
+}
+
+function route() {
+  let id = (location.hash || '').slice(1); if (!ROUTES.includes(id)) id = 'home';
+  store.set('qma-last', id);
+  renderNav(id); $('#nav').classList.remove('open'); $('#menuBtn').setAttribute('aria-expanded', 'false');
+  const main = $('#main'); currentRedraw = null;
+  const t = TOPIC_BY_ID[id];
+  if (t) {
+    main.innerHTML = topicView(t);
+    if (t.lab) currentRedraw = LABS[t.lab].init($('#lab'));
+    $('#markBtn').onclick = () => { if (mastered.has(t.id)) mastered.delete(t.id); else mastered.add(t.id); store.set('qma-mastered', [...mastered]); const b = $('#markBtn'); b.classList.toggle('on', mastered.has(t.id)); b.textContent = mastered.has(t.id) ? '✓ Understood' : 'Mark as understood'; renderNav(id); };
+  } else if (id === 'chooser') { main.innerHTML = chooserView(); runChooser(); }
+  else if (id === 'formulas') { main.innerHTML = formulasView(); bindFormulas(); }
+  else if (id === 'quiz') { main.innerHTML = quizView(); bindQuiz(); }
+  else if (id === 'atlas') { main.innerHTML = atlasView(); bindAtlas(); }
+  else { main.innerHTML = homeView(); currentRedraw = heroAnim(); if (currentRedraw) currentRedraw(); }
+  window.scrollTo(0, 0);
+}
+window.addEventListener('hashchange', route);
+$('#menuBtn').onclick = () => { const o = $('#nav').classList.toggle('open'); $('#menuBtn').setAttribute('aria-expanded', o); };
+let rt; const redraw = () => { clearTimeout(rt); rt = setTimeout(() => currentRedraw && currentRedraw(), 80); };
+new ResizeObserver(redraw).observe($('#main'));
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', redraw);
+new MutationObserver(redraw).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(redraw);
+route();
+</script>

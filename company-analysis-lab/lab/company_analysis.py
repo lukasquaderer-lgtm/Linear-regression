@@ -103,9 +103,10 @@ def _matches(text: str, keyword: str) -> bool:
     kw = keyword.strip().lower()
     if not kw:
         return False
-    if len(kw) <= 4 and re.fullmatch(r"[a-z0-9&]+", kw):
-        return re.search(rf"(?<![a-z0-9]){re.escape(kw)}(?![a-z0-9])", text) is not None
-    return kw in text
+    if len(kw) <= 3 and re.fullmatch(r"[a-z0-9&]+", kw):
+        # short tokens (ib, us, fee, nii) need word boundaries; allow a plural ending ("fees")
+        return re.search(rf"(?<![a-z0-9]){re.escape(kw)}(?:s|es)?(?![a-z0-9])", text) is not None
+    return kw in text  # longer stems match inside words (zins → Zinsen, Zinserfolg)
 
 
 def keyword_coverage(text: str, key_points: list[dict]) -> tuple[list[str], list[str]]:

@@ -14,6 +14,19 @@ streamlit run app.py
 
 Then open http://localhost:8501. Your work is saved automatically in `company-analysis-lab/workspace/` (git-ignored).
 
+### Web version (no installation)
+
+`web/` contains the same app as a single self-contained web page, published as a claude.ai Artifact. Same ten stages, quizzes, spaced repetition, datasets and validation, ported to JavaScript and React. Your work is saved to your Claude account when the page runs there, otherwise in the browser.
+
+```bash
+cd company-analysis-lab/web
+npm install
+npm run build   # exports the datasets from Python, then writes dist/analyst-lab.html
+npm test        # JS logic tests; PARITY_FILE=… also checks results against the Python version
+```
+
+`dist/analyst-lab.html` also opens directly in a browser (charts load Plotly from jsDelivr). Add `#unlock-all` to the URL to unlock every stage.
+
 ## The ten stages
 
 You must complete each stage before the next one unlocks. Completed stages stay open for revisiting.
@@ -105,7 +118,7 @@ cd company-analysis-lab
 python -m pytest -q
 ```
 
-The suite covers the calculations, ratio diagnosis, valuation maths, validation and import, the quiz and spaced-repetition logic, and end-to-end runs of the app for every company and stage.
+The suite covers the calculations, ratio diagnosis, valuation maths, validation and import, the quiz and spaced-repetition logic, and end-to-end runs of the app for every company and stage. The web version has its own tests (`cd web && npm test`).
 
 ---
 

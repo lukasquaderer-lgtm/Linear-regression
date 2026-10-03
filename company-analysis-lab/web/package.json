@@ -1,0 +1,19 @@
+{
+  "name": "analyst-lab-web",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Browser version of Analyst Lab, published as a claude.ai artifact",
+  "type": "module",
+  "scripts": {
+    "data": "python3 scripts/export_data.py",
+    "build": "npm run data && node scripts/build.mjs",
+    "test": "node --test tests/*.test.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "plotly.js-dist-min": "2.35.2",
+    "xlsx": "0.18.5"
+  }
+}

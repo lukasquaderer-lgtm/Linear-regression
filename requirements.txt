@@ -4,4 +4,7 @@ scipy
 matplotlib
 statsmodels
 scikit-learn
+shap
+torch
+anthropic
 jupyterlab

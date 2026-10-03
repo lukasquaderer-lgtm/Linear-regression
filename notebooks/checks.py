@@ -325,6 +325,61 @@ def _e_10_5():
     return [average_precision_score(yte, m.predict_proba(Xte)[:, 1])]
 
 
+# ---------- notebook 14: explainability ----------
+def _c_14_1(g):
+    v = g["additivity_gap"]
+    try:
+        ok = float(v) < 1e-4
+    except (TypeError, ValueError):
+        return False, "Store a single number: the maximum absolute difference."
+    return ok, "base value + sum of SHAP values should match gbm.decision_function(X_test) (log-odds), not predict_proba."
+
+
+def _e_14_2():
+    import shap
+    from sklearn.ensemble import GradientBoostingClassifier
+    Xtr, Xte, ytr, yte = _credit_split()
+    gbm = GradientBoostingClassifier(n_estimators=200, max_depth=3, learning_rate=0.05, random_state=0).fit(Xtr, ytr)
+    i = int(np.argmax(gbm.predict_proba(Xte)[:, 1]))
+    sv = shap.TreeExplainer(gbm)(Xte)
+    return [str(Xte.columns[np.argmax(sv.values[i])])]
+
+
+def _c_14_3(g):
+    ok = str(g["leak_feature"]) == "sent_to_collections"
+    return ok, "Compute the mean absolute SHAP value per column of the leaky model and take the largest."
+
+
+# ---------- notebook 15: PyTorch ----------
+def _e_15_1():
+    d = _csv("factor_returns.csv")
+    X = np.column_stack([np.ones(len(d)), d[["mkt_excess", "smb", "hml", "mom"]].to_numpy()]); y = d["fund_excess"].to_numpy()
+    b = np.array([0.1, 1.0, 0.5, 0.3, 0.0])
+    return [2 / len(y) * X.T @ (X @ b - y)]
+
+
+# ---------- notebook 16: LLMs ----------
+def _c_16_1(g):
+    f = g["cosine"]
+    try:
+        a = float(f(np.array([1.0, 0.0]), np.array([1.0, 0.0]))); b = float(f(np.array([1.0, 0.0]), np.array([0.0, 2.0])))
+        c = float(f(np.array([1.0, 2.0, 3.0]), np.array([-1.0, -2.0, -3.0])))
+        ok = abs(a - 1) < 1e-9 and abs(b) < 1e-9 and abs(c + 1) < 1e-9
+    except Exception as e:
+        return False, f"cosine raised {type(e).__name__}: {e}"
+    return ok, "cosine(a, b) = a·b / (‖a‖ ‖b‖); use np.dot and np.linalg.norm."
+
+
+def _c_16_2(g):
+    f = g["numbers_supported"]
+    src = "Revenue rose 8% to CHF 1.24 billion; we expect margins of 14.5% next year."
+    try:
+        ok = f(src, [8, 1.24, 14.5]) is True and f(src, [8, 1.42]) is False and f(src, []) is True
+    except Exception as e:
+        return False, f"numbers_supported raised {type(e).__name__}: {e}"
+    return ok, "Extract every number in the text (re.findall(r'\\d+(?:\\.\\d+)?', text)), then check each claimed value is among them; return a bool."
+
+
 # key: (variable names, reference function, absolute tolerances, hint)
 SPECS = {
     "00.1": (["ann_mean", "ann_std"], _e_00_1, [0.01, 0.01], "Annualise the mean with × 12 and the standard deviation with × √12 (np.sqrt(12))."),
@@ -360,6 +415,13 @@ SPECS = {
     "10.2": (["best_C"], _e_10_2, [0], "GridSearchCV over {'model__C': [0.01, 0.1, 1, 10]} with the same CV; read .best_params_."),
     "10.4": (["leak_answers"], _c_10_3, "custom", ""),
     "10.5": (["cv_noise_fixed"], _e_10_4, [0.005], "Put SelectKBest(f_classif, k=20) inside make_pipeline(..., LogisticRegression(max_iter=1000)) and cross-validate the whole pipeline."),
+    "14.1": (["additivity_gap"], _c_14_1, "custom", ""),
+    "14.2": (["top_reason"], _e_14_2, None, "Take the column with the largest positive SHAP value for that applicant: X_test.columns[np.argmax(sv.values[i])]."),
+    "14.3": (["leak_feature"], _c_14_3, "custom", ""),
+    "15.1": (["grad_autograd"], _e_15_1, [1e-6], "Make b a tensor with requires_grad=True, compute loss = ((X @ b - y) ** 2).mean(), call loss.backward() and read b.grad."),
+    "15.2": (["n_params"], lambda: [865], [0], "Count weights and biases of every Linear layer: sum(p.numel() for p in model.parameters())."),
+    "16.1": (["cosine"], _c_16_1, "custom", ""),
+    "16.2": (["numbers_supported"], _c_16_2, "custom", ""),
     "10.3": (["ap_balanced"], _e_10_5, [0.005], "StandardScaler + LogisticRegression(class_weight='balanced', max_iter=1000) on the notebook-05 split; average_precision_score on test."),
 }
 
@@ -367,6 +429,8 @@ SPECS = {
 def _same(a, b, tol):
     if isinstance(b, (bool, np.bool_)):
         return bool(a) == bool(b) and isinstance(a, (bool, np.bool_))
+    if isinstance(b, str):
+        return str(a) == b
     if isinstance(b, np.ndarray):
         try:
             a = np.asarray(a, dtype=float).ravel()

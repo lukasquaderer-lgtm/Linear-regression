@@ -805,10 +805,16 @@ notebooks[CAP_F] = CAP_CELLS
 from scratch_nb import F as SCR_F, CELLS as SCR_CELLS
 from workflow_nb import F as WF_F, CELLS as WF_CELLS
 import projects_nb
+from shap_nb import F as SHAP_F, CELLS as SHAP_CELLS
+from torch_nb import F as TORCH_F, CELLS as TORCH_CELLS
+from llm_nb import F as LLM_F, CELLS as LLM_CELLS
 notebooks[SCR_F] = SCR_CELLS
 notebooks[WF_F] = WF_CELLS
 notebooks.update(projects_nb.NOTEBOOKS)
 notebooks.update(projects_nb.SOLUTIONS)
+notebooks[SHAP_F] = SHAP_CELLS
+notebooks[TORCH_F] = TORCH_CELLS
+notebooks[LLM_F] = LLM_CELLS
 (NB / "solutions").mkdir(exist_ok=True)
 
 only = [a for a in sys.argv[1:] if not a.startswith("--")]

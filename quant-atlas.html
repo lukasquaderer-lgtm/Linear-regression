@@ -2775,7 +2775,10 @@ const NOTEBOOKS = [
   ['10_ml_workflow_and_leakage.ipynb', 'The real workflow and leakage', 'Pipelines for mixed columns, tuning with cross-validation, rare outcomes, time-series validation, and four “find the leak” cases.', ['mlbasics', 'supervised', 'bigdata']],
   ['11_project_insurance_targeting.ipynb', 'Project: who will buy the insurance?', 'Real insurer data, 6% buyers. Rank 5,822 customers for a 10% mailing budget. Open-ended, with a 100-point rubric.', ['supervised', 'trees', 'bigdata'], 'solutions/11_project_insurance_targeting_solution.ipynb'],
   ['12_project_volume_forecasting.ipynb', 'Project: forecast tomorrow’s trading volume', 'Real NYSE daily data 1962–1986. Beat an AR(5) without look-ahead. Open-ended, with a rubric.', ['ar', 'mlbasics', 'trees'], 'solutions/12_project_volume_forecasting_solution.ipynb'],
-  ['13_project_market_direction.ipynb', 'Project: can you predict the market’s direction?', 'Real weekly S&P 500 data 1990–2010. Test a trading claim statistically and economically. Open-ended, with a rubric.', ['extend', 'mlbasics', 'supervised'], 'solutions/13_project_market_direction_solution.ipynb']
+  ['13_project_market_direction.ipynb', 'Project: can you predict the market’s direction?', 'Real weekly S&P 500 data 1990–2010. Test a trading claim statistically and economically. Open-ended, with a rubric.', ['extend', 'mlbasics', 'supervised'], 'solutions/13_project_market_direction_solution.ipynb'],
+  ['14_explainability_shap.ipynb', 'Explaining models: SHAP', 'Permutation importance, SHAP beeswarm and waterfall plots, partial dependence, reason codes for a declined loan, and using SHAP to catch a leak.', ['trees', 'supervised', 'extend']],
+  ['15_pytorch_deep_learning.ipynb', 'Deep learning with PyTorch', 'Autograd, the training loop, a neural network with early stopping for loan default, and an LSTM forecasting real NYSE volume.', ['neural', 'mlbasics', 'ar']],
+  ['16_llms_for_finance.ipynb', 'Language models for finance', 'Tokenizers from scratch, sentence embeddings and semantic search, FinBERT, and Claude for sentiment and earnings-call extraction with guaranteed JSON.', ['bigdata', 'neural']]
 ];
 const DS_META = {
   factor_returns: ['Factor returns', 'Monthly · 120 rows', 'Market, size (SMB), value (HML) and momentum factors, plus one stock and one fund. Use for simple and multiple regression.'],
@@ -3334,7 +3337,7 @@ import statsmodels.api as sm
 df = pd.read_csv("${RAW}factor_returns.csv")
 model = sm.OLS(df["stock_excess"], sm.add_constant(df["mkt_excess"])).fit()
 print(model.summary())          # beta = coefficient on mkt_excess`, 'Python: CAPM beta in five lines')}</section>
-    <section><h2>Notebooks</h2><p class="note" style="margin-top:6px">Suggested order: 00 → 01–07 alongside the topic pages → 09 and 10 to understand and use ML properly → 08 and the three projects. Notebooks 00–07, 09 and 10 have self-checking exercises: run the check cell under an exercise to get ✅ or ❌ with a hint, with full solutions at the end. The capstone and projects are open-ended; do the work first, score yourself with the rubric, then open the model solution.</p>
+    <section><h2>Notebooks</h2><p class="note" style="margin-top:6px">Suggested order: 00 → 01–07 alongside the topic pages → 09 and 10 to understand and use ML properly → 08 and the three projects → 14–16 for explainability, deep learning and language models. Notebooks 00–07, 09 and 10 have self-checking exercises: run the check cell under an exercise to get ✅ or ❌ with a hint, with full solutions at the end. The capstone and projects are open-ended; do the work first, score yourself with the rubric, then open the model solution.</p>
       <div class="nb-list">${NOTEBOOKS.map(([f, t, d, tops, sol]) => `<div class="nb"><span class="nb-n">${f.slice(0, 2)}</span><div class="nb-b"><b>${t}</b><span>${d}</span>${tops.length ? `<span class="nb-t">${tops.map(id => `<a href="#${id}">${TOPIC_BY_ID[id].title}</a>`).join(' · ')}</span>` : ''}</div><div class="nb-a"><a class="btn small primary" href="${colabUrl(f)}" target="_blank" rel="noopener">Open in Colab</a><a class="btn small" href="${ghUrl(f)}" target="_blank" rel="noopener">View on GitHub</a>${sol ? `<a class="btn small" href="${colabUrl(sol)}" target="_blank" rel="noopener">Model solution</a>` : ''}</div></div>`).join('')}</div></section>
     <section><h2>Datasets</h2><p class="note" style="margin-top:6px">Simulated with a fixed seed so everyone gets the same numbers; built to behave like real financial data. Load any of them in Python with <code>pd.read_csv(url)</code>.</p>
       <div class="tbl-wrap"><table class="data"><thead><tr><th>Dataset</th><th>Size</th><th>What it is for</th><th>Columns</th><th></th></tr></thead><tbody>${Object.entries(DS_META).map(([k, m]) => { const tb = parseCSV(document.getElementById('ds-' + k).textContent); return `<tr><td><b>${m[0]}</b><br><span class="mono" style="font-size:.75rem;color:var(--muted)">${k}.csv</span></td><td>${m[1]}</td><td>${m[2]}</td><td class="mono" style="font-size:.75rem">${tb.cols.map(c => c.name).join(', ')}</td><td><div class="btns" style="flex-wrap:nowrap"><button class="btn small" data-ds-open="${k}">Workbench</button><button class="btn small" data-copy-ds="${k}">Copy CSV</button></div></td></tr>`; }).join('')}</tbody></table></div>
@@ -3430,11 +3433,17 @@ feats = ["revenue_growth", "operating_margin", "pe_ratio", "dividend_yield", "be
 Z = StandardScaler().fit_transform(co[feats])
 km = KMeans(n_clusters=5, n_init=10, random_state=0).fit(Z)
 print(pd.crosstab(km.labels_, co["true_sector"]))` },
-  neural: { nb: '07_neural_nets_and_text.ipynb', preset: null, task: 'Train neural networks with different layer sizes and learning rates and watch train vs test AUC.', code: `from sklearn.neural_network import MLPClassifier
-for layers in [(4,), (16,), (64, 64)]:
-    nn = make_pipeline(StandardScaler(), MLPClassifier(hidden_layer_sizes=layers, learning_rate_init=0.001, max_iter=600))
-    nn.fit(X_tr, y_tr)
-    print(layers, roc_auc_score(y_te, nn.predict_proba(X_te)[:, 1]))` },
+  neural: { nb: '15_pytorch_deep_learning.ipynb', preset: null, task: 'Build a neural network in PyTorch, train it with a proper loop and early stopping, then try an LSTM on real NYSE trading volume.', code: `import torch
+from torch import nn
+model = nn.Sequential(nn.Linear(9, 32), nn.ReLU(), nn.Dropout(0.2),
+                      nn.Linear(32, 16), nn.ReLU(), nn.Linear(16, 1))
+opt = torch.optim.Adam(model.parameters(), lr=1e-3, weight_decay=1e-4)
+loss_fn = nn.BCEWithLogitsLoss()
+for epoch in range(200):
+    opt.zero_grad()
+    loss = loss_fn(model(X_train_t), y_train_t)   # forward pass + loss
+    loss.backward()                                # autograd computes every gradient
+    opt.step()                                     # update the weights` },
   bigdata: { nb: '07_neural_nets_and_text.ipynb', preset: { ds: 'credit_default', mode: 'logit', o: { split: true } }, task: 'Build a TF-IDF sentiment classifier on headlines, and compute precision, recall and F1 from a confusion matrix.', code: `from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report
@@ -3651,7 +3660,7 @@ function homeView() {
     <div class="tools hands">
       <a class="tool" href="#setup"><b>1 · Set up Python</b><span>Run everything in Google Colab with nothing to install, or locally with Anaconda.</span></a>
       <a class="tool" href="${colabUrl('00_python_quickstart.ipynb')}" target="_blank" rel="noopener"><b>2 · Python quick-start</b><span>Never coded? A 15-minute notebook: load a CSV, explore it, make a chart.</span></a>
-      <a class="tool" href="#setup"><b>3 · ${NOTEBOOKS.length} notebooks and projects</b><span>Self-checking exercises for every topic, ML from scratch, a leakage clinic, a capstone and three real-data projects.</span></a>
+      <a class="tool" href="#setup"><b>3 · ${NOTEBOOKS.length} notebooks and projects</b><span>Self-checking exercises for every topic, ML from scratch, leakage, SHAP, PyTorch, LLMs, a capstone and three real-data projects.</span></a>
       <a class="tool" href="#workbench"><b>4 · Data workbench</b><span>Run regressions, AR models, PCA, k-means and logistic models on built-in data or your own CSV.</span></a>
     </div>
     <div class="section-head"><h2>Curriculum map</h2><span class="eyebrow">${TOPICS.filter(t => t.lab).length} topics include a live lab</span></div>

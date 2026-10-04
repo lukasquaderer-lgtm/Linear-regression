@@ -71,3 +71,33 @@ def test_available_ratios_respects_sector_and_not_applicable(values):
     ins = {"sector": "insurer", "not_applicable": ["dps"]}
     keys = [r.key for r in R.available_ratios(ins, values)]
     assert "cost_income" not in keys and "payout" not in keys
+
+
+def test_corporate_ratios_on_roche():
+    from lab import data as D
+
+    p = D.load_profile("roche")
+    v, _ = D.load_starter("roche")
+    r = lambda key, y: R.compute(R.RATIOS[key], v, y).value  # noqa: E731
+    assert r("ebit_margin", 2024) == pytest.approx(13417 / 60495 * 100)
+    assert r("cash_conversion", 2024) == pytest.approx(20094 / 8277 * 100)
+    assert r("fcf_margin", 2024) == pytest.approx((20094 - 5009) / 60495 * 100)
+    assert r("net_debt_ebitda", 2024) == pytest.approx((36354 - 6975) / (13417 + 3430))
+    capital = (29315 + 31767) / 2 + (30782 + 36354) / 2 - (5376 + 6975) / 2
+    assert r("roce", 2024) == pytest.approx(13417 / capital * 100)
+    keys = [x.key for x in R.available_ratios(p, v)]
+    assert "cost_income" not in keys and "cet1_calc" not in keys and "ebit_margin" in keys
+    assert R.RATIOS["ebit_margin"].is_core("corporate") and not R.RATIOS["leverage"].is_core("corporate")
+    assert R.RATIOS["leverage"].is_core("bank") and R.RATIOS["roe"].is_core("corporate")
+    for key in ("roe", "roa", "net_margin", "payout", "equity_ratio", "bvps", "leverage"):
+        assert "corporate" in R.RATIOS[key].interpretation, key
+
+
+def test_diagnose_works_for_multi_input_ratio():
+    from lab import data as D
+
+    v, _ = D.load_starter("roche")
+    res = R.compute(R.RATIOS["roce"], v, 2024)
+    inputs = {f"{rn.metric}|{rn.year}": rn.value for rn in res.required}
+    assert R.diagnose(res, inputs, res.value).correct
+    assert R.diagnose(res, inputs, res.alternative).headline.startswith("Close")

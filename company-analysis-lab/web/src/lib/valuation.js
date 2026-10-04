@@ -1,7 +1,10 @@
 // Valuation formulas. Port of lab/valuation.py. Rates are decimals (0.09 = 9 %).
-import { METHOD_GUIDE } from "../generated/data.js";
+import { METHOD_GUIDE, SUITED as SUITED_ROWS, UNSUITED as UNSUITED_ROWS } from "../generated/data.js";
 
 export { METHOD_GUIDE };
+// Methods that fit — or clearly do not fit — each sector (Stage 9 feedback).
+export const SUITED = Object.fromEntries(Object.entries(SUITED_ROWS).map(([k, v]) => [k, new Set(v)]));
+export const UNSUITED = Object.fromEntries(Object.entries(UNSUITED_ROWS).map(([k, v]) => [k, new Set(v)]));
 
 const ok = (x) => typeof x === "number" && Number.isFinite(x);
 
@@ -57,3 +60,11 @@ export function sensitivityGrid(fn, rValues, gValues) {
     return ok(v) ? v : null;
   }));
 }
+
+export function wacc(equityValue, costOfEquity, debtValue, costOfDebt, taxRate) {
+  const v = equityValue + debtValue;
+  return v <= 0 ? null : (equityValue / v) * costOfEquity + (debtValue / v) * costOfDebt * (1 - taxRate);
+}
+
+/** Perpetual growth that makes FCF₀ × (1 + g) ÷ (r − g) equal the enterprise value. */
+export const impliedGrowth = (ev, fcf0, r) => (ev + fcf0 === 0 ? null : (ev * r - fcf0) / (ev + fcf0));

@@ -1,0 +1,417 @@
+{
+  "id": "novartis",
+  "name": "Novartis AG",
+  "short_name": "Novartis",
+  "sector": "corporate",
+  "subsector": "Innovative medicines (focused pharmaceuticals)",
+  "country": "Switzerland",
+  "headquarters": "Basel",
+  "listed": true,
+  "exchange_ticker": "NOVN (SIX Swiss Exchange), NVS (NYSE, ADR)",
+  "currency": "USD",
+  "currency_confirmed": true,
+  "fiscal_year_end": "31 December",
+  "accounting": {
+    "2021": "IFRS",
+    "2022": "IFRS",
+    "2023": "IFRS",
+    "2024": "IFRS",
+    "2025": "IFRS"
+  },
+  "accounting_notes": "IFRS group accounts in US dollars although Novartis is a Swiss company — and the dividend is declared in Swiss francs. Alcon (eye care) was spun off in 2019 and Sandoz (generics) in October 2023: restated figures show 'continuing operations', but older balance sheets and cash flows still include Sandoz. Novartis also reports 'core' results.",
+  "regulator": "Swissmedic, US FDA, EMA (product approvals); SIX and the US SEC (Form 20-F)",
+  "capital_regime": "None (non-financial company): the constraints are leverage, the credit rating and the cash needed for R&D, acquisitions, dividends and buybacks",
+  "investor_relations": "https://www.novartis.com/investors",
+  "annual_report_hint": "novartis.com → Investors → Financial data → Annual Report and Form 20-F. The consolidated financial statements are in the Annual Report; the 20-F has the most detailed risk factors.",
+  "data_source": "Starter values from a data vendor (FMP via Bigdata.com). Dividends converted from CHF to USD using dividends paid in the cash flow statement. Unverified — check each number.",
+  "required_extra": [],
+  "not_applicable": [],
+  "business_reference": {
+    "what_it_does": {
+      "reference": "Novartis discovers, develops and sells innovative prescription medicines. After spinning off Alcon (2019) and Sandoz (2023) it focuses on four therapeutic areas — cardiovascular-renal-metabolic, immunology, neuroscience and oncology — and on technology platforms such as RNA therapeutics, cell and gene therapy and radioligand therapy.",
+      "key_points": [
+        {
+          "point": "Innovative prescription medicines",
+          "keywords": [
+            "innovative",
+            "medicine",
+            "medikament",
+            "pharma",
+            "drug"
+          ]
+        },
+        {
+          "point": "Four focus therapeutic areas",
+          "keywords": [
+            "cardio",
+            "immunolog",
+            "neuro",
+            "oncolog",
+            "onkolog"
+          ]
+        },
+        {
+          "point": "Spin-offs of Alcon and Sandoz",
+          "keywords": [
+            "sandoz",
+            "alcon",
+            "spin",
+            "abspaltung"
+          ]
+        },
+        {
+          "point": "Technology platforms",
+          "keywords": [
+            "rna",
+            "gene",
+            "cell",
+            "zell",
+            "radioligand",
+            "platform"
+          ]
+        }
+      ]
+    },
+    "how_money": {
+      "reference": "By selling patented medicines at high gross margins (about 75 %). Large brands such as Entresto, Cosentyx, Kesimpta, Kisqali and Pluvicto drive growth. Profits fund R&D (about 20 % of sales), dividends and large share buybacks. A brand earns most until its patent expires; then generics take most of the volume.",
+      "key_points": [
+        {
+          "point": "Patented brands",
+          "keywords": [
+            "patent",
+            "brand",
+            "marke",
+            "entresto",
+            "cosentyx",
+            "kisqali",
+            "kesimpta"
+          ]
+        },
+        {
+          "point": "High gross margins",
+          "keywords": [
+            "margin",
+            "marge"
+          ]
+        },
+        {
+          "point": "R&D reinvestment",
+          "keywords": [
+            "r&d",
+            "research",
+            "forschung"
+          ]
+        },
+        {
+          "point": "Patent expiry / loss of exclusivity",
+          "keywords": [
+            "expir",
+            "generic",
+            "generika",
+            "exclusivity",
+            "loe"
+          ]
+        }
+      ]
+    },
+    "segments": {
+      "reference": "One reportable segment (Innovative Medicines) since 2023, run through two commercial units — US and International. Sales are also shown by therapeutic area and by brand.",
+      "key_points": [
+        {
+          "point": "Innovative Medicines",
+          "keywords": [
+            "innovative medicines"
+          ]
+        },
+        {
+          "point": "US and International units",
+          "keywords": [
+            "us",
+            "international"
+          ]
+        },
+        {
+          "point": "Therapeutic areas",
+          "keywords": [
+            "therapeutic",
+            "therapie"
+          ]
+        },
+        {
+          "point": "Brands",
+          "keywords": [
+            "brand",
+            "entresto",
+            "cosentyx"
+          ]
+        }
+      ]
+    },
+    "customers": {
+      "reference": "Patients reached through doctors and hospitals; payers (governments, health insurers, US pharmacy benefit managers) negotiate prices and rebates; wholesalers distribute the products.",
+      "key_points": [
+        {
+          "point": "Payers",
+          "keywords": [
+            "payer",
+            "insurer",
+            "versicher",
+            "government",
+            "staat",
+            "pbm",
+            "medicare"
+          ]
+        },
+        {
+          "point": "Doctors and hospitals",
+          "keywords": [
+            "doctor",
+            "arzt",
+            "hospital",
+            "spital",
+            "physician"
+          ]
+        },
+        {
+          "point": "Wholesalers",
+          "keywords": [
+            "wholesal",
+            "grosshändler",
+            "distribut"
+          ]
+        }
+      ]
+    },
+    "markets": {
+      "reference": "Global. The US is the largest and fastest-growing market (about 40 % of sales), followed by Europe, Japan, China and other emerging markets. Reporting in USD means CHF-based costs and EUR sales create currency effects.",
+      "key_points": [
+        {
+          "point": "United States",
+          "keywords": [
+            "us",
+            "usa",
+            "united states",
+            "amerika"
+          ]
+        },
+        {
+          "point": "Europe",
+          "keywords": [
+            "europe",
+            "europa"
+          ]
+        },
+        {
+          "point": "China / emerging markets",
+          "keywords": [
+            "china",
+            "emerging",
+            "asia",
+            "asien"
+          ]
+        },
+        {
+          "point": "Currency effects",
+          "keywords": [
+            "currency",
+            "währung",
+            "fx",
+            "dollar"
+          ]
+        }
+      ]
+    },
+    "advantages": {
+      "reference": "A focused portfolio with several multi-billion blockbusters, a strong US commercial presence, platform technologies (radioligands, siRNA), a large R&D budget and strong cash generation that funds bolt-on acquisitions and buybacks.",
+      "key_points": [
+        {
+          "point": "Blockbusters",
+          "keywords": [
+            "blockbuster",
+            "brand",
+            "entresto",
+            "kisqali"
+          ]
+        },
+        {
+          "point": "Platform technologies",
+          "keywords": [
+            "platform",
+            "radioligand",
+            "rna"
+          ]
+        },
+        {
+          "point": "Cash generation",
+          "keywords": [
+            "cash",
+            "free cash flow",
+            "fcf"
+          ]
+        },
+        {
+          "point": "Bolt-on acquisitions",
+          "keywords": [
+            "acquisition",
+            "akquisition",
+            "bolt-on",
+            "übernahme"
+          ]
+        }
+      ]
+    },
+    "threats": {
+      "reference": "Loss of exclusivity — US generic versions of Entresto launched in 2025 and other brands follow; US drug-pricing reform (IRA negotiation includes Entresto), most-favoured-nation pricing and tariffs; pipeline setbacks; integration risk of acquisitions; currency.",
+      "key_points": [
+        {
+          "point": "Loss of exclusivity",
+          "keywords": [
+            "entresto",
+            "generic",
+            "generika",
+            "patent",
+            "exclusivity"
+          ]
+        },
+        {
+          "point": "Pricing reform and tariffs",
+          "keywords": [
+            "ira",
+            "pricing",
+            "preis",
+            "mfn",
+            "tariff"
+          ]
+        },
+        {
+          "point": "Pipeline setbacks",
+          "keywords": [
+            "pipeline",
+            "trial",
+            "studie"
+          ]
+        },
+        {
+          "point": "Acquisition risk",
+          "keywords": [
+            "acquisition",
+            "akquisition",
+            "integration"
+          ]
+        }
+      ]
+    }
+  },
+  "events": [
+    {
+      "year": 2021,
+      "metrics": [
+        "net_income",
+        "eps"
+      ],
+      "nature": "one-off",
+      "title": "Sale of the Roche stake",
+      "detail": "Novartis sold its 33 % stake in Roche back to Roche for about USD 20.7 bn and booked a gain of about USD 14.6 bn. Net income of USD 24 bn in 2021 is therefore not a sustainable level.",
+      "where_to_verify": "Annual Report 2021: income from associated companies; cash flow from investing activities."
+    },
+    {
+      "year": 2023,
+      "metrics": [
+        "revenue",
+        "net_income",
+        "total_equity",
+        "total_assets",
+        "operating_cash_flow"
+      ],
+      "nature": "structural",
+      "title": "Spin-off of Sandoz (4 October 2023)",
+      "detail": "The generics business was distributed to shareholders. Revenue is restated to continuing operations; net income 2023 contains a large gain on the distribution (discontinued operations); equity and total assets dropped.",
+      "where_to_verify": "Annual Report 2023: discontinued operations note; statement of changes in equity (distribution of Sandoz)."
+    },
+    {
+      "year": 2024,
+      "metrics": [
+        "total_assets",
+        "total_debt"
+      ],
+      "nature": "acquisition",
+      "title": "Acquisition of MorphoSys (≈ EUR 2.7 bn)",
+      "detail": "Novartis bought the German biotech MorphoSys for its oncology pipeline. Acquired rights become intangible assets — and an impairment risk.",
+      "where_to_verify": "Annual Report 2024: business combinations / acquisitions note."
+    },
+    {
+      "year": 2025,
+      "metrics": [
+        "revenue"
+      ],
+      "nature": "operational",
+      "title": "US generic competition for Entresto begins",
+      "detail": "Generic versions of Novartis's biggest brand launched in the US in 2025. Growth from newer brands must offset the erosion — watch the 2026 figures.",
+      "where_to_verify": "Annual Report 2025 / Form 20-F: product sales table; risk factors on loss of exclusivity."
+    }
+  ],
+  "top_risks_reference": [
+    {
+      "risk": "pipeline",
+      "why": "Entresto and other brands are losing exclusivity; the value of Novartis depends on newer brands and the pipeline more than replacing that revenue."
+    },
+    {
+      "risk": "pricing",
+      "why": "The US is about 40 % of sales and the main profit pool: IRA price negotiation (Entresto is on the first list), most-favoured-nation pricing and tariffs cut prices directly."
+    },
+    {
+      "risk": "concentration",
+      "why": "A handful of brands generate a large share of sales and profit, so one patent loss, safety issue or competitor launch can move group results."
+    }
+  ],
+  "audit_focus": [
+    "Revenue deductions in the US (rebates, chargebacks, returns)",
+    "Impairment of goodwill and intangible assets",
+    "Provisions for legal matters",
+    "Uncertain tax positions"
+  ],
+  "quiz": [
+    {
+      "level": 2,
+      "concept": "one_off_items",
+      "prompt": "Novartis earned USD 24 bn in 2021 but only USD 7 bn in 2022. What is the main reason?",
+      "options": [
+        "A one-off gain from selling its Roche stake in 2021",
+        "Sales fell by two thirds in 2022",
+        "A switch from IFRS to US GAAP",
+        "Higher dividends in 2022"
+      ],
+      "answer": 0,
+      "explanation": "The ≈ USD 14.6 bn gain on the Roche stake inflated 2021. Underlying profit did not collapse — always remove disposal gains before judging the trend."
+    },
+    {
+      "level": 3,
+      "concept": "accounting_changes",
+      "prompt": "Novartis spun off Sandoz in October 2023. How do you compare revenue 2021–2025?",
+      "options": [
+        "Use figures restated for continuing operations and remember that pre-2023 balance sheets still include Sandoz",
+        "Use the originally reported figures — restatements are not allowed",
+        "Add Sandoz revenue to 2024 and 2025",
+        "Revenue cannot be compared at all"
+      ],
+      "answer": 0,
+      "explanation": "Restated continuing-operations figures make revenue comparable; balance-sheet and cash-flow figures before the spin-off are not restated."
+    },
+    {
+      "level": 1,
+      "concept": "business_model",
+      "prompt": "In which currency does Novartis report, and in which currency does it declare its dividend?",
+      "options": [
+        "Reports in USD, declares the dividend in CHF",
+        "Reports and pays in CHF",
+        "Reports in EUR, pays in USD",
+        "Reports and pays in USD"
+      ],
+      "answer": 0,
+      "explanation": "So the payout ratio needs a currency conversion — a classic trap for Swiss multinationals."
+    }
+  ],
+  "peers_suggested": [
+    "roche"
+  ]
+}

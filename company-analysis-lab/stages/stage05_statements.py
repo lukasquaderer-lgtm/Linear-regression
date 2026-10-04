@@ -44,33 +44,49 @@ EXPECTED = {
     "regulatory": ("Operational", "Partly"),
     "acquisition": ("Both", "One-off"),
     "capital": ("Operational", "Recurring"),
+    "currency": ("Accounting-driven", "Partly"),
 }
 
 
 def statement_sections(app: AppContext) -> list[dict]:
-    bank = app.sector == "bank"
+    sec = app.sector
+    pick = lambda bank, insurer, corporate: {"bank": bank, "insurer": insurer}.get(sec, corporate)  # noqa: E731
     return [
         {
             "key": "is", "en": "Income statement", "de": "Erfolgsrechnung",
-            "shows": "Revenues, expenses and profit over the year." + (" For banks: net interest income, fees, trading, operating expenses, credit losses." if bank else " For insurers (IFRS 17): insurance revenue, insurance service expenses, insurance finance result, investment result."),
-            "look": (["Which revenue line drives the change?", "Credit loss expense — build or release?", "Any line called 'other' that is unusually large?", "Effective tax rate vs statutory rate"] if bank else
-                     ["Insurance service result vs investment result", "Large catastrophe or reserve effects", "Realised gains on investments", "Effective tax rate"]),
+            "shows": "Revenues, expenses and profit over the year." + pick(
+                " For banks: net interest income, fees, trading, operating expenses, credit losses.",
+                " For insurers (IFRS 17): insurance revenue, insurance service expenses, insurance finance result, investment result.",
+                " For non-financials: sales, cost of goods sold, gross profit, R&D, selling and administrative costs, operating result (EBIT), financial result, taxes."),
+            "look": pick(
+                ["Which revenue line drives the change?", "Credit loss expense — build or release?", "Any line called 'other' that is unusually large?", "Effective tax rate vs statutory rate"],
+                ["Insurance service result vs investment result", "Large catastrophe or reserve effects", "Realised gains on investments", "Effective tax rate"],
+                ["Sales growth: price, volume, currency or acquisitions?", "Gross margin and R&D / selling costs as % of sales", "Impairments, restructuring and other 'non-core' items", "Financial result and effective tax rate"]),
             "task": "Which line of the income statement explains most of the change in net income in the latest year? Name it, give the size and say why it moved.",
         },
         {
             "key": "bs", "en": "Balance sheet", "de": "Bilanz",
-            "shows": "What the company owns and how it is funded at year-end." + (" Banks are funded mainly by deposits and debt; equity is a thin layer." if bank else " Insurers' balance sheets are dominated by investments and insurance contract liabilities (IFRS 17: incl. the CSM)."),
-            "look": (["Funding mix: deposits vs wholesale debt", "Loan book vs deposits (liquidity)", "Goodwill and intangibles (deducted from CET1)", "Level 3 assets"] if bank else
-                     ["Investment mix (bonds, equities, real estate)", "Insurance liabilities and the CSM", "Unit-linked assets held for policyholders", "Goodwill and intangibles"]),
+            "shows": "What the company owns and how it is funded at year-end." + pick(
+                " Banks are funded mainly by deposits and debt; equity is a thin layer.",
+                " Insurers' balance sheets are dominated by investments and insurance contract liabilities (IFRS 17: incl. the CSM).",
+                " Non-financials hold operating assets (plant, intangibles, inventories, receivables), funded by equity, financial debt and operating liabilities."),
+            "look": pick(
+                ["Funding mix: deposits vs wholesale debt", "Loan book vs deposits (liquidity)", "Goodwill and intangibles (deducted from CET1)", "Level 3 assets"],
+                ["Investment mix (bonds, equities, real estate)", "Insurance liabilities and the CSM", "Unit-linked assets held for policyholders", "Goodwill and intangibles"],
+                ["Goodwill and intangibles from acquisitions", "Working capital: receivables, inventories, payables", "Net debt (financial debt − cash) and its maturities", "Provisions and pension obligations"]),
             "task": "How is the balance sheet funded? Describe the two largest liability items and what share of total assets is equity.",
         },
         {
             "key": "cf", "en": "Cash flow statement", "de": "Geldflussrechnung",
             "shows": "Cash flows from operating, investing and financing activities.",
-            "look": (["Why operating cash flow swings with deposits, loans and trading balances", "Dividends and buybacks in financing cash flows", "Do not use OCF to judge a bank's earnings quality"] if bank else
-                     ["Reconciliation from net income to operating cash flow", "Where investment purchases/sales are classified", "Dividends and buybacks"]),
-            "task": ("Why is a bank's operating cash flow a poor measure of its earnings quality? Use your company's numbers in the answer." if bank else
-                     "Reconcile net income to operating cash flow in the latest year: what are the two largest reconciling items?"),
+            "look": pick(
+                ["Why operating cash flow swings with deposits, loans and trading balances", "Dividends and buybacks in financing cash flows", "Do not use OCF to judge a bank's earnings quality"],
+                ["Reconciliation from net income to operating cash flow", "Where investment purchases/sales are classified", "Dividends and buybacks"],
+                ["Operating cash flow vs net income (cash conversion)", "Change in working capital", "Capex vs depreciation; acquisitions", "Dividends, buybacks and debt repayment"]),
+            "task": pick(
+                "Why is a bank's operating cash flow a poor measure of its earnings quality? Use your company's numbers in the answer.",
+                "Reconcile net income to operating cash flow in the latest year: what are the two largest reconciling items?",
+                "Reconcile net income to operating cash flow in the latest year: what are the two largest reconciling items, and how much free cash flow (OCF − capex) was left?"),
         },
         {
             "key": "soce", "en": "Statement of changes in equity", "de": "Eigenkapitalnachweis",
@@ -81,8 +97,10 @@ def statement_sections(app: AppContext) -> list[dict]:
         {
             "key": "notes", "en": "Notes", "de": "Anhang",
             "shows": "Accounting policies, key estimates and judgements, segment information and details behind every line.",
-            "look": (["Significant estimates: expected credit losses, fair value Level 3, provisions, goodwill", "Changes in accounting policies or restatements", "Segment profitability", "Litigation provisions and contingent liabilities"] if bank else
-                     ["Significant estimates: insurance liabilities, discount rates, CSM, investment valuation", "Changes in accounting policies (IFRS 17/9 transition)", "Segment profitability", "Sensitivity analyses"]),
+            "look": pick(
+                ["Significant estimates: expected credit losses, fair value Level 3, provisions, goodwill", "Changes in accounting policies or restatements", "Segment profitability", "Litigation provisions and contingent liabilities"],
+                ["Significant estimates: insurance liabilities, discount rates, CSM, investment valuation", "Changes in accounting policies (IFRS 17/9 transition)", "Segment profitability", "Sensitivity analyses"],
+                ["Significant estimates: revenue deductions (rebates, returns), impairment tests, provisions, capitalised development", "Restatements and discontinued operations", "Segment and product profitability", "Litigation provisions and contingent liabilities"]),
             "task": "Name the two or three most important accounting estimates or judgements disclosed in the notes, and say why each could change profit.",
         },
         {

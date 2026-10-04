@@ -163,7 +163,7 @@ export function validate(ds, profile) {
     if (a !== null && l !== null && e !== null && a > 0) {
       const gap = a - l - e;
       const rel = e ? Math.abs(gap) / Math.abs(e) : Infinity;
-      if (rel > 0.15 && Math.abs(gap) > 0.001 * a) add("error", "total_assets", y, `Assets (${n0(a)}) ≠ liabilities + equity (${n0(l + e)}); gap ${n0(gap)}. Check units or a typo.`);
+      if (rel > 0.25 && Math.abs(gap) > 0.001 * a) add("error", "total_assets", y, `Assets (${n0(a)}) ≠ liabilities + equity (${n0(l + e)}); gap ${n0(gap)}. Check units or a typo.`);
       else if (rel > 0.02) add("info", "total_equity", y, `Assets − liabilities − equity = ${n0(gap)} — usually non-controlling interests (minority interests). Fine if so.`);
     }
     if (l !== null && a !== null && l > a) add("warning", "total_liabilities", y, "Liabilities exceed assets (negative equity) — verify.");
@@ -181,6 +181,21 @@ export function validate(ds, profile) {
       if (Math.abs(calc - ratio) > 0.3) add("warning", "cet1_ratio", y, `CET1 capital ÷ RWA = ${calc.toFixed(1)} % but the CET1 ratio entered is ${ratio.toFixed(1)} %.`);
     }
     if (rwa !== null && a !== null && rwa > a) add("warning", "rwa", y, "RWA exceed total assets — unusual (RWA density > 100 %).");
+    // non-financial consistency
+    const ebit = v("ebit"), gp = v("gross_profit");
+    if (gp !== null && rev !== null && rev > 0 && gp > rev * 1.001) add("error", "gross_profit", y, `Gross profit (${n0(gp)}) exceeds revenue (${n0(rev)}) — impossible. Check the revenue definition or a typo.`);
+    if (ebit !== null && rev !== null && rev > 0 && ebit > rev) add("warning", "ebit", y, `Operating result (${n0(ebit)}) exceeds revenue (${n0(rev)}) — check units or whether revenue excludes large other income.`);
+    const ocf = v("operating_cash_flow"), capex = v("capex"), fcf = v("free_cash_flow");
+    if (ocf !== null && capex !== null && fcf !== null && Math.abs(fcf) > 0) {
+      const own = ocf - capex;
+      if (Math.abs(own - fcf) > 0.15 * Math.max(Math.abs(fcf), Math.abs(own))) add("info", "free_cash_flow", y, `Operating cash flow − capex = ${n0(own)} but reported free cash flow = ${n0(fcf)} — the company uses its own definition (leases, interest, acquisitions?). Note which one you use.`);
+    }
+    const debt = v("total_debt");
+    if (debt !== null && l !== null && debt > l * 1.001) add("error", "total_debt", y, `Financial debt (${n0(debt)}) exceeds total liabilities (${n0(l)}) — impossible.`);
+    for (const part of ["current_assets", "cash", "inventories", "receivables"]) {
+      const x = v(part);
+      if (x !== null && a !== null && a > 0 && x > a * 1.001) add("error", part, y, `${M.short(part)} (${n0(x)}) exceeds total assets (${n0(a)}) — impossible.`);
+    }
     const opex = v("operating_expenses"), ci = v("cost_income_ratio");
     if (opex !== null && rev && ci !== null) {
       const calc = (opex / rev) * 100;
@@ -190,7 +205,7 @@ export function validate(ds, profile) {
 
   for (const key of Object.keys(ds.values)) {
     const m = M.get(key);
-    if (!m || !["money", "bn"].includes(m.unit) || ["operating_cash_flow", "net_new_money", "credit_loss_expense"].includes(key)) continue;
+    if (!m || !["money", "bn"].includes(m.unit) || ["operating_cash_flow", "net_new_money", "credit_loss_expense", "free_cash_flow"].includes(key)) continue;
     const s = clean(series(ds, key));
     for (let i = 1; i < s.length; i++) {
       const [y0, x0] = s[i - 1];

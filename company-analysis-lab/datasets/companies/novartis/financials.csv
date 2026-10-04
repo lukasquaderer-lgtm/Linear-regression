@@ -1,0 +1,22 @@
+metric,2021,2022,2023,2024,2025,source,note
+revenue,43974,43461,46660,51722,57126,Data vendor (FMP via Bigdata.com) – unverified,Total revenues (net sales + other revenues) of continuing operations; 2021–2022 restated to exclude Sandoz (spun off Oct 2023).
+gross_profit,32239,31879,34188,38895,42858,Data vendor (FMP via Bigdata.com) – unverified,Same basis as revenue.
+ebit,10056,7946,9769,14544,17795,Data vendor (FMP via Bigdata.com) – unverified,"IFRS operating income, continuing operations. Novartis also reports 'core operating income'."
+net_income,24021,6955,14850,11939,14649,Data vendor (FMP via Bigdata.com) – unverified,"Group net income attributable to shareholders, incl. discontinued operations. 2021 includes a ≈ USD 14.6 bn gain on selling the Roche stake; 2023 includes the Sandoz spin-off gain (continuing operations only: 8,572)."
+total_assets,131795,117453,99945,102246,115493,Data vendor (FMP via Bigdata.com) – unverified,2021–2022 still include Sandoz.
+total_liabilities,63973,58030,53195,58120,68975,Derived: total assets − total equity incl. non-controlling interests,
+total_equity,67655,59342,46667,44046,46100,Data vendor (FMP via Bigdata.com) – unverified,Attributable to shareholders. The 2023 drop reflects the Sandoz distribution to shareholders; buybacks reduce equity every year.
+operating_cash_flow,15071,14236,14458,17619,20055,Data vendor (FMP via Bigdata.com) – unverified,Total group (incl. Sandoz until the 2023 spin-off).
+capex,2971,2671,2753,3814,1622,Data vendor (FMP via Bigdata.com) – unverified,Vendor capex; 2025 looks low – verify (purchases of PP&E plus intangible assets).
+depreciation_amortisation,6113,7181,8277,6069,5578,Data vendor (FMP via Bigdata.com) – unverified,From the cash flow statement; may include impairments.
+rnd_expense,8641,9172,11371,10022,11195,Data vendor (FMP via Bigdata.com) – unverified,
+interest_expense,905,860,917,1006,1237,Data vendor (FMP via Bigdata.com) – unverified,
+cash,12407,7517,13393,11459,11428,Data vendor (FMP via Bigdata.com) – unverified,Cash and cash equivalents only.
+total_debt,31025,27909,26348,31258,37009,Data vendor (FMP via Bigdata.com) – unverified,Financial debt incl. lease liabilities.
+current_assets,45718,36910,30481,29704,30440,Data vendor (FMP via Bigdata.com) – unverified,
+current_liabilities,30208,28656,26390,28692,27260,Data vendor (FMP via Bigdata.com) – unverified,
+inventories,6666,7175,5913,5723,6265,Data vendor (FMP via Bigdata.com) – unverified,
+receivables,8005,8066,7107,7423,8931,Data vendor (FMP via Bigdata.com) – unverified,Trade receivables.
+eps,10.63,3.17,7.1,5.87,7.49,Data vendor (FMP via Bigdata.com) – unverified,"Diluted, total group (incl. discontinued operations)."
+dps,3.44,3.47,3.78,4.22,,"Derived: dividends paid the following year (cash flow statement, USD) ÷ average shares – approximate","Novartis declares its dividend in CHF (FY2021–FY2025: 3.10, 3.20, 3.30, 3.50, 3.70) but reports in USD. FY2025: convert CHF 3.70 at the USD/CHF rate on the payment date (March 2026)."
+shares_outstanding,2260,2197,2092,2035,1955,Data vendor (FMP via Bigdata.com) – unverified,Diluted weighted average (m). Large buybacks every year.

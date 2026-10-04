@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as D from "../lib/data.js";
+import * as M from "../lib/metrics.js";
 import * as CA from "../lib/ca.js";
 import * as Q from "../lib/questions.js";
 import { COMPANIES } from "../generated/data.js";
@@ -181,14 +182,14 @@ export default function App() {
             <div className="brand-mark">AL</div>
             <div>
               <div className="brand-name">Analyst Lab</div>
-              <div className="brand-sub">Equity analysis of banks &amp; insurers</div>
+              <div className="brand-sub">Equity analysis of Swiss &amp; Liechtenstein companies</div>
             </div>
             <button type="button" className="nav-toggle" aria-expanded={navOpen} onClick={() => setNavOpen((o) => !o)}>
               {navOpen ? "Close" : "Stages"}
             </button>
           </div>
           <div className="nav-body">
-            <Select id="company-select" label="Company" value={companyId} options={companies.map((c) => ({ value: c.profile.id, label: `${c.profile.short_name} · ${c.profile.sector}` }))} onChange={switchCompany} />
+            <Select id="company-select" label="Company" value={companyId} options={companies.map((c) => ({ value: c.profile.id, label: `${c.profile.short_name} · ${M.sectorName(c.profile.sector)}` }))} onChange={switchCompany} />
             <Toggle id="training-toggle" label="Analyst Training Mode" checked={training} onChange={(v) => updateLearner((l) => (l.settings.trainingMode = v))} />
             <div className="progress" aria-label="Progress">
               <div className="progress-bar" style={{ width: `${CA.overallProgress(doc, training) * 100}%` }} />
@@ -339,7 +340,7 @@ function Workspace({ app, store, switchCompany, setDocs, saveState }) {
         <p className="muted">Creates an empty template. You collect every figure yourself in Stage 2.</p>
         <div className="grid-3">
           <TextInput id="new-name" label="Company name" value={form.name} onChange={(v) => setForm({ ...form, name: v })} />
-          <Select id="new-sector" label="Sector" value={form.sector} options={[{ value: "bank", label: "Bank" }, { value: "insurer", label: "Insurer" }]} onChange={(v) => setForm({ ...form, sector: v })} />
+          <Select id="new-sector" label="Sector" value={form.sector} options={M.SECTORS.map((s) => ({ value: s, label: M.sectorName(s) }))} onChange={(v) => setForm({ ...form, sector: v })} />
           <Select id="new-ccy" label="Reporting currency" value={form.currency} options={["CHF", "EUR", "USD", "GBP"].map((c) => ({ value: c, label: c }))} onChange={(v) => setForm({ ...form, currency: v })} />
           <TextInput id="new-country" label="Country" value={form.country} onChange={(v) => setForm({ ...form, country: v })} />
           <Toggle id="new-listed" label="Listed on a stock exchange" checked={form.listed} onChange={(v) => setForm({ ...form, listed: v })} />

@@ -5,7 +5,7 @@ from lab import questions as Q
 from lab import storage
 
 
-@pytest.mark.parametrize("company", ["ubs", "llb", "swiss_life", "swiss_re", "prismalife"])
+@pytest.mark.parametrize("company", ["ubs", "llb", "gkb", "swiss_life", "swiss_re", "prismalife", "roche", "novartis", "hilti"])
 def test_every_stage_builds_five_progressive_questions(company):
     p = D.load_profile(company)
     v, _ = D.load_starter(company)

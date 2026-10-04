@@ -9,7 +9,7 @@ import { value } from "./data.js";
 export const LEVEL_NAMES = { 1: "Identify", 2: "Calculate", 3: "Interpret", 4: "Connect statements", 5: "Analyst reasoning" };
 
 export const CONCEPT_LABELS = {
-  revenue_lines: "Revenue lines of banks and insurers", business_model: "Business model and earnings drivers", revenue_mix: "Revenue mix (interest vs fees)",
+  revenue_lines: "Revenue and profit lines", business_model: "Business model and earnings drivers", revenue_mix: "Revenue mix (interest vs fees)",
   payout: "Payout ratio and retention", linking_statements: "Linking the financial statements", competitive_advantage: "Competitive advantages",
   statement_location: "Where metrics are reported", balance_sheet_identity: "Balance-sheet identity", data_units: "Units and data hygiene",
   eps_consistency: "EPS, shares and net income", accounting_changes: "Accounting changes and restatements", growth_cagr: "CAGR", yoy_growth: "Year-over-year growth",
@@ -21,6 +21,8 @@ export const CONCEPT_LABELS = {
   risk_market: "Market risk transmission", risk_prioritisation: "Prioritising risks", peers: "Peer comparability", justified_pb: "ROE and P/B", leverage: "Leverage",
   peer_selection: "Choosing peers", valuation_methods: "Choosing a valuation method", ddm: "Dividend discount model", thesis: "Investment thesis discipline",
   scenario_analysis: "Scenario-weighted value", portfolio: "Portfolio context", sustainable_growth: "Sustainable growth", acquisition_effects: "Acquisition effects", combined_ratio: "Combined ratio",
+  cost_structure: "Cost structure and R&D intensity", cash_conversion: "Cash conversion and working capital", debt_capacity: "Debt capacity (net debt ÷ EBITDA, interest cover)",
+  risk_currency: "Currency risk", risk_demand: "Demand and cyclical risk", ev_multiples: "Enterprise value and EV/EBITDA", dcf: "DCF on free cash flow (WACC)",
 };
 
 export const conceptLabel = (c) => CONCEPT_LABELS[c] || c.replace(/_/g, " ").replace(/^./, (x) => x.toUpperCase());
@@ -103,7 +105,7 @@ T("s1-payout", 1, 2, ["payout"], (ctx, rng) => {
   }
   const eps = rng.choice([4.0, 5.5, 8.0, 12.0]);
   const dps = Math.round(eps * rng.choice([0.4, 0.5, 0.6, 0.7]) * 100) / 100;
-  return num("s1-payout-generic", 1, 2, "payout", `A financial company reports diluted EPS of ${f2(eps)} and proposes a dividend of ${f2(dps)} per share. What is the payout ratio in %?`, (dps / eps) * 100, "%", `Payout = DPS ÷ EPS = ${f2(dps)} ÷ ${f2(eps)} = ${((dps / eps) * 100).toFixed(1)} %.`);
+  return num("s1-payout-generic", 1, 2, "payout", `A company reports diluted EPS of ${f2(eps)} and proposes a dividend of ${f2(dps)} per share. What is the payout ratio in %?`, (dps / eps) * 100, "%", `Payout = DPS ÷ EPS = ${f2(dps)} ÷ ${f2(eps)} = ${((dps / eps) * 100).toFixed(1)} %.`);
 });
 T("s1-revenue-mix", 1, 2, ["revenue_mix"], (ctx, rng) => {
   if (ctx.sector === "bank") {
@@ -145,6 +147,9 @@ const STATEMENT_OF = {
   operating_cash_flow: "Cash flow statement",
   cet1_capital: "Regulatory disclosure (Pillar 3 / SFCR)", rwa: "Regulatory disclosure (Pillar 3 / SFCR)", cet1_ratio: "Regulatory disclosure (Pillar 3 / SFCR)", solvency_ratio: "Regulatory disclosure (Pillar 3 / SFCR)",
   aum: "Management report / key figures", net_new_money: "Management report / key figures", gross_premiums: "Management report / key figures",
+  gross_profit: "Income statement", ebit: "Income statement", rnd_expense: "Income statement", interest_expense: "Income statement",
+  capex: "Cash flow statement", depreciation_amortisation: "Cash flow statement", free_cash_flow: "Management report / key figures",
+  cash: "Balance sheet", total_debt: "Balance sheet", inventories: "Balance sheet", receivables: "Balance sheet",
 };
 const STATEMENT_OPTIONS = ["Income statement", "Balance sheet", "Cash flow statement", "Regulatory disclosure (Pillar 3 / SFCR)", "Management report / key figures"];
 T("s2-where", 2, 1, ["statement_location"], (ctx, rng) => {
@@ -394,7 +399,7 @@ T("s8-gap", 8, 2, ["roe"], (ctx) => {
 });
 T("s8-pbroe", 8, 3, ["justified_pb"], (ctx, rng) => mc("s8-pbroe", 8, 3, "justified_pb", "Bank A: ROE 14 %, P/B 1.8. Bank B: ROE 6 %, P/B 0.7. Cost of equity ≈ 10 % for both. Is this pattern consistent?", "Yes — the market pays above book only for banks expected to earn more than their cost of equity", ["No — P/B should be the same for all banks", "No — the lower-ROE bank should trade at a higher P/B", "It is random"], rng));
 T("s8-capital", 8, 4, ["leverage"], (ctx, rng) => mc("s8-capital", 8, 4, "leverage", "Your peer shows a higher ROE but a lower CET1 ratio and higher leverage. What must you check before concluding it is 'better'?", "Whether its higher ROE comes from leverage (less capital per unit of risk) rather than better profitability — compare ROA and risk-adjusted returns", ["Nothing — higher ROE is always better", "Only the dividend yield", "Whether it has more employees"], rng));
-T("s8-select", 8, 5, ["peer_selection"], () => text("s8-select", 8, 5, "peer_selection", "Is the peer you selected truly comparable? Name two differences (business model, accounting, currency, size, regulation) that limit the comparison, and how you adjusted for them.", "E.g. UBS vs LLB: global vs regional, USD vs CHF, investment bank exposure, TBTF regime vs EEA rules. Swiss Life vs Swiss Re: life/pensions vs reinsurance, CHF vs USD, different risk drivers (rates vs catastrophes). Compare ratios, index trends to 100, compare within the same accounting basis and acknowledge the residual differences."));
+T("s8-select", 8, 5, ["peer_selection"], () => text("s8-select", 8, 5, "peer_selection", "Is the peer you selected truly comparable? Name two differences (business model, accounting, currency, size, regulation) that limit the comparison, and how you adjusted for them.", "E.g. UBS vs LLB: global vs regional, USD vs CHF, investment bank exposure, TBTF regime vs EEA rules. Swiss Life vs Swiss Re: life/pensions vs reinsurance, CHF vs USD, different risk drivers (rates vs catastrophes). Roche vs Novartis: diagnostics plus pharma vs pure pharma, CHF vs USD, different patent cliffs and 'core' definitions. GKB vs LLB: Swiss bank GAAP vs IFRS, cantonal guarantee. Compare ratios, index trends to 100, compare within the same accounting basis and acknowledge the residual differences."));
 
 // ---------------------------------------------------------------- Stage 9
 T("s9-method", 9, 1, ["valuation_methods"], (ctx, rng) => mc("s9-method", 9, 1, "valuation_methods", "Which valuation approach is generally LEAST appropriate for a bank?", "A free-cash-flow-to-the-firm (FCFF) DCF", ["Price-to-book vs ROE", "A dividend discount model", "A residual income model"], rng, "For banks debt is raw material (deposits), not financing; operating cash flow is not meaningful — so FCFF breaks down."));
@@ -436,7 +441,134 @@ T("s10-growth", 10, 4, ["sustainable_growth"], (ctx, rng) => {
   const ans = V.sustainableGrowth(roe, payout) * 100;
   return num(`s10-g-${roe}-${payout}`, 10, 4, "sustainable_growth", `ROE ${(roe * 100).toFixed(0)} %, payout ratio ${(payout * 100).toFixed(0)} %. Sustainable growth rate (%)?`, ans, "%", `g = (1 − payout) × ROE = ${(1 - payout).toFixed(2)} × ${(roe * 100).toFixed(0)} % = ${ans.toFixed(1)} %. It links the income statement (ROE), dividend policy and balance-sheet growth.`);
 });
-T("s10-final", 10, 5, ["thesis"], (ctx) => text("s10-final", 10, 5, "thesis", `Write the one sentence that would make you abandon your thesis on ${ctx.name}, including the number and the time frame.`, "A good thesis breaker is specific and measurable, e.g. 'If the CET1 ratio target rises above X % and buybacks stop in 2026' or 'If net new money is negative for two consecutive years' or 'If prior-year reserve strengthening recurs in 2026'."));
+T("s10-final", 10, 5, ["thesis"], (ctx) => text("s10-final", 10, 5, "thesis", `Write the one sentence that would make you abandon your thesis on ${ctx.name}, including the number and the time frame.`, "A good thesis breaker is specific and measurable, e.g. 'If the CET1 ratio target rises above X % and buybacks stop in 2026', 'If net new money is negative for two consecutive years', 'If sales of the top three brands fall more than 15 % in 2026 after generic entry' or 'If net debt ÷ EBITDA exceeds 3× after acquisitions'."));
+
+
+// ---------------------------------------------------------------- non-financial companies
+// Same questions as the `ctx.sector == "corporate"` branches in lab/questions.py, swapped in per template.
+const CORP = {
+  "s1-revenue-line": { build: (ctx, rng) => mc("s1-revenue-line-corp", 1, 1, "revenue_lines", "Which income-statement line shows the profit from a company's operations before interest and taxes?", "Operating result / EBIT (Betriebsergebnis)", ["Net income", "Gross profit", "Operating cash flow"], rng, "EBIT = sales − operating costs (cost of goods sold, R&D, selling, administration). Gross profit comes before operating costs, net income after interest and tax; cash flow is a different statement.") },
+  "s1-revenue-mix": {
+    concepts: ["cost_structure"],
+    build: (ctx, rng) => {
+      let y = latestWith(ctx.values, ["rnd_expense", "revenue"]);
+      if (y !== null) {
+        const rnd = val(ctx.values, "rnd_expense", y), rev = val(ctx.values, "revenue", y);
+        return num(`s1-rnd-${y}`, 1, 2, "cost_structure", `${ctx.name} ${y}: R&D expense ${money(rnd, ctx.currency)}, revenue ${money(rev, ctx.currency)}. What share of revenue goes into research and development (%)?`, (rnd / rev) * 100, "%", `R&D intensity = ${C.fmtNum(rnd)} ÷ ${C.fmtNum(rev)} = ${((rnd / rev) * 100).toFixed(1)} %. Big pharma reinvests about 18–25 % of sales, industrials about 3–8 %.`);
+      }
+      y = latestWith(ctx.values, ["ebit", "revenue"]);
+      if (y !== null) {
+        const ebit = val(ctx.values, "ebit", y), rev = val(ctx.values, "revenue", y);
+        return num(`s1-ebitm-${y}`, 1, 2, "cost_structure", `${ctx.name} ${y}: operating result (EBIT) ${money(ebit, ctx.currency)}, revenue ${money(rev, ctx.currency)}. What share of revenue is left as operating profit (EBIT margin, %)?`, (ebit / rev) * 100, "%", `EBIT margin = ${C.fmtNum(ebit)} ÷ ${C.fmtNum(rev)} = ${((ebit / rev) * 100).toFixed(1)} %. Everything else went into production, R&D, selling and administration.`);
+      }
+      const [rnd, rev] = rng.choice([[13000, 60000], [450, 6300], [9000, 45000]]);
+      return num("s1-rnd-generic", 1, 2, "cost_structure", `A company spends ${C.fmtNum(rnd)} on R&D with sales of ${C.fmtNum(rev)}. R&D intensity (%)?`, (rnd / rev) * 100, "%", `${C.fmtNum(rnd)} ÷ ${C.fmtNum(rev)} = ${((rnd / rev) * 100).toFixed(1)} %.`);
+    },
+  },
+  "s1-interpret": {
+    build: (ctx, rng) => {
+      const q = profileQuestion(ctx, 1, 3, rng);
+      if (q) return q;
+      const y = latestWith(ctx.values, ["rnd_expense", "revenue"]);
+      const pharma = (ctx.profile.subsector || "").toLowerCase().includes("pharma") || (y !== null && val(ctx.values, "rnd_expense", y) / val(ctx.values, "revenue", y) > 0.1);
+      return pharma
+        ? mc("s1-interpret-pharma", 1, 3, "business_model", "A blockbuster drug loses its US patent protection. What typically happens to its US sales?", "They fall sharply within one to two years as generics or biosimilars launch at much lower prices", ["They stay stable because doctors are loyal to the brand", "They rise because more patients can afford it", "Nothing changes until the European patent expires"], rng, "Loss of exclusivity can erase 50–90 % of a brand's sales; erosion is slower for biologics than for small molecules, but still large.")
+        : mc("s1-interpret-cyclical", 1, 3, "business_model", "A tool maker with a large direct sales force sees sales fall 5 % in a construction downturn. Why can its operating profit fall much more?", "Many costs are fixed (sales force, R&D, plants), so lower sales hit profit disproportionately — operating leverage", ["Because taxes rise when sales fall", "Because depreciation rises with sales", "It cannot — profit always falls in proportion to sales"], rng, "With high fixed costs, a small change in sales causes a large change in operating profit — in both directions.");
+    },
+  },
+  "s1-link": { build: (ctx, rng) => mc("s1-link-corp", 1, 4, "linking_statements", "A company grows sales 10 %, but customers pay more slowly and it builds up inventories. What happens to net income and operating cash flow?", "Net income rises with sales, but operating cash flow lags because working capital absorbs cash", ["Both rise by exactly 10 %", "Operating cash flow rises faster than net income", "Net income falls because inventories are expensed immediately"], rng, "Receivables and inventories are balance-sheet assets: building them up uses cash that the income statement does not show.") },
+  "s1-moat": {
+    build: (ctx) => {
+      const ref = ctx.profile.business_reference?.advantages?.reference || "";
+      return text("s1-moat", 1, 5, "competitive_advantage", `Choose the competitive advantage of ${ctx.name} you think is most durable. Which numbers in the annual report, tracked over several years, would show you that it is eroding?`, `Reference advantages: ${ref} Evidence of erosion — For a non-financial company: falling gross or operating margins, loss of market share, rising discounts or rebates, R&D spending that no longer produces launches, a shrinking share of recurring revenue. A good answer names one specific advantage, the metric that measures it, and the direction that would worry you.`);
+    },
+  },
+  "s3-reverse": { build: (ctx) => text("s3-reverse", 3, 5, "trend_interpretation", `Which trend you analysed for ${ctx.name} is most likely to reverse in the next two years? Explain the mechanism, not just the direction.`, "Non-financials: sales of a product nearing patent expiry, margins helped by temporary pricing or cheap inputs, currency effects that reverse, one-off gains (disposals, spin-offs) dropping out, EPS growth driven by debt-funded buybacks. A strong answer names the metric, the driver behind the past trend, why that driver changes, and which number you would monitor.") },
+  "s4-identify": {
+    build: (ctx, rng) => {
+      const choices = [["Net income ÷ average shareholders' equity", "Return on equity (ROE)"], ["EBIT ÷ revenue", "EBIT margin (operating margin)"], ["(Financial debt − cash) ÷ EBITDA", "Net debt ÷ EBITDA"], ["Operating cash flow ÷ net income", "Cash conversion"], ["Dividend per share ÷ EPS", "Payout ratio"]];
+      const [formula, correct] = rng.choice(choices);
+      return mc(`s4-identify-${correct.slice(0, 10)}`, 4, 1, "ratio_definitions", `Which ratio is defined as: ${formula}?`, correct, choices.map((c) => c[1]).filter((c) => c !== correct).slice(0, 3), rng);
+    },
+  },
+  "s4-dupont-interpret": { build: (ctx, rng) => mc("s4-dupont-int-corp", 4, 3, "dupont", "A company's ROE rose from 15 % to 20 % while its ROA stayed unchanged. What explains the increase?", "Higher financial leverage — for example debt-funded buybacks shrank equity", ["A higher EBIT margin", "Faster asset turnover", "A higher dividend payout"], rng, "ROE = ROA × leverage. If ROA is flat, leverage must have risen — ROE improved without the business becoming more profitable.") },
+  "s4-value": { build: (ctx) => text("s4-value-corp", 4, 5, "roe_vs_cost_of_equity", `Compare ${ctx.name}'s latest ROE and ROCE with a cost of equity of roughly 7–8 % (WACC about 6–7 %). Is it creating value for shareholders? Name three levers management could pull to raise returns — and the risk each lever brings.`, "Value is created when returns exceed the cost of capital (ROCE above the pre-tax WACC, ROE above the cost of equity). Levers: (1) pricing and mix (higher gross margin) — competition and price-regulation risk; (2) cost efficiency (lower R&D or selling costs as % of sales) — risk of under-investing in innovation; (3) asset efficiency (less working capital, higher asset turnover) — supply risk; (4) leverage and buybacks — financial risk and rating pressure. Adjust ROE for one-offs and for buyback-shrunk equity before judging.") },
+  "s5-bank-cf": { concepts: ["cash_conversion"], build: (ctx, rng) => mc("s5-corp-cf", 5, 4, "cash_conversion", "A company's net income rose for two years while its operating cash flow fell. What should you check first?", "Working capital — receivables and inventories growing faster than sales (aggressive revenue recognition or weak demand)", ["Nothing — cash flow and profit are unrelated", "Whether the dividend was raised", "Whether depreciation fell"], rng, "Rising profit with falling cash is the classic accrual warning sign. Check the change in working capital in the cash flow statement and days sales outstanding.") },
+  "s6-nonrec": { build: (ctx, rng) => mc("s6-nonrec", 6, 1, "one_off_items", "Which item is most likely non-recurring?", "Gain on the sale of a subsidiary", ["Sales of the main product line", "Recurring service fees", "Personnel expenses"], rng, "Disposal gains, negative goodwill, litigation settlements and restructuring charges are typical one-offs.") },
+  "s6-reserves": { build: (ctx, rng) => mc("s6-reserves-corp", 6, 3, "reserves", "A company's operating profit rises mainly because it released a litigation provision booked in earlier years. How should you view that profit?", "Lower quality — the release is non-recurring and depends on management's earlier estimate", ["Higher quality — it is cash income", "Neutral — provisions never affect profit", "It shows that sales grew"], rng, "Provision releases go through the income statement without new business; repeated releases can mean earlier over-provisioning used to smooth profit.") },
+  "s6-accruals": {
+    build: (ctx, rng, base) => {
+      const q = base(ctx, rng);
+      return q && q.id !== "s6-accr-generic" ? { ...q, explanation: `${q.explanation} For a non-financial company this is a key quality signal — large positive accruals mean profit is running ahead of cash.` } : q;
+    },
+  },
+  "s6-judge": { build: (ctx) => text("s6-judge", 6, 5, "quality_earnings", `Rate the quality of ${ctx.name}'s latest earnings (high / medium / low) and justify it with two pieces of evidence from your analysis.`, "For a non-financial company look at: cash conversion (operating cash flow vs net income) over several years, working-capital trends (receivables and inventories vs sales), capitalised costs (development, software), impairments and 'core'/'adjusted' exclusions that recur every year, one-off gains (disposals, spin-offs), tax effects, and whether free cash flow covers dividends and buybacks.") },
+  "s7-capital": { concepts: ["debt_capacity"], build: (ctx, rng) => mc("s7-debt", 7, 1, "debt_capacity", "Which ratio do credit analysts look at first to judge whether a non-financial company can carry its debt?", "Net debt ÷ EBITDA", ["Price-to-book", "CET1 ratio", "Combined ratio"], rng, "Net debt ÷ EBITDA ≈ years of operating cash earnings needed to repay debt; interest cover (EBIT ÷ interest) complements it. CET1 and the combined ratio belong to banks and insurers.") },
+  "s7-shock": {
+    concepts: ["debt_capacity"],
+    build: (ctx, rng) => {
+      let y = latestWith(ctx.values, ["total_debt", "cash", "ebit", "depreciation_amortisation"]);
+      let nd = null, ebitda = null;
+      if (y !== null) {
+        nd = val(ctx.values, "total_debt", y) - val(ctx.values, "cash", y);
+        ebitda = val(ctx.values, "ebit", y) + val(ctx.values, "depreciation_amortisation", y);
+      }
+      if (!nd || nd <= 0 || !ebitda || ebitda <= 0) [nd, ebitda, y] = [6000, 3000, null];
+      const drop = rng.choice([20, 25, 30]);
+      const ans = nd / (ebitda * (1 - drop / 100));
+      const intro = y !== null ? `${ctx.name} ${y}: net debt ${money(nd, ctx.currency)} and EBITDA ${money(ebitda, ctx.currency)}.` : `Net debt is ${C.fmtNum(nd)} and EBITDA ${C.fmtNum(ebitda)}.`;
+      return num(`s7-lev-${drop}`, 7, 2, "debt_capacity", `${intro} In a downturn EBITDA falls by ${drop} % while net debt stays the same. What is net debt ÷ EBITDA afterwards (×)?`, ans, "×", `${C.fmtNum(nd)} ÷ (${C.fmtNum(ebitda)} × ${(1 - drop / 100).toFixed(2)}) = ${f2(ans)}× (before: ${f2(nd / ebitda)}×). Leverage ratios worsen in downturns even without new debt.`, 0.02, 0.02);
+    },
+  },
+  "s7-rates": { concepts: ["risk_currency"], build: (ctx, rng) => mc("s7-fx", 7, 3, "risk_currency", "A Swiss company sells 90 % of its products abroad but has most of its costs in Switzerland. The franc strengthens 10 %. What happens?", "Reported sales and margins fall: foreign sales translate into fewer francs while Swiss costs stay the same", ["Nothing — currency effects cancel out", "Margins rise because imports become cheaper", "Only the balance sheet is affected"], rng, "That is transaction exposure (revenues and costs in different currencies) — it changes margins. Translation exposure only changes reported figures. Compare growth in local currencies with growth in CHF.") },
+  "s7-market": { concepts: ["risk_demand"], build: (ctx, rng) => mc("s7-demand", 7, 4, "risk_demand", `Demand in ${ctx.name}'s main market falls 15 % in a downturn. Through which statements does this reach the company?`, "Income statement (lower sales; profit falls faster because of fixed costs) and cash flow / balance sheet (inventories pile up, possible impairments, higher net debt ÷ EBITDA)", ["Only the income statement — the balance sheet is unaffected", "Only the cash flow statement", "Nowhere — customers bear the risk"], rng, "Demand risk reaches profit through operating leverage and reaches the balance sheet through working capital, impairments and leverage ratios.") },
+  "s7-prioritise": { build: (ctx) => text("s7-prioritise", 7, 5, "risk_prioritisation", `Take your top three risks for ${ctx.name}. For each, say whether it affects value mainly through future earnings (ROE), through capital (book value, payouts) or through the cost of equity — and what early-warning indicator you would track.`, "E.g. patent expiry → earnings (track the product's sales, generic launches, pipeline approvals); drug-pricing reform → earnings and cost of equity (track legislation and price negotiations); currency → earnings (track growth in local currencies vs CHF); construction cycle → earnings and cash (track order intake, inventories); leverage after acquisitions → capital and cost of equity (track net debt ÷ EBITDA, rating). Risks that raise uncertainty also raise the cost of equity.") },
+  "s8-ratios": { build: (ctx, rng) => mc("s8-ratios-corp", 8, 1, "peers", `Why compare ${ctx.name} with its peers on margins, ROE and net debt ÷ EBITDA rather than on absolute profit?`, "Companies differ in size and reporting currency (e.g. Roche in CHF, Novartis in USD) — ratios normalise for scale and currency", ["Absolute figures are not audited", "Ratios are always higher", "Net income is never comparable between companies"], rng) },
+  "s8-pbroe": { concepts: ["ev_multiples"], build: (ctx, rng) => mc("s8-ev", 8, 3, "ev_multiples", "Company A: EBIT margin 30 %, sales growth 6 %, EV/EBITDA 14×. Company B: EBIT margin 12 %, growth 2 %, EV/EBITDA 8×. Is this pattern consistent?", "Yes — higher margins, growth and returns justify a higher multiple of the same earnings", ["No — all companies should trade on the same multiple", "No — the slower-growing company should trade higher", "It is random"], rng, "Multiples price expected growth, profitability and risk. A low multiple is not 'cheap' unless the market misjudges those drivers.") },
+  "s8-capital": { build: (ctx, rng) => mc("s8-capital-corp", 8, 4, "leverage", "Your peer shows a higher ROE but much higher net debt ÷ EBITDA after years of debt-funded buybacks. What must you check before concluding it is 'better'?", "Whether its ROE is inflated by a small equity base — compare ROCE, margins and leverage", ["Nothing — higher ROE is always better", "Only the dividend yield", "Whether it has more employees"], rng) },
+  "s9-method": { build: (ctx, rng) => mc("s9-method-corp", 9, 1, "valuation_methods", "Which valuation approach is generally LEAST informative for a pharma or industrial company?", "Price-to-book vs ROE — book value leaves out internally developed intangibles and shrinks with buybacks", ["A free-cash-flow (FCFF) DCF at the WACC", "EV/EBITDA versus peers", "P/E on normalised earnings"], rng, "Patents, brands and know-how built in-house are not on the balance sheet, so book value understates the asset base; cash-flow and earnings methods capture them.") },
+  "s9-jpb": {
+    concepts: ["ev_multiples"],
+    build: (ctx, rng) => {
+      const m = rng.choice([8, 10, 12, 14]);
+      const y = latestWith(ctx.values, ["ebit", "depreciation_amortisation", "total_debt", "cash", "shares_outstanding"]);
+      if (y !== null && ctx.profile.listed) {
+        const ebitda = val(ctx.values, "ebit", y) + val(ctx.values, "depreciation_amortisation", y);
+        const nd = val(ctx.values, "total_debt", y) - val(ctx.values, "cash", y);
+        const sh = val(ctx.values, "shares_outstanding", y);
+        if (ebitda > 0 && sh) {
+          const ans = (m * ebitda - nd) / sh;
+          return num(`s9-ev-${y}-${m}`, 9, 2, "ev_multiples", `${ctx.name} ${y}: EBITDA ${money(ebitda, ctx.currency)}, net debt ${money(nd, ctx.currency)}, ${C.fmtNum(sh, 1)} m shares. Apply a peer EV/EBITDA of ${m}×. Equity value per share (${ctx.currency})?`, ans, ctx.currency, `EV = ${m} × ${C.fmtNum(ebitda)} = ${C.fmtNum(m * ebitda)}; equity = EV − net debt = ${C.fmtNum(m * ebitda - nd)}; per share = ÷ ${C.fmtNum(sh, 1)} = ${C.fmtNum(ans, 2)}.`, 0.01, 0.1);
+        }
+      }
+      const [ebitda, nd, sh] = [2000, 3000, 100];
+      const ans = (m * ebitda - nd) / sh;
+      return num(`s9-ev-generic-${m}`, 9, 2, "ev_multiples", `EBITDA ${C.fmtNum(ebitda)}, net debt ${C.fmtNum(nd)}, ${sh} m shares, peer EV/EBITDA ${m}×. Equity value per share?`, ans, "", `(${m} × ${C.fmtNum(ebitda)} − ${C.fmtNum(nd)}) ÷ ${sh} = ${C.fmtNum(ans, 2)}.`, 0.01, 0.1);
+    },
+  },
+  "s9-pb-below": { concepts: ["ev_multiples"], build: (ctx, rng) => mc("s9-ev-below", 9, 3, "ev_multiples", "A company trades at 6× EV/EBITDA while its peers trade at 12×. What is the market implicitly saying?", "It expects lower growth or margins, higher risk or hidden liabilities — or doubts the earnings", ["The company is certainly cheap and will rise", "The company has no debt", "Its dividend yield must be zero"], rng, "A low multiple is a hypothesis to test, not a buy signal: check growth, margins, leverage, one-offs in EBITDA and debt-like items (pensions, litigation).") },
+  "s9-ddm": {
+    concepts: ["dcf"],
+    build: (ctx, rng) => {
+      let y = latestWith(ctx.values, ["operating_cash_flow", "capex"]);
+      let fcf = y !== null ? val(ctx.values, "operating_cash_flow", y) - val(ctx.values, "capex", y) : null;
+      if (!fcf || fcf <= 0) [fcf, y] = [1000, null];
+      const [w, g] = rng.choice([[0.075, 0.02], [0.08, 0.025], [0.07, 0.015]]);
+      const ans = (fcf * (1 + g)) / (w - g);
+      const intro = y !== null ? `${ctx.name} ${y}: free cash flow to the firm (operating cash flow − capex) ${money(fcf, ctx.currency)}.` : `Free cash flow to the firm last year was ${C.fmtNum(fcf)}.`;
+      return num(`s9-fcff-${w}-${g}`, 9, 4, "dcf", `${intro} It grows ${(g * 100).toFixed(1)} % a year forever; the WACC is ${(w * 100).toFixed(1)} %. What is the enterprise value (${ctx.currency} m)?`, ans, `${ctx.currency} m`, `EV = FCFF₀ × (1 + g) ÷ (WACC − g) = ${C.fmtNum(fcf)} × ${(1 + g).toFixed(3)} ÷ ${(w - g).toFixed(3)} = ${C.fmtNum(ans)}. Subtract net debt to get equity value.`, 0.01, 0.1);
+    },
+  },
+  "s9-why": { build: (ctx) => text("s9-why-corp", 9, 5, "valuation_methods", `Why is a free-cash-flow DCF at the WACC, cross-checked with EV/EBITDA, more informative than P/B for ${ctx.name}? Which two assumptions drive the DCF value most, and how would you sanity-check them?`, "For non-financials value comes from the cash the operating business generates for all capital providers; debt is financing, not raw material, so discounting FCFF at the WACC and deducting net debt is coherent. Book value omits internally built intangibles (patents, brands, know-how) and shrinks with buybacks, so P/B says little. The WACC and terminal growth dominate (the terminal value is often 60–80 % of enterprise value): sanity-check them against peers' multiples (the EV/EBITDA your DCF implies), long-run nominal GDP growth and the growth rate the market price implies.") },
+};
+
+for (const t of TEMPLATES) {
+  const o = CORP[t.id];
+  if (!o) continue;
+  const base = t.build;
+  t.build = (ctx, rng) => (ctx.sector === "corporate" ? o.build(ctx, rng, base) : base(ctx, rng));
+  t.concepts = [...new Set([...t.concepts, ...(o.concepts || [])])];
+}
 
 // ------------------------------------------------------------------ grading
 

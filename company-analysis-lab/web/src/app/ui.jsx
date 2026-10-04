@@ -34,7 +34,7 @@ export function Btn({ kind = "secondary", children, icon, ...rest }) {
 }
 
 export function StageHeader({ stage, profile, currency }) {
-  const chips = [profile.subsector || profile.sector, `Reporting currency: ${currency}`, profile.listed ? `Listed: ${profile.exchange_ticker || "yes"}` : "Not listed"];
+  const chips = [profile.subsector || M.sectorName(profile.sector), `Reporting currency: ${currency}`, profile.listed ? `Listed: ${profile.exchange_ticker || "yes"}` : "Not listed"];
   return (
     <header className="stage-head">
       <div className="kicker">

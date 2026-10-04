@@ -36,7 +36,7 @@ class RatioDef:
     unit: str  # "%", "x", "ccy"
     sectors: tuple[str, ...] = M.SECTORS
     higher_is_better: bool | None = True
-    core: bool = False  # part of the mandatory Stage 4 set
+    core: bool | tuple[str, ...] = False  # part of the mandatory Stage 4 set (True = every sector, tuple = these sectors)
     cfa: str = ""
     interpretation: dict = field(default_factory=dict)  # sector -> text
     benchmark: dict = field(default_factory=dict)  # sector -> rule-of-thumb range text
@@ -47,6 +47,9 @@ class RatioDef:
     @property
     def needs_prior_year(self) -> bool:
         return any(i.averaged for i in self.inputs)
+
+    def is_core(self, sector: str) -> bool:
+        return self.core is True or (isinstance(self.core, tuple) and sector in self.core)
 
 
 def _div(a: float, b: float) -> float:
@@ -65,8 +68,9 @@ RATIOS: dict[str, RatioDef] = {
             interpretation={
                 "bank": "Compare ROE with the cost of equity (roughly 8–12 % for European banks). ROE above it creates value and supports P/B above 1. Check whether ROE comes from margins or from leverage (DuPont), and adjust for one-offs.",
                 "insurer": "Compare ROE with the cost of equity (roughly 7–10 % for large insurers). Under IFRS 17 equity excludes the CSM (future profit), which can make ROE look higher than under IFRS 4. Reinsurers' ROE swings with catastrophe losses.",
+                "corporate": "Compare ROE with the cost of equity (roughly 6–9 % for large Swiss companies). Use DuPont to see whether it comes from margins, asset turnover or debt. Buybacks and write-offs shrink equity and inflate ROE — for pharma, ROCE or ROIC is often more telling.",
             },
-            benchmark={"bank": "Swiss/European banks: about 5–15 %", "insurer": "Life insurers: about 8–15 %; reinsurers: volatile, 0–20 %"},
+            benchmark={"bank": "Swiss/European banks: about 5–15 %", "insurer": "Life insurers: about 8–15 %; reinsurers: volatile, 0–20 %", "corporate": "Pharma: 15–40 % (equity reduced by buybacks); industrials: about 10–25 %"},
         ),
         RatioDef(
             "roa", "Return on assets (ROA)", "Gesamtkapitalrendite",
@@ -77,8 +81,9 @@ RATIOS: dict[str, RatioDef] = {
             interpretation={
                 "bank": "Banks earn thin returns on a large balance sheet: 0.3–1 % is normal. A low ROA with a decent ROE means high leverage. Wealth managers with off-balance-sheet client assets can earn higher ROA.",
                 "insurer": "Insurers' balance sheets include large policyholder assets (e.g. unit-linked funds) on which they earn only fees — ROA is low by design. Compare with peers on the same accounting basis.",
+                "corporate": "Non-financial companies earn far more per unit of assets than banks: 5–15 % is common. Large acquired intangibles and goodwill depress ROA; asset-light businesses show high ROA.",
             },
-            benchmark={"bank": "about 0.3–1.0 %", "insurer": "about 0.3–1.5 %"},
+            benchmark={"bank": "about 0.3–1.0 %", "insurer": "about 0.3–1.5 %", "corporate": "about 5–15 %"},
         ),
         RatioDef(
             "net_margin", "Net profit margin", "Nettogewinnmarge",
@@ -89,8 +94,9 @@ RATIOS: dict[str, RatioDef] = {
             interpretation={
                 "bank": "Share of operating income that ends up as profit for shareholders. Falls when costs, credit losses or taxes rise. A margin above 50 % usually signals a one-off gain.",
                 "insurer": "Depends heavily on what 'revenue' contains: IFRS 4 premiums (incl. savings) give low margins; IFRS 17 insurance revenue gives higher ones. Never compare across the accounting break.",
+                "corporate": "Share of sales left after all costs, interest and tax. Patented medicines earn high margins (15–30 %); industrials 5–12 %. Disposal gains and impairments distort it — compare with the EBIT margin and with the company's 'core' or 'adjusted' figures.",
             },
-            benchmark={"bank": "about 15–30 %", "insurer": "basis-dependent (IFRS 17: about 5–15 %)"},
+            benchmark={"bank": "about 15–30 %", "insurer": "basis-dependent (IFRS 17: about 5–15 %)", "corporate": "pharma about 15–30 %; industrials about 5–12 %"},
         ),
         RatioDef(
             "cost_income", "Cost/income ratio", "Aufwand-Ertrags-Verhältnis",
@@ -108,12 +114,13 @@ RATIOS: dict[str, RatioDef] = {
             r"\text{Leverage} = \frac{\tfrac{1}{2}(\text{Assets}_{t-1} + \text{Assets}_t)}{\tfrac{1}{2}(\text{Equity}_{t-1} + \text{Equity}_t)}",
             "Average total assets ÷ average shareholders' equity (times)",
             (InputSpec("total_assets", averaged=True), InputSpec("total_equity", averaged=True)),
-            lambda v: _div(v[0], v[1]), "x", higher_is_better=None, core=True, cfa="leverage",
+            lambda v: _div(v[0], v[1]), "x", higher_is_better=None, core=("bank", "insurer"), cfa="leverage",
             interpretation={
                 "bank": "Banks typically run 12–25× leverage. Higher leverage boosts ROE but leaves less loss absorption — regulators cap it via capital and leverage-ratio rules.",
                 "insurer": "Insurers often show 15–30× because policyholder liabilities dominate the balance sheet. Look at the solvency ratio for the real capital buffer.",
+                "corporate": "Assets ÷ equity of 1.5–3× is typical. Higher leverage lifts ROE but raises financial risk — for a non-financial, judge debt with net debt ÷ EBITDA and interest cover.",
             },
-            benchmark={"bank": "about 12–25×", "insurer": "about 10–30×"},
+            benchmark={"bank": "about 12–25×", "insurer": "about 10–30×", "corporate": "about 1.5–3×"},
         ),
         RatioDef(
             "equity_ratio", "Equity ratio", "Eigenkapitalquote",
@@ -124,8 +131,9 @@ RATIOS: dict[str, RatioDef] = {
             interpretation={
                 "bank": "Simple (unweighted) capital measure — the accounting cousin of the regulatory leverage ratio.",
                 "insurer": "Low equity ratios are normal; what matters is the risk-based solvency ratio.",
+                "corporate": "Share of assets financed by equity. 40–60 % is solid for an industrial (Hilti targets at least 45 %); buybacks and debt-financed acquisitions lower it.",
             },
-            benchmark={"bank": "about 4–8 %", "insurer": "about 3–10 %"},
+            benchmark={"bank": "about 4–8 %", "insurer": "about 3–10 %", "corporate": "about 30–60 %"},
         ),
         RatioDef(
             "payout", "Dividend payout ratio", "Ausschüttungsquote",
@@ -136,8 +144,9 @@ RATIOS: dict[str, RatioDef] = {
             interpretation={
                 "bank": "Swiss banks pay out 40–60 % in cash and often add buybacks. A payout above 100 % is only sustainable with excess capital.",
                 "insurer": "Insurers often target 50–70 %+. Judge sustainability against capital generation (solvency ratio stable?), not only against IFRS earnings.",
+                "corporate": "Swiss blue chips are known for rising dividends; 50–80 % of IFRS EPS is common (Roche targets about half of core EPS). Check that free cash flow covers dividends plus buybacks — and watch the currency of the dividend.",
             },
-            benchmark={"bank": "about 40–60 % (plus buybacks)", "insurer": "about 50–80 %"},
+            benchmark={"bank": "about 40–60 % (plus buybacks)", "insurer": "about 50–80 %", "corporate": "about 40–80 %"},
         ),
         RatioDef(
             "bvps", "Book value per share", "Buchwert je Aktie",
@@ -148,6 +157,7 @@ RATIOS: dict[str, RatioDef] = {
             interpretation={
                 "bank": "The denominator of P/B. Growing BVPS (plus dividends) is a good long-run measure of value creation for banks.",
                 "insurer": "Under IFRS 17 book value excludes the CSM — some analysts add the after-tax CSM ('adjusted book value').",
+                "corporate": "Less informative for non-financials: book value leaves out internally developed assets (R&D pipelines, brands) and shrinks with buybacks, so P/B of 5–10× for pharma says little on its own.",
             },
         ),
         # ---------------------------------------------------------------- banks
@@ -210,6 +220,106 @@ RATIOS: dict[str, RatioDef] = {
             (InputSpec("investment_income"), InputSpec("revenue")),
             lambda v: _div(v[0], v[1]) * 100, "%", sectors=("insurer",), higher_is_better=None, cfa="insurance_metrics",
             interpretation={"insurer": "How dependent the insurer is on investment returns. Life insurers depend heavily on them (spread business); reinsurers less so but still materially."},
+        ),
+        # ---------------------------------------------------------------- non-financial companies
+        RatioDef(
+            "ebit_margin", "EBIT margin (operating margin)", "EBIT-Marge (Betriebsergebnismarge)",
+            r"\text{EBIT margin} = \frac{\text{EBIT}_t}{\text{Revenue}_t} \times 100",
+            "Operating result (EBIT) ÷ revenue × 100",
+            (InputSpec("ebit"), InputSpec("revenue")),
+            lambda v: _div(v[0], v[1]) * 100, "%", sectors=("corporate",), core=True, cfa="ebit_margin",
+            interpretation={"corporate": "Profitability of the operating business before financing and tax — the best margin for comparing companies with different debt and tax. Watch the trend: falling EBIT margin with rising sales means costs or prices are moving against the company. Hilti calls it 'return on sales'."},
+            benchmark={"corporate": "pharma about 25–35 % (IFRS; higher on core); industrials about 10–15 %"},
+        ),
+        RatioDef(
+            "cash_conversion", "Cash conversion (OCF ÷ net income)", "Cash-Conversion (operativer Cashflow ÷ Reingewinn)",
+            r"\text{Cash conversion} = \frac{\text{Operating cash flow}_t}{\text{Net income}_t} \times 100",
+            "Operating cash flow ÷ net income × 100",
+            (InputSpec("operating_cash_flow"), InputSpec("net_income")),
+            lambda v: _div(v[0], v[1]) * 100, "%", sectors=("corporate",), core=True, cfa="cash_conversion",
+            interpretation={"corporate": "Does profit turn into cash? Above 100 % is normal because depreciation and amortisation are non-cash. Persistently below 100 % — or falling while profit rises — points to working capital build-up or aggressive accounting. One-off gains in net income (disposals) make it look low."},
+            benchmark={"corporate": "usually about 100–150 %"},
+        ),
+        RatioDef(
+            "fcf_margin", "Free cash flow margin", "Free-Cashflow-Marge",
+            r"\text{FCF margin} = \frac{\text{Operating cash flow}_t - \text{Capex}_t}{\text{Revenue}_t} \times 100",
+            "(Operating cash flow − capex) ÷ revenue × 100",
+            (InputSpec("operating_cash_flow"), InputSpec("capex"), InputSpec("revenue")),
+            lambda v: _div(v[0] - v[1], v[2]) * 100, "%", sectors=("corporate",), cfa="fcf",
+            interpretation={"corporate": "Cash left after maintaining and expanding the asset base, per unit of sales — what is available for dividends, buybacks, acquisitions and debt repayment. Pharma converts 20–30 % of sales into free cash flow; industrials 5–10 %."},
+            benchmark={"corporate": "pharma about 20–30 %; industrials about 5–10 %"},
+        ),
+        RatioDef(
+            "net_debt_ebitda", "Net debt ÷ EBITDA", "Nettoverschuldung ÷ EBITDA",
+            r"\text{Net debt / EBITDA} = \frac{\text{Financial debt}_t - \text{Cash}_t}{\text{EBIT}_t + \text{D\&A}_t}",
+            "(Financial debt − cash) ÷ (EBIT + D&A), times",
+            (InputSpec("total_debt"), InputSpec("cash"), InputSpec("ebit"), InputSpec("depreciation_amortisation")),
+            lambda v: _div(v[0] - v[1], v[2] + v[3]), "x", sectors=("corporate",), higher_is_better=False, cfa="net_debt_ebitda",
+            interpretation={"corporate": "How many years of operating cash earnings it would take to repay net debt. Below 1.5× is conservative, 2–3× is common after acquisitions, above 3–4× worries rating agencies. Negative means net cash."},
+            benchmark={"corporate": "about 0–2.5× for strong ratings"},
+        ),
+        RatioDef(
+            "roce", "Return on capital employed (ROCE)", "Rendite auf das eingesetzte Kapital (ROCE)",
+            r"\text{ROCE} = \frac{\text{EBIT}_t}{\tfrac{1}{2}(\text{Equity} + \text{Debt} - \text{Cash})_{t-1,t}} \times 100",
+            "EBIT ÷ average capital employed (equity + financial debt − cash) × 100",
+            (InputSpec("ebit"), InputSpec("total_equity", averaged=True), InputSpec("total_debt", averaged=True), InputSpec("cash", averaged=True)),
+            lambda v: _div(v[0], v[1] + v[2] - v[3]) * 100, "%", sectors=("corporate",), cfa="roce",
+            interpretation={"corporate": "Pre-tax return on all the capital the business uses, regardless of how it is financed — so buybacks and leverage do not inflate it like ROE. Compare it with the pre-tax cost of capital (WACC grossed up for tax, roughly 8–10 %). Hilti reports its own ROCE (2025: 11.8 %)."},
+            benchmark={"corporate": "about 10–25 %"},
+        ),
+        RatioDef(
+            "gross_margin", "Gross margin", "Bruttomarge",
+            r"\text{Gross margin} = \frac{\text{Gross profit}_t}{\text{Revenue}_t} \times 100",
+            "Gross profit ÷ revenue × 100",
+            (InputSpec("gross_profit"), InputSpec("revenue")),
+            lambda v: _div(v[0], v[1]) * 100, "%", sectors=("corporate",), cfa="gross_margin",
+            interpretation={"corporate": "Pricing power and production cost. Patented medicines: 70–80 %. A falling gross margin points to price pressure, input-cost inflation or a shift to lower-margin products."},
+            benchmark={"corporate": "pharma about 70–80 %; tools and industrials about 40–65 %"},
+        ),
+        RatioDef(
+            "rnd_intensity", "R&D intensity", "F&E-Quote",
+            r"\text{R\&D intensity} = \frac{\text{R\&D expense}_t}{\text{Revenue}_t} \times 100",
+            "R&D expense ÷ revenue × 100",
+            (InputSpec("rnd_expense"), InputSpec("revenue")),
+            lambda v: _div(v[0], v[1]) * 100, "%", sectors=("corporate",), higher_is_better=None, cfa="rnd",
+            interpretation={"corporate": "How much of each franc of sales is reinvested in innovation. Big pharma spends 18–25 %; Hilti about 7 %. Cutting R&D lifts today's margin at the expense of tomorrow's growth."},
+            benchmark={"corporate": "pharma about 18–25 %; industrials about 3–8 %"},
+        ),
+        RatioDef(
+            "capex_intensity", "Capex intensity", "Investitionsquote",
+            r"\text{Capex intensity} = \frac{\text{Capex}_t}{\text{Revenue}_t} \times 100",
+            "Capital expenditure ÷ revenue × 100",
+            (InputSpec("capex"), InputSpec("revenue")),
+            lambda v: _div(v[0], v[1]) * 100, "%", sectors=("corporate",), higher_is_better=None, cfa="capex",
+            interpretation={"corporate": "How capital-intensive the business is. Compare capex with depreciation: capex persistently below D&A means the asset base is shrinking; well above means expansion."},
+            benchmark={"corporate": "about 3–8 %"},
+        ),
+        RatioDef(
+            "interest_cover", "Interest cover", "Zinsdeckungsgrad",
+            r"\text{Interest cover} = \frac{\text{EBIT}_t}{\text{Interest expense}_t}",
+            "EBIT ÷ interest expense, times",
+            (InputSpec("ebit"), InputSpec("interest_expense")),
+            lambda v: _div(v[0], v[1]), "x", sectors=("corporate",), cfa="net_debt_ebitda",
+            interpretation={"corporate": "How many times operating profit covers interest. Above 8–10× is comfortable; below 3× is a warning sign. It falls quickly when rates or debt rise."},
+            benchmark={"corporate": "above about 8× for strong ratings"},
+        ),
+        RatioDef(
+            "current_ratio", "Current ratio", "Liquiditätsgrad 3 (Current Ratio)",
+            r"\text{Current ratio} = \frac{\text{Current assets}_t}{\text{Current liabilities}_t}",
+            "Current assets ÷ current liabilities, times",
+            (InputSpec("current_assets"), InputSpec("current_liabilities")),
+            lambda v: _div(v[0], v[1]), "x", sectors=("corporate",), cfa="liquidity_ratios",
+            interpretation={"corporate": "Short-term liquidity: can the company pay obligations due within a year from short-term assets? Around 1–2× is normal; below 1× is fine only for companies with strong cash flow and credit access."},
+            benchmark={"corporate": "about 1–2×"},
+        ),
+        RatioDef(
+            "asset_turnover", "Asset turnover", "Kapitalumschlag",
+            r"\text{Asset turnover} = \frac{\text{Revenue}_t}{\tfrac{1}{2}(\text{Total assets}_{t-1} + \text{Total assets}_t)}",
+            "Revenue ÷ average total assets, times",
+            (InputSpec("revenue"), InputSpec("total_assets", averaged=True)),
+            lambda v: _div(v[0], v[1]), "x", sectors=("corporate",), cfa="dupont",
+            interpretation={"corporate": "Sales generated per unit of assets — the middle term of DuPont. Acquisitions (goodwill) lower it; asset-light models raise it."},
+            benchmark={"corporate": "pharma about 0.5–0.7×; industrials about 0.8–1.2×"},
         ),
     ]
 }

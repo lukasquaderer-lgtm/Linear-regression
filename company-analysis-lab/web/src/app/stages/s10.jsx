@@ -20,7 +20,7 @@ const CASES = [["bull", "Bull case"], ["base", "Base case"], ["bear", "Bear case
 function prefill(app) {
   const s = app.doc.stages || {};
   const s1 = s[1]?.answers || {}, s7 = s[7]?.answers || {}, s9 = s[9]?.answers || {};
-  const names = Object.fromEntries(riskTypes(false).map((r) => [r.key, r.en]));
+  const names = Object.fromEntries(["bank", "insurer", "corporate"].flatMap((sec) => riskTypes(sec)).map((r) => [r.key, r.en]));
   const top = s7.top3 || {};
   const risks = (top.keys || []).map((k) => `${names[k] || k}: ${top.why?.[k] || ""}`);
   const valuation = s9.conclusion_submitted ? `Value range ${s9.range_lo} – ${s9.range_hi}. ${s9.conclusion || ""}` : "";

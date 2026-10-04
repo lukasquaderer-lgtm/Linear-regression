@@ -10,14 +10,15 @@ import { StageFooter } from "../quiz.jsx";
 const N = 6;
 const STATUS = ["No issue found", "Issue found", "Not applicable"];
 
-function checks(bank) {
+function checks(sector) {
+  const bank = sector === "bank", corp = sector === "corporate";
   return [
-    { key: "cash", en: "Net income vs cash / capital generation", de: "Gewinn vs. Cash- bzw. Kapitalgenerierung", cfa: "accruals", why: bank ? "For banks, operating cash flow mixes loans, deposits and trading flows, so it says little about earnings quality. Ask instead: does profit turn into capital (CET1) and distributions (dividends, buybacks)?" : "Compare net income with operating cash flow over several years. Persistent gaps (accruals) mean earnings are less likely to persist. For life insurers, also ask whether profit turns into solvency capital and cash remittances.", where: "Cash flow statement; capital management section; statement of changes in equity" },
+    { key: "cash", en: "Net income vs cash / capital generation", de: "Gewinn vs. Cash- bzw. Kapitalgenerierung", cfa: "accruals", why: bank ? "For banks, operating cash flow mixes loans, deposits and trading flows, so it says little about earnings quality. Ask instead: does profit turn into capital (CET1) and distributions (dividends, buybacks)?" : corp ? "Compare net income with operating cash flow over several years (cash conversion). Persistent gaps (accruals) mean earnings are less likely to persist. Watch working capital: receivables and inventories growing faster than sales tie up cash and can signal aggressive revenue recognition." : "Compare net income with operating cash flow over several years. Persistent gaps (accruals) mean earnings are less likely to persist. For life insurers, also ask whether profit turns into solvency capital and cash remittances.", where: "Cash flow statement; capital management section; statement of changes in equity" },
     { key: "oneoff", en: "One-off gains and losses", de: "Einmalige Gewinne und Verluste", cfa: "one_offs", why: "Disposal gains, negative goodwill, litigation settlements, insurance recoveries, revaluation gains. Remove them (after tax) to see underlying earnings.", where: "Income statement 'other income'; management report 'underlying/adjusted' results; notes" },
-    { key: "estimates", en: "Changes in accounting estimates", de: "Änderungen von Schätzungen", cfa: "notes", why: bank ? "Expected-credit-loss model parameters, fair-value inputs (Level 3), useful lives, pension assumptions." : "Actuarial assumptions (mortality, lapse, expenses), discount rates, CSM unlocking, investment valuations.", where: "Notes: significant accounting estimates and judgements; changes in estimates" },
+    { key: "estimates", en: "Changes in accounting estimates", de: "Änderungen von Schätzungen", cfa: "notes", why: bank ? "Expected-credit-loss model parameters, fair-value inputs (Level 3), useful lives, pension assumptions." : corp ? "Revenue deductions (rebates, chargebacks, returns), useful lives, capitalised development costs, impairment-test assumptions (growth, discount rate), pension assumptions." : "Actuarial assumptions (mortality, lapse, expenses), discount rates, CSM unlocking, investment valuations.", where: "Notes: significant accounting estimates and judgements; changes in estimates" },
     { key: "restructuring", en: "Restructuring charges", de: "Restrukturierungskosten", cfa: "one_offs", why: "Integration and restructuring costs are often presented as 'one-off' — but if they appear every year, they are part of the cost base.", where: "Income statement; notes on provisions and personnel expenses; 'underlying' reconciliation" },
-    { key: "impairments", en: "Impairments", de: "Wertminderungen", cfa: "one_offs", why: "Goodwill and intangible impairments (non-cash, usually one-off but signal overpaying for an acquisition); " + (bank ? "loan impairments are recurring credit costs." : "investment impairments."), where: "Notes on goodwill/intangibles and financial assets" },
-    { key: "reserves", en: "Reserve and provision changes", de: "Reserve- und Rückstellungsveränderungen", cfa: "reserves", why: bank ? "Releases of credit-loss allowances or litigation provisions boost profit without new business — check whether they can recur." : "Prior-year reserve development (releases or strengthening) changes earnings without new business; repeated releases can mean earlier over-reserving used to smooth profit.", where: bank ? "Credit risk note / provisions note" : "Notes on insurance liabilities; claims development tables; P&C prior-year development" },
+    { key: "impairments", en: "Impairments", de: "Wertminderungen", cfa: "one_offs", why: "Goodwill and intangible impairments (non-cash, usually one-off but signal overpaying for an acquisition); " + (bank ? "loan impairments are recurring credit costs." : corp ? "write-downs of product rights after failed trials or weaker sales — if they recur, the 'core' profit that excludes them is too flattering." : "investment impairments."), where: "Notes on goodwill/intangibles and financial assets" },
+    { key: "reserves", en: "Reserve and provision changes", de: "Reserve- und Rückstellungsveränderungen", cfa: "reserves", why: bank ? "Releases of credit-loss allowances or litigation provisions boost profit without new business — check whether they can recur." : corp ? "Releases of provisions (litigation, restructuring, warranties) or of inventory and receivable allowances boost profit without new business — check whether they can recur." : "Prior-year reserve development (releases or strengthening) changes earnings without new business; repeated releases can mean earlier over-reserving used to smooth profit.", where: bank ? "Credit risk note / provisions note" : corp ? "Provisions note; inventory and trade receivables notes" : "Notes on insurance liabilities; claims development tables; P&C prior-year development" },
     { key: "acquisitions", en: "Acquisition effects", de: "Akquisitionseffekte", cfa: "one_offs", why: "Consolidating a target adds revenue and profit that is not organic; purchase-price allocation creates amortisation or negative goodwill; integration costs follow.", where: "Note on business combinations; segment reporting; management report" },
     { key: "tax", en: "Unusual tax effects", de: "Ungewöhnliche Steuereffekte", cfa: "one_offs", why: "Recognition or write-off of deferred tax assets, tax-rate changes, settlements. Compare the effective tax rate with the statutory rate (Switzerland ≈ 12–21 % by canton; Liechtenstein 12.5 %; Germany ≈ 30 %).", where: "Income tax note (tax rate reconciliation)" },
   ];
@@ -33,7 +34,7 @@ export default function Stage6({ app }) {
   const { profile, currency } = app;
   const bank = profile.sector === "bank";
   const ans = app.doc.stages?.[N]?.answers || {};
-  const cks = checks(bank);
+  const cks = checks(profile.sector);
   const done = cks.filter((c) => STATUS.includes(ans.checks?.[c.key]?.status) && CA.wordCount(ans.checks?.[c.key]?.note) >= 5).length;
   const criteria = [
     [`All eight checks completed with a short note — ${done}/8`, done === 8],
@@ -45,7 +46,7 @@ export default function Stage6({ app }) {
       <StageHeader stage={CA.STAGES[5]} profile={profile} currency={currency} />
       <div className="grid-2 wide-left">
         <Task>
-          High-quality earnings are <b>recurring, cash- or capital-backed and free of aggressive estimates</b>. Run the eight checks against the annual report, build a bridge from reported to underlying net income, and rate the overall quality. {bank ? "For a bank, swap 'cash' for 'capital': does profit become CET1 capital and distributions?" : "For an insurer, watch reserve releases and investment gains."}
+          High-quality earnings are <b>recurring, cash- or capital-backed and free of aggressive estimates</b>. Run the eight checks against the annual report, build a bridge from reported to underlying net income, and rate the overall quality. {bank ? "For a bank, swap 'cash' for 'capital': does profit become CET1 capital and distributions?" : profile.sector === "corporate" ? "For a non-financial company, cash conversion and working capital are the key tests — and check what the company leaves out of its 'core' or 'adjusted' profit." : "For an insurer, watch reserve releases and investment gains."}
         </Task>
         <Cfa k="quality_earnings" />
       </div>
@@ -112,9 +113,14 @@ function CashPanel({ app, bank }) {
   const ocf = D.series(app.ds, "operating_cash_flow");
   if (D.clean(ocf).length < 2) return <p className="muted small">No operating cash flow data — add it in Stage 2 if the company publishes a cash flow statement.</p>;
   const sum = (s) => D.clean(s).reduce((p, [, v]) => p + v, 0);
+  const lines = { "Net income": ni, "Operating cash flow": ocf };
+  if (app.profile.sector === "corporate") {
+    const fcf = ocf.map(([y, v]) => { const c = D.value(app.ds, "capex", y); return [y, v !== null && c !== null ? v - c : null]; });
+    if (D.clean(fcf).length >= 2) lines["Free cash flow (OCF − capex)"] = fcf;
+  }
   return (
     <div className="card">
-      <Chart spec={Charts.compare({ "Net income": ni, "Operating cash flow": ocf }, "Net income vs operating cash flow", `${app.currency} m`)} label="Net income vs operating cash flow" />
+      <Chart spec={Charts.compare(lines, "Net income vs operating cash flow", `${app.currency} m`)} label="Net income vs operating cash flow" />
       <p className="muted small">Cumulative over the period: net income {C.fmtNum(sum(ni))} vs operating cash flow {C.fmtNum(sum(ocf))} ({app.currency} m).</p>
     </div>
   );

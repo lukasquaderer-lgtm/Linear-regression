@@ -5,10 +5,18 @@ import { value } from "./data.js";
 import { isClose } from "./calc.js";
 
 export const RATIOS = Object.fromEntries(RATIO_ROWS.map((r) => [r.key, r]));
-export const ALL_SECTORS_LEN = 2;
+export const ALL_SECTORS_LEN = M.SECTORS.length;
+export const isCore = (r, sector) => r.core === true || (Array.isArray(r.core) && r.core.includes(sector));
+
+// Ratios whose formula is not simply first ÷ second (mirrors the lambdas in lab/ratios.py).
+const FORMULA = {
+  fcf_margin: ([ocf, capex, rev]) => [ocf - capex, rev],
+  net_debt_ebitda: ([debt, cash, ebit, da]) => [debt - cash, ebit + da],
+  roce: ([ebit, eq, debt, cash]) => [ebit, eq + debt - cash],
+};
 
 export const combine = (r, vals) => {
-  const [a, b] = vals;
+  const [a, b] = FORMULA[r.key] ? FORMULA[r.key](vals) : vals;
   if (!b) return null;
   const x = r.unit === "%" ? (a / b) * 100 : a / b;
   return Number.isFinite(x) ? x : null;

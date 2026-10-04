@@ -1,0 +1,439 @@
+{
+  "id": "roche",
+  "name": "Roche Holding AG",
+  "short_name": "Roche",
+  "sector": "corporate",
+  "subsector": "Pharmaceuticals and diagnostics",
+  "country": "Switzerland",
+  "headquarters": "Basel",
+  "listed": true,
+  "exchange_ticker": "ROG (non-voting equity securities) and RO (bearer shares), SIX Swiss Exchange",
+  "currency": "CHF",
+  "currency_confirmed": true,
+  "fiscal_year_end": "31 December",
+  "accounting": {
+    "2021": "IFRS",
+    "2022": "IFRS",
+    "2023": "IFRS",
+    "2024": "IFRS",
+    "2025": "IFRS"
+  },
+  "accounting_notes": "IFRS group accounts in Swiss francs. Roche steers the business on 'core' results, which exclude amortisation and impairment of intangible assets, restructuring and some legal items; the dividend is based on core EPS. Chugai (Japan, about 60 % owned) is fully consolidated, which creates large non-controlling interests.",
+  "regulator": "Swissmedic, US FDA, EMA (product approvals); SIX Exchange Regulation (listing)",
+  "capital_regime": "None (non-financial company): the constraints are leverage, a strong credit rating and the cash needed for R&D, acquisitions and the dividend",
+  "investor_relations": "https://www.roche.com/investors",
+  "annual_report_hint": "roche.com → Investors → Annual Report. The 'Finance Report' contains the IFRS consolidated financial statements, the notes and the reconciliation from IFRS to core results.",
+  "data_source": "Starter values from a data vendor (FMP via Bigdata.com) and Roche results releases; per-ADR figures converted to per-share figures. Unverified — check each number in the Finance Report.",
+  "required_extra": [],
+  "not_applicable": [],
+  "business_reference": {
+    "what_it_does": {
+      "reference": "Roche is one of the world's largest healthcare companies and the leader in in-vitro diagnostics. It researches, develops, makes and sells prescription medicines (Pharmaceuticals division, about three quarters of sales) and diagnostic instruments, tests and software (Diagnostics division). Oncology, immunology, neuroscience and ophthalmology are key areas. Genentech (US) and Chugai (Japan) belong to the group.",
+      "key_points": [
+        {
+          "point": "Prescription medicines (Pharmaceuticals)",
+          "keywords": [
+            "pharma",
+            "medicine",
+            "medikament",
+            "drug",
+            "arznei"
+          ]
+        },
+        {
+          "point": "Diagnostics",
+          "keywords": [
+            "diagnost",
+            "test",
+            "labor"
+          ]
+        },
+        {
+          "point": "Research-driven / innovative",
+          "keywords": [
+            "research",
+            "forschung",
+            "innovat",
+            "r&d",
+            "biotech",
+            "pipeline"
+          ]
+        },
+        {
+          "point": "Genentech and Chugai",
+          "keywords": [
+            "genentech",
+            "chugai"
+          ]
+        }
+      ]
+    },
+    "how_money": {
+      "reference": "By selling patented medicines at prices that reflect their innovation: high gross margins fund heavy R&D (about 20 % of sales). Diagnostics earns from instruments placed in laboratories and the recurring sale of tests and reagents (a 'razor and blade' model). Royalties and licences add income. When patents expire, biosimilars or generics take share quickly.",
+      "key_points": [
+        {
+          "point": "Patented medicines with high margins",
+          "keywords": [
+            "patent",
+            "margin",
+            "marge",
+            "pricing",
+            "preis"
+          ]
+        },
+        {
+          "point": "Recurring sales of diagnostic tests and reagents",
+          "keywords": [
+            "recurring",
+            "reagent",
+            "reagenz",
+            "test",
+            "installed base",
+            "razor"
+          ]
+        },
+        {
+          "point": "Reinvestment in R&D",
+          "keywords": [
+            "r&d",
+            "research",
+            "forschung",
+            "pipeline"
+          ]
+        },
+        {
+          "point": "Patent expiry and biosimilars",
+          "keywords": [
+            "biosimilar",
+            "generic",
+            "generika",
+            "patent expir",
+            "patentablauf"
+          ]
+        }
+      ]
+    },
+    "segments": {
+      "reference": "Two divisions: Pharmaceuticals (Roche Pharmaceuticals including Genentech, and Chugai) and Diagnostics (Core Lab, Molecular Lab, Near Patient Care, Pathology Lab).",
+      "key_points": [
+        {
+          "point": "Pharmaceuticals",
+          "keywords": [
+            "pharma"
+          ]
+        },
+        {
+          "point": "Diagnostics",
+          "keywords": [
+            "diagnost"
+          ]
+        },
+        {
+          "point": "Chugai",
+          "keywords": [
+            "chugai"
+          ]
+        },
+        {
+          "point": "Genentech",
+          "keywords": [
+            "genentech"
+          ]
+        }
+      ]
+    },
+    "customers": {
+      "reference": "Patients reached through doctors and hospitals, with governments and health insurers paying and negotiating prices; hospital and commercial laboratories buy diagnostic systems and tests.",
+      "key_points": [
+        {
+          "point": "Payers: governments and health insurers",
+          "keywords": [
+            "insurer",
+            "versicher",
+            "krankenkasse",
+            "government",
+            "staat",
+            "payer",
+            "medicare"
+          ]
+        },
+        {
+          "point": "Doctors and hospitals",
+          "keywords": [
+            "hospital",
+            "spital",
+            "klinik",
+            "doctor",
+            "arzt",
+            "physician"
+          ]
+        },
+        {
+          "point": "Laboratories",
+          "keywords": [
+            "lab",
+            "labor"
+          ]
+        }
+      ]
+    },
+    "markets": {
+      "reference": "Global. The United States is the largest market (about half of pharma sales), followed by Europe, Japan and international markets including China. Sales are earned in many currencies while much of the cost base is in Switzerland, so a strong Swiss franc reduces reported figures.",
+      "key_points": [
+        {
+          "point": "United States",
+          "keywords": [
+            "us",
+            "usa",
+            "united states",
+            "amerika"
+          ]
+        },
+        {
+          "point": "Europe",
+          "keywords": [
+            "europe",
+            "europa"
+          ]
+        },
+        {
+          "point": "Japan, China and other international markets",
+          "keywords": [
+            "japan",
+            "china",
+            "asia",
+            "asien",
+            "international"
+          ]
+        },
+        {
+          "point": "Currency effects (CHF reporting)",
+          "keywords": [
+            "currency",
+            "währung",
+            "chf",
+            "franc",
+            "franken",
+            "fx"
+          ]
+        }
+      ]
+    },
+    "advantages": {
+      "reference": "Deep oncology and biologics expertise, a large late-stage pipeline, the leading position in diagnostics with a large installed base of instruments, global scale in R&D and commercialisation, the Genentech research engine and a strong balance sheet.",
+      "key_points": [
+        {
+          "point": "Pipeline and R&D capability",
+          "keywords": [
+            "pipeline",
+            "r&d",
+            "research",
+            "forschung"
+          ]
+        },
+        {
+          "point": "Diagnostics leadership / installed base",
+          "keywords": [
+            "diagnost",
+            "installed base",
+            "leader",
+            "marktführer"
+          ]
+        },
+        {
+          "point": "Global scale",
+          "keywords": [
+            "scale",
+            "size",
+            "global",
+            "grösse",
+            "größe"
+          ]
+        },
+        {
+          "point": "Financial strength",
+          "keywords": [
+            "balance sheet",
+            "bilanz",
+            "rating",
+            "cash",
+            "financial strength"
+          ]
+        }
+      ]
+    },
+    "threats": {
+      "reference": "US drug-pricing pressure (Inflation Reduction Act negotiations, the most-favoured-nation pricing push, tariffs), biosimilar erosion of older antibodies, clinical-trial failures, healthcare pricing reforms in China (diagnostics), competition in new areas such as obesity, and the strong Swiss franc.",
+      "key_points": [
+        {
+          "point": "Drug-pricing pressure and tariffs",
+          "keywords": [
+            "pricing",
+            "preis",
+            "ira",
+            "mfn",
+            "tariff",
+            "zoll"
+          ]
+        },
+        {
+          "point": "Biosimilars and patent expiry",
+          "keywords": [
+            "biosimilar",
+            "generic",
+            "patent"
+          ]
+        },
+        {
+          "point": "Clinical-trial failures",
+          "keywords": [
+            "trial",
+            "studie",
+            "failure",
+            "pipeline"
+          ]
+        },
+        {
+          "point": "Strong Swiss franc",
+          "keywords": [
+            "currency",
+            "franc",
+            "franken",
+            "chf",
+            "fx"
+          ]
+        },
+        {
+          "point": "China pricing reforms",
+          "keywords": [
+            "china"
+          ]
+        }
+      ]
+    }
+  },
+  "events": [
+    {
+      "year": 2021,
+      "metrics": [
+        "shares_outstanding",
+        "total_debt",
+        "total_equity"
+      ],
+      "nature": "capital",
+      "title": "Buy-back of Novartis's 33 % stake in Roche",
+      "detail": "Roche bought back the 53.3 m bearer shares held by Novartis for about CHF 19 bn, financed largely with new debt. The share count fell by about 6 % and debt rose — EPS benefits, the balance sheet becomes more leveraged.",
+      "where_to_verify": "Annual Report 2021: statement of changes in equity (own equity instruments), financing cash flows, debt note."
+    },
+    {
+      "year": 2023,
+      "metrics": [
+        "revenue",
+        "ebit",
+        "net_income"
+      ],
+      "nature": "operational",
+      "title": "COVID-19 test sales fall away",
+      "detail": "COVID-19 tests had boosted Diagnostics in 2021–2022. Their collapse in 2023, plus a strong franc, cut Group sales by about 7 % in CHF although the base business grew at constant exchange rates.",
+      "where_to_verify": "Annual Report 2023: Diagnostics divisional review; sales growth at constant exchange rates (CER) vs CHF."
+    },
+    {
+      "year": 2023,
+      "metrics": [
+        "total_assets",
+        "total_debt"
+      ],
+      "nature": "acquisition",
+      "title": "Acquisition of Telavant (≈ USD 7.1 bn upfront)",
+      "detail": "Roche bought Telavant for the rights to an antibody for inflammatory bowel disease. Acquired product rights are booked as intangible assets — future impairment risk if trials fail.",
+      "where_to_verify": "Finance Report 2023: note on acquisitions / intangible assets."
+    },
+    {
+      "year": 2024,
+      "metrics": [
+        "net_income",
+        "ebit",
+        "rnd_expense"
+      ],
+      "nature": "one-off",
+      "title": "Goodwill and intangible-asset impairments",
+      "detail": "Impairments (including goodwill from the Spark Therapeutics acquisition) cut IFRS net income to CHF 8.3 bn. Core results exclude them, so core EPS kept growing — a textbook IFRS vs 'core' gap.",
+      "where_to_verify": "Finance Report 2024: goodwill and intangible assets notes; reconciliation of IFRS to core results."
+    },
+    {
+      "year": 2025,
+      "metrics": [
+        "revenue",
+        "net_income"
+      ],
+      "nature": "currency",
+      "title": "Strong growth at constant rates, much less in CHF",
+      "detail": "Sales grew 7 % at constant exchange rates but only about 2 % in CHF. IFRS net income rose about 50 % because the 2024 impairments did not recur.",
+      "where_to_verify": "Annual Report 2025 / results release 29 January 2026: CER vs CHF growth; IFRS to core reconciliation."
+    }
+  ],
+  "top_risks_reference": [
+    {
+      "risk": "pricing",
+      "why": "The US is about half of pharma sales: IRA price negotiations, most-favoured-nation pricing and tariffs can cut prices on the biggest brands directly."
+    },
+    {
+      "risk": "pipeline",
+      "why": "Older antibodies face biosimilars and newer brands will lose exclusivity too; value depends on the late-stage pipeline replacing them — trial failures also trigger impairments."
+    },
+    {
+      "risk": "currency",
+      "why": "Most sales are in USD, EUR and JPY while Roche reports in CHF: a strong franc reduces reported sales, profit and dividend capacity even when the business grows."
+    }
+  ],
+  "audit_focus": [
+    "Revenue deductions in the US (rebates, chargebacks, returns)",
+    "Impairment testing of goodwill and intangible assets (product rights, in-process R&D)",
+    "Uncertain tax positions",
+    "Legal provisions and contingent liabilities"
+  ],
+  "quiz": [
+    {
+      "level": 1,
+      "concept": "business_model",
+      "prompt": "Which two divisions make up Roche?",
+      "options": [
+        "Pharmaceuticals and Diagnostics",
+        "Pharmaceuticals and Generics",
+        "Pharmaceuticals and Consumer Health",
+        "Diagnostics and Medical Devices only"
+      ],
+      "answer": 0,
+      "explanation": "Roche is the only big pharma company that is also the world leader in in-vitro diagnostics."
+    },
+    {
+      "level": 3,
+      "concept": "one_off_items",
+      "prompt": "Roche's IFRS net income dropped to CHF 8.3 bn in 2024 and rebounded in 2025, while core EPS grew in both years. What explains the gap?",
+      "options": [
+        "Non-cash impairments of goodwill and intangibles in 2024, excluded from core results",
+        "A collapse in Pharmaceuticals sales in 2024",
+        "A change from IFRS to US GAAP",
+        "Higher dividends paid in 2024"
+      ],
+      "answer": 0,
+      "explanation": "Impairments hit IFRS profit but not core profit. Ask whether impairments are truly one-off: they show that past acquisitions earned less than expected."
+    },
+    {
+      "level": 2,
+      "concept": "acquisition_effects",
+      "prompt": "In 2021 Roche bought back the stake Novartis held in Roche. What happened to Roche's EPS and leverage?",
+      "options": [
+        "EPS rose (fewer shares) and leverage rose (financed with debt)",
+        "EPS fell and leverage fell",
+        "Nothing — buybacks do not affect EPS",
+        "Revenue increased by the value of the stake"
+      ],
+      "answer": 0,
+      "explanation": "A debt-financed buyback reduces the share count and raises net debt: per-share figures improve, the balance sheet becomes riskier."
+    }
+  ],
+  "peers_suggested": [
+    "novartis"
+  ]
+}

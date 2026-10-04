@@ -30,7 +30,7 @@ STAGES: list[Stage] = [
     Stage(6, "quality", "Quality of Earnings", "Qualität der Gewinne", ":material/fact_check:", "Separate recurring, cash-backed earnings from one-offs and accounting effects."),
     Stage(7, "risk", "Risk Analysis", "Risikoanalyse", ":material/shield:", "Map the risks and identify the three that matter most for value."),
     Stage(8, "peers", "Peer Comparison", "Peer-Vergleich", ":material/compare_arrows:", "Compare with a peer on the metrics that are actually comparable."),
-    Stage(9, "valuation", "Valuation", "Bewertung", ":material/calculate:", "Value the equity with methods that fit a financial institution."),
+    Stage(9, "valuation", "Valuation", "Bewertung", ":material/calculate:", "Value the equity with methods that fit how the company makes money."),
     Stage(10, "thesis", "Investment Thesis", "Investment-These", ":material/flag:", "Pull everything together into a thesis with scenarios — no buy/sell verdict."),
 ]
 
@@ -132,6 +132,8 @@ EXPLANATION_DRIVERS = [
     {"point": "Capital actions (buybacks, dividends)", "keywords": ["buyback", "rückkauf", "rueckkauf", "dividend", "share count", "aktien"]},
     {"point": "Currency effects", "keywords": ["fx", "currency", "währung", "waehrung", "franc", "franken", "dollar", "euro", "translation"]},
     {"point": "Catastrophes, claims or reserves (insurers)", "keywords": ["catastroph", "katastroph", "claims", "schäden", "schaeden", "reserve", "hurricane", "covid", "pandemic"]},
+    {"point": "Prices, volumes and product launches or patent expiries (non-financials)", "keywords": ["price", "preis", "pricing", "demand", "nachfrage", "launch", "lancier", "patent", "generic", "generika", "biosimilar", "product", "produkt"]},
+    {"point": "Input costs and supply chain (non-financials)", "keywords": ["raw material", "rohstoff", "input cost", "supply", "liefer", "inventor", "lager", "energy", "energie", "logistic"]},
 ]
 
 
@@ -155,4 +157,5 @@ NATURE_LABEL = {
     "regulatory": "Regulatory",
     "acquisition": "Acquisition",
     "capital": "Capital management",
+    "currency": "Currency translation",
 }

@@ -19,11 +19,14 @@ STATUS = ["No issue found", "Issue found", "Not applicable"]
 
 def checks(app: AppContext) -> list[dict]:
     bank = app.sector == "bank"
+    corp = app.sector == "corporate"
     return [
         {
             "key": "cash", "en": "Net income vs cash / capital generation", "de": "Gewinn vs. Cash- bzw. Kapitalgenerierung", "cfa": "accruals",
             "why": ("For banks, operating cash flow mixes loans, deposits and trading flows, so it says little about earnings quality. Ask instead: does profit turn into **capital** (CET1) and **distributions** (dividends, buybacks)?"
                     if bank else
+                    "Compare net income with operating cash flow over several years (cash conversion). Persistent gaps (accruals) mean earnings are less likely to persist. Watch working capital: receivables and inventories growing faster than sales tie up cash and can signal aggressive revenue recognition."
+                    if corp else
                     "Compare net income with operating cash flow over several years. Persistent gaps (accruals) mean earnings are less likely to persist. For life insurers, also ask whether profit turns into solvency capital and cash remittances."),
             "where": "Cash flow statement; capital management section; statement of changes in equity",
         },
@@ -35,6 +38,7 @@ def checks(app: AppContext) -> list[dict]:
         {
             "key": "estimates", "en": "Changes in accounting estimates", "de": "Änderungen von Schätzungen", "cfa": "notes",
             "why": ("Expected-credit-loss model parameters, fair-value inputs (Level 3), useful lives, pension assumptions." if bank else
+                    "Revenue deductions (rebates, chargebacks, returns), useful lives, capitalised development costs, impairment-test assumptions (growth, discount rate), pension assumptions." if corp else
                     "Actuarial assumptions (mortality, lapse, expenses), discount rates, CSM unlocking, investment valuations."),
             "where": "Notes: significant accounting estimates and judgements; changes in estimates",
         },
@@ -45,14 +49,15 @@ def checks(app: AppContext) -> list[dict]:
         },
         {
             "key": "impairments", "en": "Impairments", "de": "Wertminderungen", "cfa": "one_offs",
-            "why": "Goodwill and intangible impairments (non-cash, usually one-off but signal overpaying for an acquisition); " + ("loan impairments are recurring credit costs." if bank else "investment impairments."),
+            "why": "Goodwill and intangible impairments (non-cash, usually one-off but signal overpaying for an acquisition); " + ("loan impairments are recurring credit costs." if bank else "write-downs of product rights after failed trials or weaker sales — if they recur, the 'core' profit that excludes them is too flattering." if corp else "investment impairments."),
             "where": "Notes on goodwill/intangibles and financial assets",
         },
         {
             "key": "reserves", "en": "Reserve and provision changes", "de": "Reserve- und Rückstellungsveränderungen", "cfa": "reserves",
             "why": ("Releases of credit-loss allowances or litigation provisions boost profit without new business — check whether they can recur." if bank else
+                    "Releases of provisions (litigation, restructuring, warranties) or of inventory and receivable allowances boost profit without new business — check whether they can recur." if corp else
                     "Prior-year reserve development (releases or strengthening) changes earnings without new business; repeated releases can mean earlier over-reserving used to smooth profit."),
-            "where": "Credit risk note / provisions note" if bank else "Notes on insurance liabilities; claims development tables; P&C prior-year development",
+            "where": "Credit risk note / provisions note" if bank else "Provisions note; inventory and trade receivables notes" if corp else "Notes on insurance liabilities; claims development tables; P&C prior-year development",
         },
         {
             "key": "acquisitions", "en": "Acquisition effects", "de": "Akquisitionseffekte", "cfa": "one_offs",
@@ -91,7 +96,9 @@ def render(app: AppContext) -> None:
         ui.task_box(
             "High-quality earnings are <b>recurring, cash- or capital-backed and free of aggressive estimates</b>. "
             "Run the eight checks against the annual report, build a bridge from reported to underlying net income, and rate the overall quality. "
-            + ("For a bank, swap 'cash' for 'capital': does profit become CET1 capital and distributions?" if app.sector == "bank" else "For an insurer, watch reserve releases and investment gains.")
+            + ("For a bank, swap 'cash' for 'capital': does profit become CET1 capital and distributions?" if app.sector == "bank" else
+               "For a non-financial company, cash conversion and working capital are the key tests — and check what the company leaves out of its 'core' or 'adjusted' profit." if app.sector == "corporate" else
+               "For an insurer, watch reserve releases and investment gains.")
         )
     with c2:
         ui.cfa_box("quality_earnings")
@@ -158,7 +165,11 @@ def _cash_panel(app: AppContext, values: pd.DataFrame) -> None:
         else:
             ocf = D.series(values, "operating_cash_flow")
             if ocf.notna().sum() >= 2:
-                ui.plotly(viz.compare_lines({"Net income": ni, "Operating cash flow": ocf}, "Net income vs operating cash flow", f"{app.currency} m"), key="s6-ocf")
+                lines = {"Net income": ni, "Operating cash flow": ocf}
+                capex = D.series(values, "capex")
+                if app.sector == "corporate" and capex.notna().sum() >= 2:
+                    lines["Free cash flow (OCF − capex)"] = (ocf - capex.reindex(ocf.index))
+                ui.plotly(viz.compare_lines({k: v for k, v in lines.items() if v.notna().sum() >= 2}, "Net income vs operating cash flow", f"{app.currency} m"), key="s6-ocf")
                 cum_ni, cum_ocf = ni.dropna().sum(), ocf.dropna().sum()
                 st.caption(f"Cumulative over the period: net income {C.fmt_num(cum_ni)} vs operating cash flow {C.fmt_num(cum_ocf)} ({app.currency} m).")
             else:

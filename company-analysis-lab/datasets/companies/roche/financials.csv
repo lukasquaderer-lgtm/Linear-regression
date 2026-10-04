@@ -1,0 +1,21 @@
+metric,2021,2022,2023,2024,2025,source,note
+revenue,62801,63281,58716,60495,61500,"Roche results releases ('Group sales') as recalled – unverified; 2025 per results release 29 Jan 2026 (CHF 61.5 bn, rounded)",Group sales only. Roche also books royalties and other operating income (≈ CHF 1.8–2.6 bn a year); data vendors mix 'sales' and 'total revenues' between years – keep one definition. Enter the exact 2025 figure.
+ebit,17283,17476,15395,13417,18476,Data vendor (FMP via Bigdata.com) – unverified,"IFRS operating profit. Roche also reports 'core operating profit' (excludes amortisation, impairments, restructuring) – note which one you use."
+net_income,13930,12421,11498,8277,12880,Data vendor (FMP via Bigdata.com) – unverified,"Attributable to Roche shareholders. Group net income incl. non-controlling interests (mainly Chugai): 2024 9,187; 2025 ≈ 13,800 (results release). 2024 is depressed by goodwill and intangible impairments."
+total_assets,92317,88151,90468,101801,100817,Data vendor (FMP via Bigdata.com) – unverified,
+total_liabilities,63972,56136,57205,65640,62894,Derived: total assets − total equity incl. non-controlling interests,
+total_equity,24489,27992,29315,31767,33840,Data vendor (FMP via Bigdata.com) – unverified,"Attributable to Roche shareholders; non-controlling interests (≈ CHF 4 bn, mainly Chugai) excluded."
+operating_cash_flow,20569,17890,16095,20094,17028,Data vendor (FMP via Bigdata.com) – unverified,
+capex,4549,4552,4649,5009,3580,Data vendor (FMP via Bigdata.com) – unverified,"Purchases of property, plant and equipment (vendor). 2025 looks low – verify, and decide whether to include intangible assets."
+depreciation_amortisation,4447,3824,3474,3430,3386,Data vendor (FMP via Bigdata.com) – unverified,From the cash flow statement; excludes impairments.
+rnd_expense,14799,15225,14200,15304,12752,Data vendor (FMP via Bigdata.com) – unverified,Vendor R&D line may include impairments of intangible assets – compare with the income statement and with core R&D.
+interest_expense,341,690,997,1403,1288,Data vendor (FMP via Bigdata.com) – unverified,
+cash,6850,4991,5376,6975,5588,Data vendor (FMP via Bigdata.com) – unverified,Cash and cash equivalents only (marketable securities of ≈ CHF 5–10 bn come on top).
+total_debt,32552,26544,30782,36354,33191,Data vendor (FMP via Bigdata.com) – unverified,"Bonds, notes and other financial debt incl. lease liabilities."
+current_assets,35627,33816,33446,40036,38773,Data vendor (FMP via Bigdata.com) – unverified,
+current_liabilities,38416,27239,24824,27023,28033,Data vendor (FMP via Bigdata.com) – unverified,
+inventories,7715,8605,7749,7606,7487,Data vendor (FMP via Bigdata.com) – unverified,
+receivables,10806,11606,11021,12005,11519,Data vendor (FMP via Bigdata.com) – unverified,Trade receivables.
+eps,16.24,15.36,14.32,10.32,15.28,"Data vendor (FMP via Bigdata.com), converted – unverified",Diluted IFRS EPS. The vendor reports per ADR (1/8 of a share) – multiplied by 8. Roche guides and pays dividends on core EPS (2025: CHF 19.46).
+dps,9.3,9.5,9.6,9.7,9.8,Roche dividend proposals as recalled – unverified; 2025 per results release,Per share and non-voting equity security (Genussschein); FY2025 is the 39th consecutive increase.
+shares_outstanding,860.0,800.0,804.0,802.0,803.0,"Data vendor (FMP via Bigdata.com), converted – unverified","Diluted average, shares plus non-voting equity securities. Vendor ADR count ÷ 8. The drop in 2022 follows the buy-back of Novartis's stake (Dec 2021)."

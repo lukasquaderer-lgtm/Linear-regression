@@ -12,7 +12,22 @@ const TRENDS = ["Rising", "Stable", "Falling"];
 const CHANNELS = ["Earnings / ROE", "Capital / book value / payouts", "Cost of equity (uncertainty)"];
 const REF_ALIAS = { interest_rate: "interest" };
 
-export function riskTypes(bank) {
+const CORPORATE_RISKS = [
+  { key: "demand", en: "Demand / cyclical risk", de: "Konjunktur- und Nachfragerisiko", cfa: "risk_demand", what: "Sales fall with the economic or industry cycle (construction, capital goods, consumer spending); with high fixed costs, profit falls much faster than sales (operating leverage).", find: "Management report (market development, outlook); sales by region and segment; order intake if disclosed." },
+  { key: "competition", en: "Competitive risk", de: "Wettbewerbsrisiko", cfa: "risk_competition", what: "Rivals launch better or cheaper products; new entrants or substitutes take market share and push prices down.", find: "Strategy section; market-share claims; gross-margin trend; competitors' reports." },
+  { key: "pricing", en: "Pricing and regulatory risk", de: "Preis- und Regulierungsrisiko", cfa: "risk_pricing", what: "Governments, payers or customers force prices down (drug-price reforms, tariffs, procurement rules) or new regulation adds costs.", find: "Risk factors; outlook; sales by region; notes on rebates and price adjustments." },
+  { key: "pipeline", en: "Innovation, pipeline and patent-expiry risk", de: "Innovations-, Pipeline- und Patentablaufrisiko", cfa: "risk_pipeline", what: "Key products lose patent protection or become outdated; new products fail in development or launch late.", find: "Pipeline overview; patent-expiry tables; R&D spending; impairments of product rights." },
+  { key: "currency", en: "Currency risk", de: "Währungsrisiko", cfa: "risk_currency", what: "Sales and costs in different currencies: a strong home currency (CHF) cuts reported sales and margins; translation changes equity.", find: "Financial risk management note (FX sensitivity); growth in local currencies vs reporting currency; translation differences in OCI." },
+  { key: "supply_chain", en: "Supply-chain and input-cost risk", de: "Lieferketten- und Kostenrisiko", cfa: "risk_supply", what: "Shortages, disruptions or price rises for raw materials, components, energy and logistics; dependence on single suppliers or sites.", find: "Risk report; gross-margin trend; inventory levels; procurement commentary." },
+  { key: "legal", en: "Legal and product-liability risk", de: "Rechts- und Produkthaftungsrisiko", cfa: "risk_legal", what: "Lawsuits, patent disputes, product recalls or side effects, compliance breaches (antitrust, bribery).", find: "Provisions and contingent liabilities note; legal proceedings section; risk factors." },
+  { key: "operational", en: "Operational risk", de: "Operationelles Risiko", cfa: "risk_operational", what: "Production or quality failures, IT and cyber attacks, fraud, loss of key people.", find: "Risk report; quality and manufacturing disclosures; IT/cyber section." },
+  { key: "concentration", en: "Concentration risk", de: "Konzentrationsrisiko", cfa: "risk_concentration", what: "Dependence on a few products, customers, suppliers or one region.", find: "Sales by product and region; largest customers; segment information." },
+];
+
+/** Risk types for a sector ("bank", "insurer" or "corporate"). */
+export function riskTypes(sector) {
+  if (sector === "corporate") return CORPORATE_RISKS.map((r) => ({ ...r }));
+  const bank = sector === "bank";
   const r = [
     { key: "credit", en: "Credit risk", de: "Kreditrisiko", cfa: "risk_credit", what: bank ? "Borrowers or counterparties fail to pay — loans, mortgages, Lombard loans, derivatives counterparties." : "Issuers in the bond portfolio default or are downgraded; reinsurers or counterparties fail to pay.", find: bank ? "Credit risk section of the risk report; IFRS 9 stages (1/2/3) and ECL allowances; Pillar 3 credit tables." : "Investment note: rating mix of fixed income; counterparty default risk in the SFCR/SST." },
     { key: "market", en: "Market risk", de: "Marktrisiko", cfa: "risk_market", what: bank ? "Equity, FX and credit-spread moves hit trading positions and — via client assets — fee income." : "Equity, real estate, credit-spread and FX moves hit investment results, solvency and asset-based fees.", find: bank ? "Market risk section (VaR, stress tests); fee income sensitivity to invested assets." : "Investment allocation; sensitivity analyses in the notes/SFCR (equity −30 %, spreads +100 bp)." },
@@ -43,6 +58,14 @@ function Tiles({ app }) {
     t.push(["NII share of income", v("net_interest_income") && v("revenue") ? C.fmtPct((v("net_interest_income") / v("revenue")) * 100) : "–", "Rate sensitivity"]);
     t.push(["Fee share of income", v("fee_income") && v("revenue") ? C.fmtPct((v("fee_income") / v("revenue")) * 100) : "–", "Market sensitivity"]);
     if (v("customer_loans") && v("customer_deposits")) t.push(["Loans / deposits", C.fmtPct((v("customer_loans") / v("customer_deposits")) * 100), "Funding / liquidity"]);
+  } else if (app.profile.sector === "corporate") {
+    const ebit = v("ebit"), rev = v("revenue"), da = v("depreciation_amortisation"), debt = v("total_debt"), cash = v("cash"), intr = v("interest_expense"), ocf = v("operating_cash_flow"), ni = v("net_income"), rnd = v("rnd_expense");
+    const ebitda = ebit !== null && da !== null ? ebit + da : null;
+    t.push(["EBIT margin", ebit !== null && rev ? C.fmtPct((ebit / rev) * 100) : "–", "Operating profitability — cushion against shocks"]);
+    t.push(["Net debt / EBITDA", debt !== null && cash !== null && ebitda ? `${((debt - cash) / ebitda).toFixed(1)}×` : "–", "Financial risk"]);
+    t.push(["Interest cover", ebit !== null && intr ? `${(ebit / intr).toFixed(1)}×` : "–", "Debt service capacity"]);
+    t.push(["Cash conversion", ocf !== null && ni ? C.fmtPct((ocf / ni) * 100, 0) : "–", "Does profit become cash?"]);
+    if (rnd !== null && rev) t.push(["R&D intensity", C.fmtPct((rnd / rev) * 100), "Reinvestment in the pipeline"]);
   } else {
     t.push(["Solvency ratio", C.fmtPct(v("solvency_ratio"), 0), "Capital buffer vs requirement"]);
     if (v("combined_ratio") !== null) t.push(["Combined ratio", C.fmtPct(v("combined_ratio")), "Underwriting profitability (P&C)"]);
@@ -60,7 +83,7 @@ function Tiles({ app }) {
 export default function Stage7({ app }) {
   const { profile, currency } = app;
   const ans = app.doc.stages?.[N]?.answers || {};
-  const rts = riskTypes(profile.sector === "bank");
+  const rts = riskTypes(profile.sector);
   const names = Object.fromEntries(rts.map((r) => [r.key, r.en]));
   const order = rts.map((r) => r.key);
   const assessed = rts.filter((r) => ans.risks?.[r.key]?.saved).map((r) => ({ id: order.indexOf(r.key) + 1, key: r.key, name: r.en, ...ans.risks[r.key] }));
@@ -74,8 +97,8 @@ export default function Stage7({ app }) {
     <div className="page">
       <StageHeader stage={CA.STAGES[6]} profile={profile} currency={currency} />
       <div className="grid-2 wide-left">
-        <Task>Use the risk report, Pillar 3 / SFCR disclosures and the notes. For every risk type rate <b>likelihood</b> and <b>impact on value</b> (1–5), the <b>trend</b>, and note your evidence. Then pick the three risks that could move the company's value the most — and explain the channel.</Task>
-        <Cfa k="risk_regulatory" />
+        <Task>Use the risk report{profile.sector === "corporate" ? " (risk factors)" : ", Pillar 3 / SFCR disclosures"} and the notes. For every risk type rate <b>likelihood</b> and <b>impact on value</b> (1–5), the <b>trend</b>, and note your evidence. Then pick the three risks that could move the company's value the most — and explain the channel.</Task>
+        <Cfa k={profile.sector === "corporate" ? "risk_competition" : "risk_regulatory"} />
       </div>
       <Tiles app={app} />
       <section className="section">

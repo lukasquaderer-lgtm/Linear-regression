@@ -31,7 +31,9 @@ def _prefill(app: AppContext) -> dict:
     s7 = st_.get("7", {}).get("answers", {})
     s9 = st_.get("9", {}).get("answers", {})
     risk_names = {"credit": "Credit risk", "market": "Market risk", "interest": "Interest-rate risk", "liquidity": "Liquidity risk", "operational": "Operational risk",
-                  "regulatory": "Regulatory risk", "concentration": "Concentration risk", "underwriting": "Underwriting risk"}
+                  "regulatory": "Regulatory risk", "concentration": "Concentration risk", "underwriting": "Underwriting risk",
+                  "demand": "Demand / cyclical risk", "competition": "Competitive risk", "pricing": "Pricing and regulatory risk", "pipeline": "Pipeline and patent-expiry risk",
+                  "currency": "Currency risk", "supply_chain": "Supply-chain and input-cost risk", "legal": "Legal and product-liability risk"}
     risks = [f"{risk_names.get(k, k)}: {s7.get('top3', {}).get('why', {}).get(k, '')}" for k in s7.get("top3", {}).get("keys", [])]
     val = ""
     if s9.get("conclusion_submitted"):

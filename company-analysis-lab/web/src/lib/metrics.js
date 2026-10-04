@@ -1,7 +1,10 @@
 // Metric catalogue — generated from lab/metrics.py, plus label helpers.
-import { METRICS, ALIASES } from "../generated/data.js";
+import { METRICS, ALIASES, SECTORS as SECTOR_LIST, SECTOR_NAMES } from "../generated/data.js";
 
-export const SECTORS = ["bank", "insurer"];
+export const SECTORS = SECTOR_LIST;
+export const sectorName = (sector) => SECTOR_NAMES[sector] || (sector ? sector[0].toUpperCase() + sector.slice(1) : "");
+export const isTrend = (m, sector) => Boolean(m.trend_metric || (m.trend_for || []).includes(sector));
+export const isRequired = (m, sector) => m.sectors.includes(sector) && Boolean(m.core || m.sector_required || (m.required_for || []).includes(sector));
 export const CATALOG = Object.fromEntries(METRICS.map((m) => [m.key, m]));
 export const ORDER = METRICS.map((m) => m.key);
 
@@ -12,7 +15,7 @@ export function metricsForSector(sector) {
 }
 
 export function requiredMetrics(sector) {
-  return metricsForSector(sector).filter((m) => m.core || m.sector_required);
+  return metricsForSector(sector).filter((m) => isRequired(m, sector));
 }
 
 const UNIT_LABEL = { money: (c) => `${c} m`, bn: (c) => `${c} bn`, per_share: (c) => `${c} per share`, pct: () => "%", shares: () => "m shares" };

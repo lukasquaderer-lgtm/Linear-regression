@@ -1,0 +1,385 @@
+{
+  "id": "gkb",
+  "name": "Graubündner Kantonalbank",
+  "short_name": "GKB",
+  "sector": "bank",
+  "subsector": "Cantonal bank: mortgages, savings, SMEs and private banking in Graubünden",
+  "country": "Switzerland",
+  "headquarters": "Chur",
+  "listed": true,
+  "exchange_ticker": "GRKP (participation certificates, SIX Swiss Exchange)",
+  "currency": "CHF",
+  "currency_confirmed": true,
+  "fiscal_year_end": "31 December",
+  "accounting": {
+    "2021": "Swiss GAAP (banks)",
+    "2022": "Swiss GAAP (banks)",
+    "2023": "Swiss GAAP (banks)",
+    "2024": "Swiss GAAP (banks)",
+    "2025": "Swiss GAAP (banks)"
+  },
+  "accounting_notes": "Group accounts under the Swiss accounting rules for banks (Banking Ordinance and FINMA accounting rules, true-and-fair view) — not IFRS. Profit is stated after allocations to or releases from 'reserves for general banking risks', which count as equity and can smooth earnings. The listed participation certificates (Partizipationsscheine, PS) carry dividend rights but no votes; the Canton of Graubünden owns most of the capital and guarantees the bank's liabilities (Staatsgarantie).",
+  "regulator": "FINMA (Swiss Financial Market Supervisory Authority); the canton supervises the owner relationship",
+  "capital_regime": "Basel III as implemented in Switzerland (Capital Adequacy Ordinance)",
+  "investor_relations": "https://www.gkb.ch",
+  "annual_report_hint": "gkb.ch → Über uns → Medien und Publikationen → Kennzahlen und Finanzberichte. The Geschäftsbericht contains the group accounts, the notes (incl. reserves for general banking risks) and the capital disclosure.",
+  "data_source": "Starter values from a data vendor (FMP via Bigdata.com) and GKB's 2025 results release; sector KPIs are left for you to collect. Unverified — the vendor's 2025 revenue was wrong, so check every year.",
+  "required_extra": [],
+  "not_applicable": [],
+  "business_reference": {
+    "what_it_does": {
+      "reference": "GKB is the cantonal bank of Graubünden, founded in 1870 and majority-owned by the canton. It is the leading bank in the canton: mortgages and savings accounts for private clients, loans to SMEs and tourism businesses, payment services, and investment advice and asset management (also through majority-owned subsidiaries).",
+      "key_points": [
+        {
+          "point": "Cantonal bank owned by the canton",
+          "keywords": [
+            "cantonal",
+            "kantonal",
+            "canton",
+            "kanton",
+            "state",
+            "staat"
+          ]
+        },
+        {
+          "point": "Mortgages and savings",
+          "keywords": [
+            "mortgage",
+            "hypothek",
+            "savings",
+            "spar",
+            "deposit",
+            "einlage"
+          ]
+        },
+        {
+          "point": "SMEs and tourism businesses",
+          "keywords": [
+            "sme",
+            "kmu",
+            "firmen",
+            "tourism",
+            "tourismus"
+          ]
+        },
+        {
+          "point": "Investment advice and asset management",
+          "keywords": [
+            "wealth",
+            "private bank",
+            "vermögensverwaltung",
+            "asset management",
+            "anlage"
+          ]
+        }
+      ]
+    },
+    "how_money": {
+      "reference": "Mostly from net interest income — the margin between mortgage and loan rates and what it pays on savings and deposits (about 60 % of operating income). Fees from securities, advice and payments are the second pillar. Net interest income therefore follows SNB rates: the 2022–2023 rate rises helped, the cuts back to 0 % in 2024–2025 squeeze margins.",
+      "key_points": [
+        {
+          "point": "Net interest income (interest margin)",
+          "keywords": [
+            "interest",
+            "zins",
+            "margin",
+            "nii"
+          ]
+        },
+        {
+          "point": "Fee and commission income",
+          "keywords": [
+            "fee",
+            "kommission",
+            "commission",
+            "gebühr",
+            "advisory",
+            "depot"
+          ]
+        },
+        {
+          "point": "Dependence on SNB rates",
+          "keywords": [
+            "snb",
+            "rate",
+            "leitzins"
+          ]
+        }
+      ]
+    },
+    "segments": {
+      "reference": "Retail and SME banking in Graubünden is the core; private banking and asset management (including subsidiaries) and the treasury/corporate centre complete it. Swiss GAAP banks disclose less segment detail than IFRS banks — check what the report shows.",
+      "key_points": [
+        {
+          "point": "Retail and SME banking",
+          "keywords": [
+            "retail",
+            "privatkunden",
+            "sme",
+            "kmu"
+          ]
+        },
+        {
+          "point": "Private banking / asset management",
+          "keywords": [
+            "private bank",
+            "asset management",
+            "vermögensverwaltung"
+          ]
+        },
+        {
+          "point": "Treasury / corporate centre",
+          "keywords": [
+            "treasury",
+            "corporate centre",
+            "zentrale"
+          ]
+        }
+      ]
+    },
+    "customers": {
+      "reference": "Private households and homeowners in Graubünden, local SMEs and tourism businesses (hotels, mountain railways), public-sector entities and wealthy private clients.",
+      "key_points": [
+        {
+          "point": "Households and homeowners",
+          "keywords": [
+            "private",
+            "privat",
+            "household",
+            "homeowner",
+            "eigenheim"
+          ]
+        },
+        {
+          "point": "SMEs and tourism businesses",
+          "keywords": [
+            "sme",
+            "kmu",
+            "hotel",
+            "tourism",
+            "tourismus",
+            "bergbahn"
+          ]
+        },
+        {
+          "point": "Public sector",
+          "keywords": [
+            "public",
+            "öffentlich",
+            "gemeinde",
+            "municipal"
+          ]
+        },
+        {
+          "point": "Wealthy private clients",
+          "keywords": [
+            "wealthy",
+            "vermögend",
+            "private banking"
+          ]
+        }
+      ]
+    },
+    "markets": {
+      "reference": "Mainly the canton of Graubünden — an alpine tourism region with many second homes — plus private banking and asset management elsewhere in Switzerland.",
+      "key_points": [
+        {
+          "point": "Graubünden",
+          "keywords": [
+            "graubünden",
+            "graubuenden",
+            "canton",
+            "kanton",
+            "grisons"
+          ]
+        },
+        {
+          "point": "Tourism and second homes",
+          "keywords": [
+            "tourism",
+            "tourismus",
+            "second home",
+            "zweitwohnung"
+          ]
+        },
+        {
+          "point": "Switzerland",
+          "keywords": [
+            "switzerland",
+            "schweiz"
+          ]
+        }
+      ]
+    },
+    "advantages": {
+      "reference": "Dominant local market share and loyal clients, the state guarantee (cheap and stable funding), strong capitalisation and a low-risk mortgage book.",
+      "key_points": [
+        {
+          "point": "Local market leadership",
+          "keywords": [
+            "market share",
+            "marktanteil",
+            "local",
+            "lokal",
+            "dominant",
+            "leader"
+          ]
+        },
+        {
+          "point": "State guarantee",
+          "keywords": [
+            "guarantee",
+            "garantie"
+          ]
+        },
+        {
+          "point": "Strong capital",
+          "keywords": [
+            "capital",
+            "kapital",
+            "cet1"
+          ]
+        },
+        {
+          "point": "Low-risk mortgage book",
+          "keywords": [
+            "mortgage",
+            "hypothek",
+            "low risk",
+            "tiefes risiko"
+          ]
+        }
+      ]
+    },
+    "threats": {
+      "reference": "Falling interest rates (SNB at 0 %) compress net interest income; concentration in one regional economy and in residential and holiday real estate; the tourism cycle; competition from digital banks and other banks; political influence of the owner and the fee paid to the canton for the state guarantee.",
+      "key_points": [
+        {
+          "point": "Falling interest rates",
+          "keywords": [
+            "rate",
+            "zins",
+            "snb"
+          ]
+        },
+        {
+          "point": "Regional and real-estate concentration",
+          "keywords": [
+            "concentration",
+            "klumpen",
+            "real estate",
+            "immobilien",
+            "region"
+          ]
+        },
+        {
+          "point": "Competition",
+          "keywords": [
+            "competition",
+            "konkurrenz",
+            "digital",
+            "neobank"
+          ]
+        },
+        {
+          "point": "Political / owner influence",
+          "keywords": [
+            "political",
+            "politik",
+            "canton",
+            "kanton",
+            "owner"
+          ]
+        }
+      ]
+    }
+  },
+  "events": [
+    {
+      "year": 2023,
+      "metrics": [
+        "net_interest_income",
+        "revenue",
+        "net_income"
+      ],
+      "nature": "operational",
+      "title": "Higher SNB rates lift interest income",
+      "detail": "The SNB ended negative rates in 2022 and raised its policy rate to 1.75 % by mid-2023. Net interest income and operating income jumped in 2023.",
+      "where_to_verify": "Geschäftsbericht 2023: Erfolg aus dem Zinsengeschäft; management commentary."
+    },
+    {
+      "year": 2023,
+      "metrics": [
+        "dps"
+      ],
+      "nature": "capital",
+      "title": "Dividend raised to CHF 47.50 per PS",
+      "detail": "The distribution per participation certificate rose from CHF 42.50 to 47.50. Most of it goes to the canton as the majority owner.",
+      "where_to_verify": "Geschäftsbericht 2023: Gewinnverwendung (appropriation of profit)."
+    },
+    {
+      "year": 2025,
+      "metrics": [
+        "net_interest_income",
+        "revenue",
+        "cost_income_ratio"
+      ],
+      "nature": "operational",
+      "title": "SNB back at 0 % — interest income falls",
+      "detail": "After the SNB cut rates to 0 % (June 2025), net interest income fell 5.4 % to CHF 309.9 m and operating income 2.9 % to CHF 513.2 m; the cost/income ratio rose to 48.0 %.",
+      "where_to_verify": "Geschäftsbericht 2025 / results release February 2026."
+    }
+  ],
+  "top_risks_reference": [
+    {
+      "risk": "interest_rate",
+      "why": "Net interest income is about 60 % of income; with the SNB at 0 % deposit margins shrink, and negative rates would hurt further."
+    },
+    {
+      "risk": "concentration",
+      "why": "Loans are concentrated in one canton, in residential and holiday real estate and in tourism — a regional or property downturn would hit the whole book at once."
+    },
+    {
+      "risk": "credit",
+      "why": "Mortgages are low-risk only while property prices and borrowers' incomes hold; second homes and tourism loans are more cyclical."
+    }
+  ],
+  "audit_focus": [
+    "Valuation of mortgage loans and value adjustments for default risks",
+    "Reserves for general banking risks (allocations and releases)",
+    "Interest-rate risk in the banking book",
+    "IT general controls"
+  ],
+  "quiz": [
+    {
+      "level": 1,
+      "concept": "business_model",
+      "prompt": "What do GKB's listed participation certificates (PS) lack compared with ordinary shares?",
+      "options": [
+        "Voting rights",
+        "Dividend rights",
+        "A stock exchange listing",
+        "A nominal value"
+      ],
+      "answer": 0,
+      "explanation": "PS holders share in profit and dividends but cannot vote — control stays with the canton."
+    },
+    {
+      "level": 3,
+      "concept": "one_off_items",
+      "prompt": "GKB reports under Swiss bank accounting. What are 'reserves for general banking risks'?",
+      "options": [
+        "Equity reserves the bank can build up or release through the income statement, which can smooth reported profit",
+        "Provisions for specific bad loans",
+        "Cash held at the SNB",
+        "Deposits guaranteed by the canton"
+      ],
+      "answer": 0,
+      "explanation": "Allocations reduce profit, releases increase it. Check the note every year: a release can make profit look better than the operating business."
+    }
+  ],
+  "peers_suggested": [
+    "llb",
+    "ubs"
+  ]
+}

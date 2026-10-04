@@ -78,7 +78,7 @@ class QuizContext:
 LEVEL_NAMES = {1: "Identify", 2: "Calculate", 3: "Interpret", 4: "Connect statements", 5: "Analyst reasoning"}
 
 CONCEPT_LABELS = {
-    "revenue_lines": "Revenue lines of banks and insurers",
+    "revenue_lines": "Revenue and profit lines",
     "business_model": "Business model and earnings drivers",
     "revenue_mix": "Revenue mix (interest vs fees)",
     "payout": "Payout ratio and retention",
@@ -124,6 +124,13 @@ CONCEPT_LABELS = {
     "sustainable_growth": "Sustainable growth",
     "acquisition_effects": "Acquisition effects",
     "combined_ratio": "Combined ratio",
+    "cost_structure": "Cost structure and R&D intensity",
+    "cash_conversion": "Cash conversion and working capital",
+    "debt_capacity": "Debt capacity (net debt ÷ EBITDA, interest cover)",
+    "risk_currency": "Currency risk",
+    "risk_demand": "Demand and cyclical risk",
+    "ev_multiples": "Enterprise value and EV/EBITDA",
+    "dcf": "DCF on free cash flow (WACC)",
 }
 
 
@@ -223,6 +230,11 @@ def template(id: str, stage: int, level: int, *concepts: str):
 
 @template("s1-revenue-line", 1, 1, "revenue_lines")
 def _(ctx, rng):
+    if ctx.sector == "corporate":
+        return _mc("s1-revenue-line-corp", 1, 1, "revenue_lines",
+                   "Which income-statement line shows the profit from a company's operations before interest and taxes?",
+                   "Operating result / EBIT (Betriebsergebnis)", ["Net income", "Gross profit", "Operating cash flow"], rng,
+                   "EBIT = sales − operating costs (cost of goods sold, R&D, selling, administration). Gross profit comes before operating costs, net income after interest and tax; cash flow is a different statement.")
     if ctx.sector == "bank":
         return _mc("s1-revenue-line-bank", 1, 1, "revenue_lines",
                    "Which income-statement line captures what a bank earns on loans and securities after paying interest on deposits and debt?",
@@ -251,12 +263,28 @@ def _(ctx, rng):
     eps = rng.choice([4.0, 5.5, 8.0, 12.0])
     dps = round(eps * rng.choice([0.4, 0.5, 0.6, 0.7]), 2)
     return _num("s1-payout-generic", 1, 2, "payout",
-                f"A financial company reports diluted EPS of {eps:.2f} and proposes a dividend of {dps:.2f} per share. What is the payout ratio in %?",
+                f"A company reports diluted EPS of {eps:.2f} and proposes a dividend of {dps:.2f} per share. What is the payout ratio in %?",
                 dps / eps * 100, "%", f"Payout = DPS ÷ EPS = {dps:.2f} ÷ {eps:.2f} = {dps / eps * 100:.1f} %.")
 
 
-@template("s1-revenue-mix", 1, 2, "revenue_mix")
+@template("s1-revenue-mix", 1, 2, "revenue_mix", "cost_structure")
 def _(ctx, rng):
+    if ctx.sector == "corporate":
+        y = _latest_with(ctx.values, ["rnd_expense", "revenue"])
+        if y is not None:
+            rnd, rev = _val(ctx.values, "rnd_expense", y), _val(ctx.values, "revenue", y)
+            return _num(f"s1-rnd-{y}", 1, 2, "cost_structure",
+                        f"{ctx.name} {y}: R&D expense {_money(rnd, ctx.currency)}, revenue {_money(rev, ctx.currency)}. What share of revenue goes into research and development (%)?",
+                        rnd / rev * 100, "%", f"R&D intensity = {rnd:,.0f} ÷ {rev:,.0f} = {rnd / rev * 100:.1f} %. Big pharma reinvests about 18–25 % of sales, industrials about 3–8 %.")
+        y = _latest_with(ctx.values, ["ebit", "revenue"])
+        if y is not None:
+            ebit, rev = _val(ctx.values, "ebit", y), _val(ctx.values, "revenue", y)
+            return _num(f"s1-ebitm-{y}", 1, 2, "cost_structure",
+                        f"{ctx.name} {y}: operating result (EBIT) {_money(ebit, ctx.currency)}, revenue {_money(rev, ctx.currency)}. What share of revenue is left as operating profit (EBIT margin, %)?",
+                        ebit / rev * 100, "%", f"EBIT margin = {ebit:,.0f} ÷ {rev:,.0f} = {ebit / rev * 100:.1f} %. Everything else went into production, R&D, selling and administration.")
+        rnd, rev = rng.choice([(13000, 60000), (450, 6300), (9000, 45000)])
+        return _num("s1-rnd-generic", 1, 2, "cost_structure", f"A company spends {rnd:,} on R&D with sales of {rev:,}. R&D intensity (%)?",
+                    rnd / rev * 100, "%", f"{rnd:,} ÷ {rev:,} = {rnd / rev * 100:.1f} %.")
     if ctx.sector == "bank":
         y = _latest_with(ctx.values, ["fee_income", "revenue"])
         if y is not None:
@@ -281,6 +309,20 @@ def _(ctx, rng):
     q = _profile_question(ctx, 1, 3, rng)
     if q:
         return q
+    if ctx.sector == "corporate":
+        rnd = _latest_with(ctx.values, ["rnd_expense", "revenue"])
+        pharma = "pharma" in ctx.profile.get("subsector", "").lower() or (rnd is not None and _val(ctx.values, "rnd_expense", rnd) / _val(ctx.values, "revenue", rnd) > 0.1)
+        if pharma:
+            return _mc("s1-interpret-pharma", 1, 3, "business_model",
+                       "A blockbuster drug loses its US patent protection. What typically happens to its US sales?",
+                       "They fall sharply within one to two years as generics or biosimilars launch at much lower prices",
+                       ["They stay stable because doctors are loyal to the brand", "They rise because more patients can afford it", "Nothing changes until the European patent expires"], rng,
+                       "Loss of exclusivity can erase 50–90 % of a brand's sales; erosion is slower for biologics than for small molecules, but still large.")
+        return _mc("s1-interpret-cyclical", 1, 3, "business_model",
+                   "A tool maker with a large direct sales force sees sales fall 5 % in a construction downturn. Why can its operating profit fall much more?",
+                   "Many costs are fixed (sales force, R&D, plants), so lower sales hit profit disproportionately — operating leverage",
+                   ["Because taxes rise when sales fall", "Because depreciation rises with sales", "It cannot — profit always falls in proportion to sales"], rng,
+                   "With high fixed costs, a small change in sales causes a large change in operating profit — in both directions.")
     if ctx.sector == "bank":
         return _mc("s1-interpret-bank", 1, 3, "business_model",
                    "Most of a wealth manager's fees are 'recurring' — charged as a percentage of client assets. What happens to these fees if markets fall 20 % and no client leaves?",
@@ -296,6 +338,12 @@ def _(ctx, rng):
 
 @template("s1-link", 1, 4, "linking_statements")
 def _(ctx, rng):
+    if ctx.sector == "corporate":
+        return _mc("s1-link-corp", 1, 4, "linking_statements",
+                   "A company grows sales 10 %, but customers pay more slowly and it builds up inventories. What happens to net income and operating cash flow?",
+                   "Net income rises with sales, but operating cash flow lags because working capital absorbs cash",
+                   ["Both rise by exactly 10 %", "Operating cash flow rises faster than net income", "Net income falls because inventories are expensed immediately"], rng,
+                   "Receivables and inventories are balance-sheet assets: building them up uses cash that the income statement does not show.")
     if ctx.sector == "bank":
         return _mc("s1-link-bank", 1, 4, "linking_statements",
                    "A bank's customer deposits grow strongly while loans stay flat. Where does the extra money end up, and what happens to net interest income if central-bank rates then fall?",
@@ -312,9 +360,10 @@ def _(ctx, rng):
 @template("s1-moat", 1, 5, "competitive_advantage")
 def _(ctx, rng):
     ref = ctx.profile.get("business_reference", {}).get("advantages", {}).get("reference", "")
-    extra = ("For a bank: falling net new money, a shrinking fee margin (fees ÷ average client assets), rising cost/income, loss of market share in key regions."
-             if ctx.sector == "bank" else
-             "For an insurer: falling new-business margins or CSM growth, rising lapse rates, a deteriorating combined ratio, losing market share in core lines.")
+    extra = {
+        "bank": "For a bank: falling net new money, a shrinking fee margin (fees ÷ average client assets), rising cost/income, loss of market share in key regions.",
+        "insurer": "For an insurer: falling new-business margins or CSM growth, rising lapse rates, a deteriorating combined ratio, losing market share in core lines.",
+    }.get(ctx.sector, "For a non-financial company: falling gross or operating margins, loss of market share, rising discounts or rebates, R&D spending that no longer produces launches, a shrinking share of recurring revenue.")
     return _text("s1-moat", 1, 5, "competitive_advantage",
                  f"Choose the competitive advantage of {ctx.name} you think is most durable. Which numbers in the annual report, tracked over several years, would show you that it is eroding?",
                  f"Reference advantages: {ref} Evidence of erosion — {extra} A good answer names one specific advantage, the metric that measures it, and the direction that would worry you.")
@@ -332,6 +381,9 @@ STATEMENT_OF = {
     "cet1_capital": "Regulatory disclosure (Pillar 3 / SFCR)", "rwa": "Regulatory disclosure (Pillar 3 / SFCR)",
     "cet1_ratio": "Regulatory disclosure (Pillar 3 / SFCR)", "solvency_ratio": "Regulatory disclosure (Pillar 3 / SFCR)",
     "aum": "Management report / key figures", "net_new_money": "Management report / key figures", "gross_premiums": "Management report / key figures",
+    "gross_profit": "Income statement", "ebit": "Income statement", "rnd_expense": "Income statement", "interest_expense": "Income statement",
+    "capex": "Cash flow statement", "depreciation_amortisation": "Cash flow statement", "free_cash_flow": "Management report / key figures",
+    "cash": "Balance sheet", "total_debt": "Balance sheet", "inventories": "Balance sheet", "receivables": "Balance sheet",
 }
 STATEMENT_OPTIONS = ["Income statement", "Balance sheet", "Cash flow statement", "Regulatory disclosure (Pillar 3 / SFCR)", "Management report / key figures"]
 
@@ -495,9 +547,10 @@ def _(ctx, rng):
 
 @template("s3-reverse", 3, 5, "trend_interpretation")
 def _(ctx, rng):
-    model = ("Banks: net interest income after central-bank rate cuts (SNB at 0 %), credit-loss releases that cannot repeat, cost savings that are front-loaded, one-off gains (e.g. negative goodwill) dropping out. "
-             if ctx.sector == "bank" else
-             "Insurers: reserve releases or a benign catastrophe year that will not repeat, investment yields after rate moves, accounting effects from IFRS 17 transition, buyback-driven EPS growth. ")
+    model = {
+        "bank": "Banks: net interest income after central-bank rate cuts (SNB at 0 %), credit-loss releases that cannot repeat, cost savings that are front-loaded, one-off gains (e.g. negative goodwill) dropping out. ",
+        "insurer": "Insurers: reserve releases or a benign catastrophe year that will not repeat, investment yields after rate moves, accounting effects from IFRS 17 transition, buyback-driven EPS growth. ",
+    }.get(ctx.sector, "Non-financials: sales of a product nearing patent expiry, margins helped by temporary pricing or cheap inputs, currency effects that reverse, one-off gains (disposals, spin-offs) dropping out, EPS growth driven by debt-funded buybacks. ")
     return _text("s3-reverse", 3, 5, "trend_interpretation",
                  f"Which trend you analysed for {ctx.name} is most likely to reverse in the next two years? Explain the mechanism, not just the direction.",
                  model + "A strong answer names the metric, the driver behind the past trend, why that driver changes, and which number you would monitor.")
@@ -515,6 +568,14 @@ def _(ctx, rng):
         ("Operating expenses ÷ operating income", "Cost/income ratio"),
         ("Dividend per share ÷ EPS", "Payout ratio"),
     ]
+    if ctx.sector == "corporate":
+        choices = [
+            ("Net income ÷ average shareholders' equity", "Return on equity (ROE)"),
+            ("EBIT ÷ revenue", "EBIT margin (operating margin)"),
+            ("(Financial debt − cash) ÷ EBITDA", "Net debt ÷ EBITDA"),
+            ("Operating cash flow ÷ net income", "Cash conversion"),
+            ("Dividend per share ÷ EPS", "Payout ratio"),
+        ]
     formula, correct = rng.choice(choices)
     wrong = [c[1] for c in choices if c[1] != correct][:3]
     return _mc(f"s4-identify-{correct[:10]}", 4, 1, "ratio_definitions", f"Which ratio is defined as: {formula}?", correct, wrong, rng)
@@ -541,6 +602,10 @@ def _(ctx, rng):
 
 @template("s4-dupont-interpret", 4, 3, "dupont")
 def _(ctx, rng):
+    if ctx.sector == "corporate":
+        return _mc("s4-dupont-int-corp", 4, 3, "dupont", "A company's ROE rose from 15 % to 20 % while its ROA stayed unchanged. What explains the increase?",
+                   "Higher financial leverage — for example debt-funded buybacks shrank equity", ["A higher EBIT margin", "Faster asset turnover", "A higher dividend payout"], rng,
+                   "ROE = ROA × leverage. If ROA is flat, leverage must have risen — ROE improved without the business becoming more profitable.")
     return _mc("s4-dupont-int", 4, 3, "dupont", "A bank's ROE rose from 8 % to 11 % while its ROA stayed unchanged. What explains the increase?",
                "Higher financial leverage (more assets per unit of equity)", ["Higher net profit margin", "Lower cost/income ratio", "Higher dividend payout"], rng,
                "ROE = ROA × leverage. If ROA is flat, leverage must have risen — higher ROE but thinner capital buffer.")
@@ -559,6 +624,10 @@ def _(ctx, rng):
 
 @template("s4-value", 4, 5, "roe_vs_cost_of_equity")
 def _(ctx, rng):
+    if ctx.sector == "corporate":
+        return _text("s4-value-corp", 4, 5, "roe_vs_cost_of_equity",
+                     f"Compare {ctx.name}'s latest ROE and ROCE with a cost of equity of roughly 7–8 % (WACC about 6–7 %). Is it creating value for shareholders? Name three levers management could pull to raise returns — and the risk each lever brings.",
+                     "Value is created when returns exceed the cost of capital (ROCE above the pre-tax WACC, ROE above the cost of equity). Levers: (1) pricing and mix (higher gross margin) — competition and price-regulation risk; (2) cost efficiency (lower R&D or selling costs as % of sales) — risk of under-investing in innovation; (3) asset efficiency (less working capital, higher asset turnover) — supply risk; (4) leverage and buybacks — financial risk and rating pressure. Adjust ROE for one-offs and for buyback-shrunk equity before judging.")
     return _text("s4-value", 4, 5, "roe_vs_cost_of_equity",
                  f"Compare {ctx.name}'s latest ROE with a cost of equity of roughly 9–10 %. Is it creating value for shareholders? Name three levers management could pull to raise ROE — and the risk each lever brings.",
                  "Value is created when ROE exceeds the cost of equity (then P/B > 1 is justified). Levers: (1) higher margins/revenue (pricing, fee growth) — competitive risk; (2) cost cuts (lower cost/income) — execution and franchise risk; (3) more leverage or returning excess capital via buybacks — lower capital buffer, regulatory limits; also mix shift to capital-light businesses. Adjust ROE for one-offs before judging.")
@@ -612,8 +681,13 @@ def _(ctx, rng):
     return _profile_question(ctx, 5, 3, rng)
 
 
-@template("s5-bank-cf", 5, 4, "cash_flow_banks")
+@template("s5-bank-cf", 5, 4, "cash_flow_banks", "cash_conversion")
 def _(ctx, rng):
+    if ctx.sector == "corporate":
+        return _mc("s5-corp-cf", 5, 4, "cash_conversion", "A company's net income rose for two years while its operating cash flow fell. What should you check first?",
+                   "Working capital — receivables and inventories growing faster than sales (aggressive revenue recognition or weak demand)",
+                   ["Nothing — cash flow and profit are unrelated", "Whether the dividend was raised", "Whether depreciation fell"], rng,
+                   "Rising profit with falling cash is the classic accrual warning sign. Check the change in working capital in the cash flow statement and days sales outstanding.")
     if ctx.sector == "bank":
         return _mc("s5-bank-cf", 5, 4, "cash_flow_banks", "A bank reports positive net income but a large negative operating cash flow. Why is this usually NOT a red flag?",
                    "Operating cash flow of banks is dominated by changes in loans, deposits and trading balances, not by earnings quality",
@@ -650,8 +724,9 @@ def _(ctx, rng):
 
 @template("s6-nonrec", 6, 1, "one_off_items")
 def _(ctx, rng):
+    wrong = ["Sales of the main product line", "Recurring service fees", "Personnel expenses"] if ctx.sector == "corporate" else ["Net interest income", "Recurring asset-management fees", "Personnel expenses"]
     return _mc("s6-nonrec", 6, 1, "one_off_items", "Which item is most likely non-recurring?", "Gain on the sale of a subsidiary",
-               ["Net interest income", "Recurring asset-management fees", "Personnel expenses"], rng,
+               wrong, rng,
                "Disposal gains, negative goodwill, litigation settlements and restructuring charges are typical one-offs.")
 
 
@@ -670,6 +745,11 @@ def _(ctx, rng):
 
 @template("s6-reserves", 6, 3, "reserves")
 def _(ctx, rng):
+    if ctx.sector == "corporate":
+        return _mc("s6-reserves-corp", 6, 3, "reserves", "A company's operating profit rises mainly because it released a litigation provision booked in earlier years. How should you view that profit?",
+                   "Lower quality — the release is non-recurring and depends on management's earlier estimate",
+                   ["Higher quality — it is cash income", "Neutral — provisions never affect profit", "It shows that sales grew"], rng,
+                   "Provision releases go through the income statement without new business; repeated releases can mean earlier over-provisioning used to smooth profit.")
     if ctx.sector == "insurer":
         return _mc("s6-reserves-ins", 6, 3, "reserves", "An insurer's profit rises mainly because it released reserves set aside for prior-year claims. How should you view that profit?",
                    "Lower quality — it depends on past estimates being too cautious and cannot be relied on to recur",
@@ -687,7 +767,8 @@ def _(ctx, rng):
         a0, a1 = _val(ctx.values, "total_assets", y - 1), _val(ctx.values, "total_assets", y)
         if None not in (ni, ocf, a0, a1):
             ans = (ni - ocf) / ((a0 + a1) / 2) * 100
-            note = " For a bank this number says little — OCF is driven by balance-sheet flows." if ctx.sector == "bank" else ""
+            note = {"bank": " For a bank this number says little — OCF is driven by balance-sheet flows.",
+                    "corporate": " For a non-financial company this is a key quality signal — large positive accruals mean profit is running ahead of cash."}.get(ctx.sector, "")
             return _num(f"s6-accr-{y}", 6, 4, "accruals",
                         f"{ctx.name} {y}: net income {_money(ni, ctx.currency)}, operating cash flow {_money(ocf, ctx.currency)}, total assets {_money(a0, ctx.currency)} (opening) and {_money(a1, ctx.currency)} (closing). Calculate the cash-flow accrual ratio (%).",
                         ans, "%", f"(NI − OCF) ÷ average assets = ({ni:,.0f} − {ocf:,.0f}) ÷ {(a0 + a1) / 2:,.0f} = {ans:.3f} %.{note}", abs_tol=0.02)
@@ -696,17 +777,22 @@ def _(ctx, rng):
 
 @template("s6-judge", 6, 5, "quality_earnings")
 def _(ctx, rng):
-    model = ("For a bank look at: share of recurring fees vs trading, credit-loss charges vs through-the-cycle levels, one-offs (negative goodwill, litigation, restructuring), tax effects (DTA recognition), and whether profit converts into CET1 capital and distributions."
-             if ctx.sector == "bank" else
-             "For an insurer look at: reserve releases, catastrophe losses vs budget, realised investment gains, IFRS 17 effects (CSM release, assumption changes), tax effects, and whether profit converts into solvency capital and cash remittances/dividends.")
+    model = {
+        "bank": "For a bank look at: share of recurring fees vs trading, credit-loss charges vs through-the-cycle levels, one-offs (negative goodwill, litigation, restructuring), tax effects (DTA recognition), and whether profit converts into CET1 capital and distributions.",
+        "insurer": "For an insurer look at: reserve releases, catastrophe losses vs budget, realised investment gains, IFRS 17 effects (CSM release, assumption changes), tax effects, and whether profit converts into solvency capital and cash remittances/dividends.",
+    }.get(ctx.sector, "For a non-financial company look at: cash conversion (operating cash flow vs net income) over several years, working-capital trends (receivables and inventories vs sales), capitalised costs (development, software), impairments and 'core'/'adjusted' exclusions that recur every year, one-off gains (disposals, spin-offs), tax effects, and whether free cash flow covers dividends and buybacks.")
     return _text("s6-judge", 6, 5, "quality_earnings", f"Rate the quality of {ctx.name}'s latest earnings (high / medium / low) and justify it with two pieces of evidence from your analysis.", model)
 
 
 # ---------------------------------------------------------------- Stage 7 — risk
 
 
-@template("s7-capital", 7, 1, "regulatory_capital")
+@template("s7-capital", 7, 1, "regulatory_capital", "debt_capacity")
 def _(ctx, rng):
+    if ctx.sector == "corporate":
+        return _mc("s7-debt", 7, 1, "debt_capacity", "Which ratio do credit analysts look at first to judge whether a non-financial company can carry its debt?", "Net debt ÷ EBITDA",
+                   ["Price-to-book", "CET1 ratio", "Combined ratio"], rng,
+                   "Net debt ÷ EBITDA ≈ years of operating cash earnings needed to repay debt; interest cover (EBIT ÷ interest) complements it. CET1 and the combined ratio belong to banks and insurers.")
     if ctx.sector == "bank":
         return _mc("s7-cet1", 7, 1, "regulatory_capital", "What does a bank's CET1 ratio primarily protect against?", "Unexpected losses that would otherwise make the bank insolvent",
                    ["Daily cash outflows (liquidity)", "Rising cost/income ratios", "Currency translation differences"], rng,
@@ -715,8 +801,22 @@ def _(ctx, rng):
                ["The insurer can pay 180 % of its claims", "Assets are 180 % of liabilities", "Profit is 180 % of premiums"], rng)
 
 
-@template("s7-shock", 7, 2, "capital_shock")
+@template("s7-shock", 7, 2, "capital_shock", "debt_capacity")
 def _(ctx, rng):
+    if ctx.sector == "corporate":
+        y = _latest_with(ctx.values, ["total_debt", "cash", "ebit", "depreciation_amortisation"])
+        nd = ebitda = None
+        if y is not None:
+            nd = _val(ctx.values, "total_debt", y) - _val(ctx.values, "cash", y)
+            ebitda = _val(ctx.values, "ebit", y) + _val(ctx.values, "depreciation_amortisation", y)
+        if not nd or nd <= 0 or not ebitda or ebitda <= 0:
+            nd, ebitda, y = 6000.0, 3000.0, None
+        drop = rng.choice([20, 25, 30])
+        ans = nd / (ebitda * (1 - drop / 100))
+        intro = f"{ctx.name} {y}: net debt {_money(nd, ctx.currency)} and EBITDA {_money(ebitda, ctx.currency)}." if y else f"Net debt is {nd:,.0f} and EBITDA {ebitda:,.0f}."
+        return _num(f"s7-lev-{drop}", 7, 2, "debt_capacity",
+                    f"{intro} In a downturn EBITDA falls by {drop} % while net debt stays the same. What is net debt ÷ EBITDA afterwards (×)?",
+                    ans, "×", f"{nd:,.0f} ÷ ({ebitda:,.0f} × {1 - drop / 100:.2f}) = {ans:.2f}× (before: {nd / ebitda:.2f}×). Leverage ratios worsen in downturns even without new debt.", abs_tol=0.02)
     if ctx.sector == "bank":
         y = _latest_with(ctx.values, ["cet1_capital", "rwa"])
         if y is not None:
@@ -736,8 +836,13 @@ def _(ctx, rng):
                 ans, "%", f"({avail:,} − {shock:,}) ÷ {req:,} = {ans:.1f} % (before: {avail / req * 100:.0f} %).")
 
 
-@template("s7-rates", 7, 3, "risk_interest")
+@template("s7-rates", 7, 3, "risk_interest", "risk_currency")
 def _(ctx, rng):
+    if ctx.sector == "corporate":
+        return _mc("s7-fx", 7, 3, "risk_currency", "A Swiss company sells 90 % of its products abroad but has most of its costs in Switzerland. The franc strengthens 10 %. What happens?",
+                   "Reported sales and margins fall: foreign sales translate into fewer francs while Swiss costs stay the same",
+                   ["Nothing — currency effects cancel out", "Margins rise because imports become cheaper", "Only the balance sheet is affected"], rng,
+                   "That is transaction exposure (revenues and costs in different currencies) — it changes margins. Translation exposure only changes reported figures. Compare growth in local currencies with growth in CHF.")
     if ctx.sector == "bank":
         return _mc("s7-rates-bank", 7, 3, "risk_interest", "A deposit-rich Swiss bank sees the SNB cut its policy rate to 0 %. What is the most likely effect?",
                    "Net interest income falls because deposit margins shrink (deposit rates cannot go much below zero)",
@@ -747,8 +852,13 @@ def _(ctx, rng):
                ["Rising rates — it can reinvest at higher yields", "Rates do not matter for life insurers", "Only a flat yield curve at 5 %"], rng)
 
 
-@template("s7-market", 7, 4, "risk_market")
+@template("s7-market", 7, 4, "risk_market", "risk_demand")
 def _(ctx, rng):
+    if ctx.sector == "corporate":
+        return _mc("s7-demand", 7, 4, "risk_demand", f"Demand in {ctx.name}'s main market falls 15 % in a downturn. Through which statements does this reach the company?",
+                   "Income statement (lower sales; profit falls faster because of fixed costs) and cash flow / balance sheet (inventories pile up, possible impairments, higher net debt ÷ EBITDA)",
+                   ["Only the income statement — the balance sheet is unaffected", "Only the cash flow statement", "Nowhere — customers bear the risk"], rng,
+                   "Demand risk reaches profit through operating leverage and reaches the balance sheet through working capital, impairments and leverage ratios.")
     return _mc("s7-market", 7, 4, "risk_market", f"Equity markets fall 15 %. Through which statements does this reach {ctx.name}?",
                "Income statement (lower asset-based fees / investment results) and balance sheet / capital (lower asset values, solvency or CET1)",
                ["Only the cash flow statement", "Only the notes", "Nowhere — market risk is borne entirely by clients"], rng,
@@ -759,7 +869,9 @@ def _(ctx, rng):
 def _(ctx, rng):
     return _text("s7-prioritise", 7, 5, "risk_prioritisation",
                  f"Take your top three risks for {ctx.name}. For each, say whether it affects value mainly through future earnings (ROE), through capital (book value, payouts) or through the cost of equity — and what early-warning indicator you would track.",
-                 "E.g. regulatory capital rules → capital/ROE (track draft rules, CET1 target); market downturn → earnings via fees (track AuM, net new money); catastrophe/reserve risk → earnings and capital (track nat cat losses vs budget, prior-year development); interest rates → NII or spread (track rate sensitivity disclosures). Risks that raise uncertainty also raise the cost of equity.")
+                 ("E.g. patent expiry → earnings (track the product's sales, generic launches, pipeline approvals); drug-pricing reform → earnings and cost of equity (track legislation and price negotiations); currency → earnings (track growth in local currencies vs CHF); construction cycle → earnings and cash (track order intake, inventories); leverage after acquisitions → capital and cost of equity (track net debt ÷ EBITDA, rating). Risks that raise uncertainty also raise the cost of equity."
+                  if ctx.sector == "corporate" else
+                  "E.g. regulatory capital rules → capital/ROE (track draft rules, CET1 target); market downturn → earnings via fees (track AuM, net new money); catastrophe/reserve risk → earnings and capital (track nat cat losses vs budget, prior-year development); interest rates → NII or spread (track rate sensitivity disclosures). Risks that raise uncertainty also raise the cost of equity."))
 
 
 # ---------------------------------------------------------------- Stage 8 — peers
@@ -767,6 +879,10 @@ def _(ctx, rng):
 
 @template("s8-ratios", 8, 1, "peers")
 def _(ctx, rng):
+    if ctx.sector == "corporate":
+        return _mc("s8-ratios-corp", 8, 1, "peers", f"Why compare {ctx.name} with its peers on margins, ROE and net debt ÷ EBITDA rather than on absolute profit?",
+                   "Companies differ in size and reporting currency (e.g. Roche in CHF, Novartis in USD) — ratios normalise for scale and currency",
+                   ["Absolute figures are not audited", "Ratios are always higher", "Net income is never comparable between companies"], rng)
     return _mc("s8-ratios", 8, 1, "peers", "Why compare UBS and LLB on ratios (ROE, cost/income, CET1 ratio) rather than on absolute figures like net income?",
                "They differ hugely in size and report in different currencies (USD vs CHF) — ratios normalise for scale and currency",
                ["Absolute figures are not audited", "Ratios are always higher", "Net income is not comparable between any two banks"], rng)
@@ -790,8 +906,13 @@ def _(ctx, rng):
                 900 / 7500 * 100 - 160 / 2200 * 100, "pp", "12.00 % − 7.27 % = 4.73 pp.", abs_tol=0.1)
 
 
-@template("s8-pbroe", 8, 3, "justified_pb")
+@template("s8-pbroe", 8, 3, "justified_pb", "ev_multiples")
 def _(ctx, rng):
+    if ctx.sector == "corporate":
+        return _mc("s8-ev", 8, 3, "ev_multiples", "Company A: EBIT margin 30 %, sales growth 6 %, EV/EBITDA 14×. Company B: EBIT margin 12 %, growth 2 %, EV/EBITDA 8×. Is this pattern consistent?",
+                   "Yes — higher margins, growth and returns justify a higher multiple of the same earnings",
+                   ["No — all companies should trade on the same multiple", "No — the slower-growing company should trade higher", "It is random"], rng,
+                   "Multiples price expected growth, profitability and risk. A low multiple is not 'cheap' unless the market misjudges those drivers.")
     return _mc("s8-pbroe", 8, 3, "justified_pb", "Bank A: ROE 14 %, P/B 1.8. Bank B: ROE 6 %, P/B 0.7. Cost of equity ≈ 10 % for both. Is this pattern consistent?",
                "Yes — the market pays above book only for banks expected to earn more than their cost of equity",
                ["No — P/B should be the same for all banks", "No — the lower-ROE bank should trade at a higher P/B", "It is random"], rng)
@@ -799,6 +920,10 @@ def _(ctx, rng):
 
 @template("s8-capital", 8, 4, "leverage")
 def _(ctx, rng):
+    if ctx.sector == "corporate":
+        return _mc("s8-capital-corp", 8, 4, "leverage", "Your peer shows a higher ROE but much higher net debt ÷ EBITDA after years of debt-funded buybacks. What must you check before concluding it is 'better'?",
+                   "Whether its ROE is inflated by a small equity base — compare ROCE, margins and leverage",
+                   ["Nothing — higher ROE is always better", "Only the dividend yield", "Whether it has more employees"], rng)
     return _mc("s8-capital", 8, 4, "leverage", "Your peer shows a higher ROE but a lower CET1 ratio and higher leverage. What must you check before concluding it is 'better'?",
                "Whether its higher ROE comes from leverage (less capital per unit of risk) rather than better profitability — compare ROA and risk-adjusted returns",
                ["Nothing — higher ROE is always better", "Only the dividend yield", "Whether it has more employees"], rng)
@@ -807,7 +932,7 @@ def _(ctx, rng):
 @template("s8-select", 8, 5, "peer_selection")
 def _(ctx, rng):
     return _text("s8-select", 8, 5, "peer_selection", "Is the peer you selected truly comparable? Name two differences (business model, accounting, currency, size, regulation) that limit the comparison, and how you adjusted for them.",
-                 "E.g. UBS vs LLB: global vs regional, USD vs CHF, investment bank exposure, TBTF regime vs EEA rules. Swiss Life vs Swiss Re: life/pensions vs reinsurance, CHF vs USD, different risk drivers (rates vs catastrophes). Compare ratios, index trends to 100, compare within the same accounting basis and acknowledge the residual differences.")
+                 "E.g. UBS vs LLB: global vs regional, USD vs CHF, investment bank exposure, TBTF regime vs EEA rules. Swiss Life vs Swiss Re: life/pensions vs reinsurance, CHF vs USD, different risk drivers (rates vs catastrophes). Roche vs Novartis: diagnostics plus pharma vs pure pharma, CHF vs USD, different patent cliffs and 'core' definitions. GKB vs LLB: Swiss bank GAAP vs IFRS, cantonal guarantee. Compare ratios, index trends to 100, compare within the same accounting basis and acknowledge the residual differences.")
 
 
 # ---------------------------------------------------------------- Stage 9 — valuation
@@ -815,6 +940,11 @@ def _(ctx, rng):
 
 @template("s9-method", 9, 1, "valuation_methods")
 def _(ctx, rng):
+    if ctx.sector == "corporate":
+        return _mc("s9-method-corp", 9, 1, "valuation_methods", "Which valuation approach is generally LEAST informative for a pharma or industrial company?",
+                   "Price-to-book vs ROE — book value leaves out internally developed intangibles and shrinks with buybacks",
+                   ["A free-cash-flow (FCFF) DCF at the WACC", "EV/EBITDA versus peers", "P/E on normalised earnings"], rng,
+                   "Patents, brands and know-how built in-house are not on the balance sheet, so book value understates the asset base; cash-flow and earnings methods capture them.")
     return _mc("s9-method", 9, 1, "valuation_methods", "Which valuation approach is generally LEAST appropriate for a bank?",
                "A free-cash-flow-to-the-firm (FCFF) DCF", ["Price-to-book vs ROE", "A dividend discount model", "A residual income model"], rng,
                "For banks debt is raw material (deposits), not financing; operating cash flow is not meaningful — so FCFF breaks down.")
@@ -830,24 +960,56 @@ def _(ctx, rng):
     return None
 
 
-@template("s9-jpb", 9, 2, "justified_pb")
+@template("s9-jpb", 9, 2, "justified_pb", "ev_multiples")
 def _(ctx, rng):
+    if ctx.sector == "corporate":
+        m = rng.choice([8, 10, 12, 14])
+        y = _latest_with(ctx.values, ["ebit", "depreciation_amortisation", "total_debt", "cash", "shares_outstanding"])
+        if y is not None and ctx.profile.get("listed"):
+            ebitda = _val(ctx.values, "ebit", y) + _val(ctx.values, "depreciation_amortisation", y)
+            nd = _val(ctx.values, "total_debt", y) - _val(ctx.values, "cash", y)
+            sh = _val(ctx.values, "shares_outstanding", y)
+            if ebitda > 0 and sh:
+                ans = (m * ebitda - nd) / sh
+                return _num(f"s9-ev-{y}-{m}", 9, 2, "ev_multiples",
+                            f"{ctx.name} {y}: EBITDA {_money(ebitda, ctx.currency)}, net debt {_money(nd, ctx.currency)}, {sh:,.1f} m shares. Apply a peer EV/EBITDA of {m}×. Equity value per share ({ctx.currency})?",
+                            ans, ctx.currency, f"EV = {m} × {ebitda:,.0f} = {m * ebitda:,.0f}; equity = EV − net debt = {m * ebitda - nd:,.0f}; per share = ÷ {sh:,.1f} = {ans:,.2f}.", rel_tol=0.01)
+        ebitda, nd, sh = 2000.0, 3000.0, 100.0
+        ans = (m * ebitda - nd) / sh
+        return _num(f"s9-ev-generic-{m}", 9, 2, "ev_multiples", f"EBITDA {ebitda:,.0f}, net debt {nd:,.0f}, {sh:,.0f} m shares, peer EV/EBITDA {m}×. Equity value per share?",
+                    ans, "", f"({m} × {ebitda:,.0f} − {nd:,.0f}) ÷ {sh:,.0f} = {ans:,.2f}.", rel_tol=0.01)
     roe, r, g = rng.choice([(0.12, 0.09, 0.02), (0.08, 0.10, 0.02), (0.15, 0.10, 0.03), (0.10, 0.085, 0.015)])
     ans = V.justified_pb(roe, r, g)
     return _num(f"s9-jpb-{roe}-{r}", 9, 2, "justified_pb", f"Sustainable ROE {roe * 100:.1f} %, cost of equity {r * 100:.1f} %, long-run growth {g * 100:.1f} %. Justified P/B (×)?",
                 ans, "×", f"(ROE − g) ÷ (r − g) = ({roe:.3f} − {g:.3f}) ÷ ({r:.3f} − {g:.3f}) = {ans:.2f}×.", abs_tol=0.02)
 
 
-@template("s9-pb-below", 9, 3, "justified_pb")
+@template("s9-pb-below", 9, 3, "justified_pb", "ev_multiples")
 def _(ctx, rng):
+    if ctx.sector == "corporate":
+        return _mc("s9-ev-below", 9, 3, "ev_multiples", "A company trades at 6× EV/EBITDA while its peers trade at 12×. What is the market implicitly saying?",
+                   "It expects lower growth or margins, higher risk or hidden liabilities — or doubts the earnings",
+                   ["The company is certainly cheap and will rise", "The company has no debt", "Its dividend yield must be zero"], rng,
+                   "A low multiple is a hypothesis to test, not a buy signal: check growth, margins, leverage, one-offs in EBITDA and debt-like items (pensions, litigation).")
     return _mc("s9-pb-below", 9, 3, "justified_pb", "A bank trades at 0.7× book value. What is the market implicitly saying?",
                "It expects the bank to earn an ROE below its cost of equity (or doubts the book value)",
                ["The bank is certainly cheap and will rise", "The bank has no debt", "The dividend yield must be zero"], rng,
                "Implied ROE = g + P/B × (r − g). P/B < 1 ⇒ implied ROE < r. Whether that is too pessimistic is your analysis — not a buy signal.")
 
 
-@template("s9-ddm", 9, 4, "ddm")
+@template("s9-ddm", 9, 4, "ddm", "dcf")
 def _(ctx, rng):
+    if ctx.sector == "corporate":
+        y = _latest_with(ctx.values, ["operating_cash_flow", "capex"])
+        fcf = _val(ctx.values, "operating_cash_flow", y) - _val(ctx.values, "capex", y) if y is not None else None
+        if not fcf or fcf <= 0:
+            fcf, y = 1000.0, None
+        w, g = rng.choice([(0.075, 0.02), (0.08, 0.025), (0.07, 0.015)])
+        ans = fcf * (1 + g) / (w - g)
+        intro = f"{ctx.name} {y}: free cash flow to the firm (operating cash flow − capex) {_money(fcf, ctx.currency)}." if y else f"Free cash flow to the firm last year was {fcf:,.0f}."
+        return _num(f"s9-fcff-{w}-{g}", 9, 4, "dcf",
+                    f"{intro} It grows {g * 100:.1f} % a year forever; the WACC is {w * 100:.1f} %. What is the enterprise value ({ctx.currency} m)?",
+                    ans, f"{ctx.currency} m", f"EV = FCFF₀ × (1 + g) ÷ (WACC − g) = {fcf:,.0f} × {1 + g:.3f} ÷ {w - g:.3f} = {ans:,.0f}. Subtract net debt to get equity value.", rel_tol=0.01)
     y = _latest_with(ctx.values, ["dps"])
     d0 = _val(ctx.values, "dps", y) if y else None
     d0 = d0 if d0 and d0 > 0 else 2.5
@@ -859,6 +1021,10 @@ def _(ctx, rng):
 
 @template("s9-why", 9, 5, "valuation_methods")
 def _(ctx, rng):
+    if ctx.sector == "corporate":
+        return _text("s9-why-corp", 9, 5, "valuation_methods",
+                     f"Why is a free-cash-flow DCF at the WACC, cross-checked with EV/EBITDA, more informative than P/B for {ctx.name}? Which two assumptions drive the DCF value most, and how would you sanity-check them?",
+                     "For non-financials value comes from the cash the operating business generates for all capital providers; debt is financing, not raw material, so discounting FCFF at the WACC and deducting net debt is coherent. Book value omits internally built intangibles (patents, brands, know-how) and shrinks with buybacks, so P/B says little. The WACC and terminal growth dominate (the terminal value is often 60–80 % of enterprise value): sanity-check them against peers' multiples (the EV/EBITDA your DCF implies), long-run nominal GDP growth and the growth rate the market price implies.")
     return _text("s9-why", 9, 5, "valuation_methods", f"Why might a P/B–ROE or dividend/capital-generation approach be more informative than a traditional FCFF DCF for {ctx.name}?",
                  "Because for financials the balance sheet is the business: deposits/insurance liabilities are operating items, not financing; cash flow statements do not measure distributable cash; regulators cap distributions via capital requirements. Value therefore depends on sustainable ROE vs cost of equity (P/B) and on how much capital can be distributed after meeting capital targets (DDM / excess capital). DCF only works if you redefine FCFE as distributable capital.")
 
@@ -898,7 +1064,7 @@ def _(ctx, rng):
 @template("s10-final", 10, 5, "thesis")
 def _(ctx, rng):
     return _text("s10-final", 10, 5, "thesis", f"Write the one sentence that would make you abandon your thesis on {ctx.name}, including the number and the time frame.",
-                 "A good thesis breaker is specific and measurable, e.g. 'If the CET1 ratio target rises above X % and buybacks stop in 2026' or 'If net new money is negative for two consecutive years' or 'If prior-year reserve strengthening recurs in 2026'.")
+                 "A good thesis breaker is specific and measurable, e.g. 'If the CET1 ratio target rises above X % and buybacks stop in 2026', 'If net new money is negative for two consecutive years', 'If sales of the top three brands fall more than 15 % in 2026 after generic entry' or 'If net debt ÷ EBITDA exceeds 3× after acquisitions'.")
 
 
 # --------------------------------------------------------------------------- grading

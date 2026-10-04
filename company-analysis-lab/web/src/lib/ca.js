@@ -9,7 +9,7 @@ export const STAGES = [
   { n: 6, key: "quality", en: "Quality of Earnings", de: "Qualität der Gewinne", goal: "Separate recurring, cash-backed earnings from one-offs and accounting effects." },
   { n: 7, key: "risk", en: "Risk Analysis", de: "Risikoanalyse", goal: "Map the risks and identify the three that matter most for value." },
   { n: 8, key: "peers", en: "Peer Comparison", de: "Peer-Vergleich", goal: "Compare with a peer on the metrics that are actually comparable." },
-  { n: 9, key: "valuation", en: "Valuation", de: "Bewertung", goal: "Value the equity with methods that fit a financial institution." },
+  { n: 9, key: "valuation", en: "Valuation", de: "Bewertung", goal: "Value the equity with methods that fit how the company makes money." },
   { n: 10, key: "thesis", en: "Investment Thesis", de: "Investment-These", goal: "Pull everything together into a thesis with scenarios — no buy/sell verdict." },
 ];
 
@@ -68,10 +68,12 @@ export const EXPLANATION_DRIVERS = [
   { point: "Capital actions (buybacks, dividends)", keywords: ["buyback", "rückkauf", "rueckkauf", "dividend", "share count", "aktien"] },
   { point: "Currency effects", keywords: ["fx", "currency", "währung", "waehrung", "franc", "franken", "dollar", "euro", "translation"] },
   { point: "Catastrophes, claims or reserves (insurers)", keywords: ["catastroph", "katastroph", "claims", "schäden", "schaeden", "reserve", "hurricane", "covid", "pandemic"] },
+  { point: "Prices, volumes and product launches or patent expiries (non-financials)", keywords: ["price", "preis", "pricing", "demand", "nachfrage", "launch", "lancier", "patent", "generic", "generika", "biosimilar", "product", "produkt"] },
+  { point: "Input costs and supply chain (non-financials)", keywords: ["raw material", "rohstoff", "input cost", "supply", "liefer", "inventor", "lager", "energy", "energie", "logistic"] },
 ];
 
 export function eventsFor(profile, metric = null, year = null) {
   return (profile.events || []).filter((ev) => (year === null || ev.year === year) && (metric === null || !ev.metrics?.length || ev.metrics.includes(metric)));
 }
 
-export const NATURE_LABEL = { "one-off": "One-off", accounting: "Accounting-driven", operational: "Operational", structural: "Structural", transitional: "Transitional", regulatory: "Regulatory", acquisition: "Acquisition", capital: "Capital management" };
+export const NATURE_LABEL = { "one-off": "One-off", accounting: "Accounting-driven", operational: "Operational", structural: "Structural", transitional: "Transitional", regulatory: "Regulatory", acquisition: "Acquisition", capital: "Capital management", currency: "Currency translation" };

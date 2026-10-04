@@ -1,4 +1,4 @@
-"""Analyst Lab — a guided equity-analysis learning tool for banks and insurers.
+"""Analyst Lab — a guided equity-analysis learning tool for banks, insurers and non-financial companies.
 
 Modules
 -------

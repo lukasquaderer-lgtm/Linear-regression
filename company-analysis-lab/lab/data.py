@@ -422,7 +422,7 @@ def validate(values: pd.DataFrame, profile: dict, custom: dict | None = None) ->
         if a is not None and l is not None and e is not None and a > 0:
             gap = a - l - e
             rel_equity = abs(gap) / abs(e) if e else float("inf")
-            if rel_equity > 0.15 and abs(gap) > 0.001 * a:
+            if rel_equity > 0.25 and abs(gap) > 0.001 * a:
                 issues.append(Issue("error", "total_assets", y, f"Assets ({a:,.0f}) ≠ liabilities + equity ({l + e:,.0f}); gap {gap:,.0f}. Check units or a typo."))
             elif rel_equity > 0.02:
                 issues.append(Issue("info", "total_equity", y, f"Assets − liabilities − equity = {gap:,.0f} — usually non-controlling interests (minority interests). Fine if so."))
@@ -450,6 +450,24 @@ def validate(values: pd.DataFrame, profile: dict, custom: dict | None = None) ->
                 issues.append(Issue("warning", "cet1_ratio", y, f"CET1 capital ÷ RWA = {calc:.1f} % but the CET1 ratio entered is {ratio:.1f} %."))
         if rwa is not None and a is not None and rwa > a:
             issues.append(Issue("warning", "rwa", y, "RWA exceed total assets — unusual (RWA density > 100 %)."))
+        # ---- non-financial consistency
+        ebit, gp = value(v, "ebit", y), value(v, "gross_profit", y)
+        if gp is not None and rev is not None and rev > 0 and gp > rev * 1.001:
+            issues.append(Issue("error", "gross_profit", y, f"Gross profit ({gp:,.0f}) exceeds revenue ({rev:,.0f}) — impossible. Check the revenue definition or a typo."))
+        if ebit is not None and rev is not None and rev > 0 and ebit > rev:
+            issues.append(Issue("warning", "ebit", y, f"Operating result ({ebit:,.0f}) exceeds revenue ({rev:,.0f}) — check units or whether revenue excludes large other income."))
+        ocf, capex, fcf = value(v, "operating_cash_flow", y), value(v, "capex", y), value(v, "free_cash_flow", y)
+        if ocf is not None and capex is not None and fcf is not None and abs(fcf) > 0:
+            own = ocf - capex
+            if abs(own - fcf) > 0.15 * max(abs(fcf), abs(own)):
+                issues.append(Issue("info", "free_cash_flow", y, f"Operating cash flow − capex = {own:,.0f} but reported free cash flow = {fcf:,.0f} — the company uses its own definition (leases, interest, acquisitions?). Note which one you use."))
+        debt = value(v, "total_debt", y)
+        if debt is not None and l is not None and debt > l * 1.001:
+            issues.append(Issue("error", "total_debt", y, f"Financial debt ({debt:,.0f}) exceeds total liabilities ({l:,.0f}) — impossible."))
+        for part in ("current_assets", "cash", "inventories", "receivables"):
+            x = value(v, part, y)
+            if x is not None and a is not None and a > 0 and x > a * 1.001:
+                issues.append(Issue("error", part, y, f"{M.short(part)} ({x:,.0f}) exceeds total assets ({a:,.0f}) — impossible."))
         opex, ci = value(v, "operating_expenses", y), value(v, "cost_income_ratio", y)
         if opex is not None and rev and ci is not None:
             calc = opex / rev * 100
@@ -459,7 +477,7 @@ def validate(values: pd.DataFrame, profile: dict, custom: dict | None = None) ->
     # ---- implausible jumps (possible unit errors)
     for key in v.index:
         m = M.get(key)
-        if m is None or m.unit not in ("money", "bn") or key in ("operating_cash_flow", "net_new_money", "credit_loss_expense"):
+        if m is None or m.unit not in ("money", "bn") or key in ("operating_cash_flow", "net_new_money", "credit_loss_expense", "free_cash_flow"):
             continue
         s = series(v, key).dropna()
         for (y0, x0), (y1, x1) in zip(s.items(), list(s.items())[1:]):

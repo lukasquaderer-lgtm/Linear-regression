@@ -12,13 +12,23 @@ import { StageFooter } from "../quiz.jsx";
 
 const N = 4;
 const MIN_INTERP = 15;
-const CONCEPT_OF = { roe: "roe", roa: "roa", leverage: "dupont", net_margin: "ratio_definitions", cost_income: "ratio_definitions", payout: "payout", equity_ratio: "leverage", bvps: "ratio_definitions", cet1_calc: "regulatory_capital", rwa_density: "regulatory_capital", nii_share: "revenue_mix", fee_share: "revenue_mix", nnm_growth: "ratio_definitions", insurance_margin: "ratio_definitions", investment_share: "revenue_mix" };
-const SHORT = { roe: "ROE", roa: "ROA", net_margin: "Net margin", cost_income: "C/I", leverage: "Leverage", equity_ratio: "Equity ratio", payout: "Payout", bvps: "BVPS", cet1_calc: "CET1 ratio", rwa_density: "RWA density", nii_share: "NII share", fee_share: "Fee share", nnm_growth: "NNM growth", insurance_margin: "Margin", investment_share: "Share" };
+const CONCEPT_OF = { roe: "roe", roa: "roa", leverage: "dupont", net_margin: "ratio_definitions", cost_income: "ratio_definitions", payout: "payout", equity_ratio: "leverage", bvps: "ratio_definitions", cet1_calc: "regulatory_capital", rwa_density: "regulatory_capital", nii_share: "revenue_mix", fee_share: "revenue_mix", nnm_growth: "ratio_definitions", insurance_margin: "ratio_definitions", investment_share: "revenue_mix", ebit_margin: "ratio_definitions", cash_conversion: "cash_conversion", fcf_margin: "cash_conversion", net_debt_ebitda: "debt_capacity", roce: "roe", gross_margin: "ratio_definitions", rnd_intensity: "cost_structure", capex_intensity: "cost_structure", interest_cover: "debt_capacity", current_ratio: "ratio_definitions", asset_turnover: "dupont" };
+const SHORT = { roe: "ROE", roa: "ROA", net_margin: "Net margin", cost_income: "C/I", leverage: "Leverage", equity_ratio: "Equity ratio", payout: "Payout", bvps: "BVPS", cet1_calc: "CET1 ratio", rwa_density: "RWA density", nii_share: "NII share", fee_share: "Fee share", nnm_growth: "NNM growth", insurance_margin: "Margin", investment_share: "Share", ebit_margin: "EBIT margin", cash_conversion: "Cash conversion", fcf_margin: "FCF margin", net_debt_ebitda: "Net debt / EBITDA", roce: "ROCE", gross_margin: "Gross margin", rnd_intensity: "R&D intensity", capex_intensity: "Capex intensity", interest_cover: "Interest cover", current_ratio: "Current ratio", asset_turnover: "Asset turnover" };
 
 export function requiredRatios(app, available) {
-  const core = available.filter((r) => r.core).map((r) => r.key);
-  const sector = available.filter((r) => !r.core && r.sectors.length === 1 && r.sectors[0] === app.profile.sector).map((r) => r.key);
+  const sec = app.profile.sector;
+  const core = available.filter((r) => R.isCore(r, sec)).map((r) => r.key);
+  const sector = available.filter((r) => !R.isCore(r, sec) && r.sectors.length !== M.SECTORS.length && r.sectors.includes(sec)).map((r) => r.key);
   return [...core, ...sector.slice(0, 2)];
+}
+
+// Numerator and denominator for the formula display (multi-input ratios mirror lab/ratios.py).
+function formulaParts(r) {
+  const t = (i) => termLabel(r.inputs[i]);
+  if (r.key === "fcf_margin") return [<>{t(0)} − {t(1)}</>, t(2)];
+  if (r.key === "net_debt_ebitda") return [<>{t(0)} − {t(1)}</>, <>{t(2)} + {t(3)}</>];
+  if (r.key === "roce") return [t(0), <>average of (Shareholders' equity + Financial debt − Cash)<sub>t−1, t</sub></>];
+  return [t(0), t(1)];
 }
 
 function termLabel(spec) {
@@ -123,7 +133,7 @@ function RatioWork({ app, r, a }) {
       <h2 className="metric-title">{r.en} <span className="de" lang="de">· {r.de}</span></h2>
       {r.cfa && <Cfa k={r.cfa} />}
       <h3>1 · Formula</h3>
-      <Formula lhs={SHORT[r.key] || r.en} num={termLabel(r.inputs[0])} den={termLabel(r.inputs[1])} times={r.unit === "%" ? "100" : null} />
+      <Formula lhs={SHORT[r.key] || r.en} num={formulaParts(r)[0]} den={formulaParts(r)[1]} times={r.unit === "%" ? "100" : null} />
       {!a.attempted && <Select id={`s4-year-${r.key}`} label="Fiscal year to analyse" value={String(year)} options={validYears.map((v) => ({ value: String(v), label: String(v) }))} onChange={(v) => { setYear(+v); setInputs({}); }} />}
       <h3>2 · Numbers required</h3>
       <ul>{res.required.map((rn) => <li key={rn.label}>{rn.label} · <em className="muted">{M.get(rn.metric)?.statement}</em></li>)}</ul>
@@ -185,7 +195,7 @@ function Dupont({ app }) {
         <Chart spec={Charts.history(rows.map(([y, d]) => [y, d.leverage]), "Leverage ×", "×")} label="Leverage" />
         <Chart spec={Charts.history(rows.map(([y, d]) => [y, d.roe]), "ROE %", "%")} label="ROE" />
       </div>
-      <p className="muted small">Question to ask yourself: did ROE move because the company became more profitable (ROA) or because it used more leverage? Banks and insurers can raise ROE simply by holding less capital.</p>
+      <p className="muted small">Question to ask yourself: did ROE move because the company became more profitable (ROA) or because it used more leverage? Banks and insurers can raise ROE simply by holding less capital; other companies by buying back shares with debt.</p>
     </section>
   );
 }

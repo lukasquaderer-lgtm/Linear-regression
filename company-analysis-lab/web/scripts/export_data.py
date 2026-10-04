@@ -32,6 +32,8 @@ def main() -> None:
     for m in metrics.CATALOG.values():
         d = asdict(m)
         d["sectors"] = list(m.sectors)
+        d["required_for"] = list(m.required_for)
+        d["trend_for"] = list(m.trend_for)
         d["plausible"] = list(m.plausible)
         d["hard"] = list(m.hard)
         metric_rows.append(d)
@@ -55,7 +57,7 @@ def main() -> None:
     for r in ratios.RATIOS.values():
         ratio_rows.append({
             "key": r.key, "en": r.en, "de": r.de, "text": r.text, "unit": r.unit, "sectors": list(r.sectors),
-            "higher_is_better": r.higher_is_better, "core": r.core, "cfa": r.cfa,
+            "higher_is_better": r.higher_is_better, "core": list(r.core) if isinstance(r.core, tuple) else r.core, "cfa": r.cfa,
             "inputs": [{"metric": i.metric, "averaged": i.averaged, "opening": (r.key, i.metric) in ratios.OPENING_BALANCE} for i in r.inputs],
             "interpretation": r.interpretation, "benchmark": r.benchmark,
         })
@@ -67,6 +69,10 @@ def main() -> None:
         "DEFAULT_YEARS": metrics.DEFAULT_YEARS,
         "CFA": {k: list(v) for k, v in cfa.CFA.items()},
         "METHOD_GUIDE": [asdict(g) for g in valuation.METHOD_GUIDE],
+        "SUITED": {k: sorted(v) for k, v in valuation.SUITED.items()},
+        "UNSUITED": {k: sorted(v) for k, v in valuation.UNSUITED.items()},
+        "SECTORS": list(metrics.SECTORS),
+        "SECTOR_NAMES": metrics.SECTOR_NAMES,
         "COMPANIES": companies,
     }
     target = WEB / "src" / "generated"

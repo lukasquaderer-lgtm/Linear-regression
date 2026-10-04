@@ -1,4 +1,4 @@
-"""Analyst Lab — learn to analyse a bank or insurer step by step, like an equity analyst.
+"""Analyst Lab — learn to analyse a company (banks, insurers and non-financials) step by step, like an equity analyst.
 
 Run with:  streamlit run app.py
 """
@@ -11,6 +11,7 @@ import os
 import streamlit as st
 
 from lab import company_analysis as CA
+from lab import metrics as M
 from lab import data as D
 from lab import storage, ui
 from stages.common import AppContext, go_to
@@ -57,7 +58,7 @@ st.session_state.setdefault("view", "stage")
 
 # ------------------------------------------------------------------ sidebar
 with st.sidebar:
-    st.markdown('<p class="al-side-brand">Analyst Lab</p><p class="al-side-sub">Equity analysis of banks &amp; insurers — learn by doing</p>', unsafe_allow_html=True)
+    st.markdown('<p class="al-side-brand">Analyst Lab</p><p class="al-side-sub">Equity analysis of Swiss &amp; Liechtenstein companies — learn by doing</p>', unsafe_allow_html=True)
 
     def _on_company_change():
         learner.setdefault("settings", {})["last_company"] = st.session_state["company_select"]
@@ -70,7 +71,7 @@ with st.sidebar:
         "Company",
         ids,
         index=ids.index(st.session_state["company_id"]),
-        format_func=lambda i: f"{by_id[i]['short_name']}  ·  {by_id[i]['sector'].capitalize()}",
+        format_func=lambda i: f"{by_id[i]['short_name']}  ·  {M.sector_name(by_id[i]['sector'])}",
         key="company_select",
         on_change=_on_company_change,
     )
@@ -136,7 +137,7 @@ with st.sidebar:
     with st.expander("Add a company", icon=":material/add_business:"):
         with st.form("add-company"):
             name = st.text_input("Company name")
-            sector = st.selectbox("Sector", ["bank", "insurer"])
+            sector = st.selectbox("Sector", list(M.SECTORS), format_func=M.sector_name)
             currency = st.selectbox("Reporting currency", ["CHF", "EUR", "USD", "GBP"])
             country = st.text_input("Country")
             listed = st.checkbox("Listed on a stock exchange", value=True)

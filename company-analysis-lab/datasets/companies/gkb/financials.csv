@@ -1,0 +1,18 @@
+metric,2021,2022,2023,2024,2025,source,note
+revenue,438.722,478.191,525.906,528.411,513.2,2021–2024: Data vendor (FMP via Bigdata.com) – unverified; 2025: GKB annual results release (Feb 2026),Geschäftsertrag (total operating income). The vendor's 2025 figure (661) was wrong – check every year against the Geschäftsbericht.
+operating_expenses,,,,,,To collect from the annual report,Geschäftsaufwand (personnel + general expenses). GKB's Cost/Income-Ratio I uses this line.
+net_income,184.23,197.781,218.287,217.46,216.289,Data vendor (FMP via Bigdata.com) – unverified,"Attributable to GKB's capital holders. Konzerngewinn incl. minorities: 2025 CHF 224.6 m (results release). Under Swiss bank accounting, profit is after allocations to/releases from reserves for general banking risks – check the note."
+total_assets,32788.597,33253.232,32769.099,35598.061,36307.387,Data vendor (FMP via Bigdata.com) – unverified,
+total_liabilities,29974.384,30384.238,29828.227,32597.183,33295.612,Derived: total assets − total equity incl. non-controlling interests,
+total_equity,2775.547,2811.002,2889.917,2951.368,2971.683,Data vendor (FMP via Bigdata.com) – unverified,Attributable equity incl. reserves for general banking risks (part of equity under Swiss bank GAAP).
+operating_cash_flow,311.799,221.623,538.497,822.872,136.035,Data vendor (FMP via Bigdata.com) – unverified,"Bank operating cash flow – driven by loans and deposits, not an earnings-quality measure."
+eps,73.92,79.35,87.65,87.32,86.9,Data vendor (FMP via Bigdata.com) – unverified,"Per participation certificate (Partizipationsschein, PS)."
+dps,42.5,42.5,47.5,47.5,47.5,Data vendor (FMP via Bigdata.com) – unverified,Dividend per PS for the fiscal year (paid the following March).
+shares_outstanding,2.492,2.492,2.49,2.49,2.489,Data vendor (FMP via Bigdata.com) – unverified,"Participation certificates outstanding (m), average. 2.5 m PS of CHF 100 nominal."
+net_interest_income,,,,,309.9,2025: GKB annual results release,"Net result from interest operations (after changes in value adjustments for default risk), −5.4 % vs 2024. Collect 2021–2024."
+fee_income,,,,,,To collect from the annual report,Erfolg aus dem Kommissions- und Dienstleistungsgeschäft.
+cet1_ratio,,,,,,To collect from the annual report,From the capital adequacy disclosure (Offenlegung Eigenmittel).
+cost_income_ratio,,,,46.7,48.0,GKB annual results release (Cost/Income-Ratio I),Collect 2021–2023.
+customer_loans,,,,,,To collect from the annual report,Kundenausleihungen (mortgages + other loans).
+aum,,,,,,To collect from the annual report,Kundenvermögen / Depotvolumen – note which measure you use (CHF bn).
+net_new_money,,,,,,To collect from the annual report,CHF bn.

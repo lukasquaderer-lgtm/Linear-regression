@@ -13,13 +13,13 @@ const VERDICTS = ["Improving", "Deteriorating", "Stable", "Volatile / no clear t
 const DRIVERS = ["Mainly operational", "Mainly accounting-driven", "Mainly one-off items", "A mix"];
 const MIN_WHY = 15;
 const CORE = ["revenue", "net_income", "total_equity", "eps"];
-const SECTOR_PRIORITY = { bank: ["cet1_ratio", "cost_income_ratio", "net_interest_income", "fee_income", "net_new_money", "aum"], insurer: ["solvency_ratio", "combined_ratio", "investment_income", "insurance_revenue", "gross_premiums", "aum"] };
+const SECTOR_PRIORITY = { bank: ["cet1_ratio", "cost_income_ratio", "net_interest_income", "fee_income", "net_new_money", "aum"], insurer: ["solvency_ratio", "combined_ratio", "investment_income", "insurance_revenue", "gross_premiums", "aum"], corporate: ["ebit", "operating_cash_flow", "free_cash_flow", "rnd_expense", "gross_profit", "total_debt"] };
 
 export function trendMetrics(app) {
   const applicable = new Set([...D.applicableMetricKeys(app.profile), ...Object.keys(app.custom)]);
   return [...M.ORDER, ...Object.keys(app.custom)].filter((k) => {
     const m = M.get(k);
-    if (!applicable.has(k) || (m && !m.trend_metric) || !app.ds.values[k]) return false;
+    if (!applicable.has(k) || (m && !M.isTrend(m, app.profile.sector)) || !app.ds.values[k]) return false;
     return D.clean(D.series(app.ds, k)).length >= 3;
   });
 }

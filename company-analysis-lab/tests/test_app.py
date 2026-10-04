@@ -8,7 +8,7 @@ from streamlit.testing.v1 import AppTest
 from lab import storage
 
 APP = str(Path(__file__).resolve().parent.parent / "app.py")
-COMPANIES = ["ubs", "llb", "swiss_life", "swiss_re", "prismalife"]
+COMPANIES = ["ubs", "llb", "gkb", "swiss_life", "swiss_re", "prismalife", "roche", "novartis", "hilti"]
 
 
 def run_app():
@@ -75,6 +75,7 @@ def test_stage1_quiz_gates_stage2():
 def test_training_mode_off_skips_quiz():
     learner = storage.empty_learner()
     learner["settings"]["training_mode"] = False
+    learner["settings"]["last_company"] = "llb"
     storage.save_learner(learner)
     progress = storage.load_progress("llb")
     storage.stage_state(progress, 1)["completed"] = True

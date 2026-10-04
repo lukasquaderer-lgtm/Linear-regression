@@ -18,7 +18,40 @@ CHANNELS = ["Earnings / ROE", "Capital / book value / payouts", "Cost of equity 
 REF_ALIAS = {"interest_rate": "interest"}
 
 
+CORPORATE_RISKS = [
+    {"key": "demand", "en": "Demand / cyclical risk", "de": "Konjunktur- und Nachfragerisiko", "cfa": "risk_demand",
+     "what": "Sales fall with the economic or industry cycle (construction, capital goods, consumer spending); with high fixed costs, profit falls much faster than sales (operating leverage).",
+     "find": "Management report (market development, outlook); sales by region and segment; order intake if disclosed."},
+    {"key": "competition", "en": "Competitive risk", "de": "Wettbewerbsrisiko", "cfa": "risk_competition",
+     "what": "Rivals launch better or cheaper products; new entrants or substitutes take market share and push prices down.",
+     "find": "Strategy section; market-share claims; gross-margin trend; competitors' reports."},
+    {"key": "pricing", "en": "Pricing and regulatory risk", "de": "Preis- und Regulierungsrisiko", "cfa": "risk_pricing",
+     "what": "Governments, payers or customers force prices down (drug-price reforms, tariffs, procurement rules) or new regulation adds costs.",
+     "find": "Risk factors; outlook; sales by region; notes on rebates and price adjustments."},
+    {"key": "pipeline", "en": "Innovation, pipeline and patent-expiry risk", "de": "Innovations-, Pipeline- und Patentablaufrisiko", "cfa": "risk_pipeline",
+     "what": "Key products lose patent protection or become outdated; new products fail in development or launch late.",
+     "find": "Pipeline overview; patent-expiry tables; R&D spending; impairments of product rights."},
+    {"key": "currency", "en": "Currency risk", "de": "Währungsrisiko", "cfa": "risk_currency",
+     "what": "Sales and costs in different currencies: a strong home currency (CHF) cuts reported sales and margins; translation changes equity.",
+     "find": "Financial risk management note (FX sensitivity); growth in local currencies vs reporting currency; translation differences in OCI."},
+    {"key": "supply_chain", "en": "Supply-chain and input-cost risk", "de": "Lieferketten- und Kostenrisiko", "cfa": "risk_supply",
+     "what": "Shortages, disruptions or price rises for raw materials, components, energy and logistics; dependence on single suppliers or sites.",
+     "find": "Risk report; gross-margin trend; inventory levels; procurement commentary."},
+    {"key": "legal", "en": "Legal and product-liability risk", "de": "Rechts- und Produkthaftungsrisiko", "cfa": "risk_legal",
+     "what": "Lawsuits, patent disputes, product recalls or side effects, compliance breaches (antitrust, bribery).",
+     "find": "Provisions and contingent liabilities note; legal proceedings section; risk factors."},
+    {"key": "operational", "en": "Operational risk", "de": "Operationelles Risiko", "cfa": "risk_operational",
+     "what": "Production or quality failures, IT and cyber attacks, fraud, loss of key people.",
+     "find": "Risk report; quality and manufacturing disclosures; IT/cyber section."},
+    {"key": "concentration", "en": "Concentration risk", "de": "Konzentrationsrisiko", "cfa": "risk_concentration",
+     "what": "Dependence on a few products, customers, suppliers or one region.",
+     "find": "Sales by product and region; largest customers; segment information."},
+]
+
+
 def risk_types(app: AppContext) -> list[dict]:
+    if app.sector == "corporate":
+        return [dict(r) for r in CORPORATE_RISKS]
     bank = app.sector == "bank"
     risks = [
         {"key": "credit", "en": "Credit risk", "de": "Kreditrisiko", "cfa": "risk_credit",
@@ -68,6 +101,16 @@ def _indicator_tiles(app: AppContext, values: pd.DataFrame) -> None:
         loans, dep = v("customer_loans"), v("customer_deposits")
         if loans and dep:
             tiles.append(("Loans / deposits", C.fmt_pct(loans / dep * 100), "Funding / liquidity"))
+    elif app.sector == "corporate":
+        ebit, rev, da = v("ebit"), v("revenue"), v("depreciation_amortisation")
+        debt, cash, intr, ocf, ni, rnd = v("total_debt"), v("cash"), v("interest_expense"), v("operating_cash_flow"), v("net_income"), v("rnd_expense")
+        tiles.append(("EBIT margin", C.fmt_pct(ebit / rev * 100) if ebit is not None and rev else "–", "Operating profitability — cushion against shocks"))
+        ebitda = (ebit + da) if ebit is not None and da is not None else None
+        tiles.append(("Net debt / EBITDA", f"{(debt - cash) / ebitda:.1f}×" if debt is not None and cash is not None and ebitda else "–", "Financial risk"))
+        tiles.append(("Interest cover", f"{ebit / intr:.1f}×" if ebit is not None and intr else "–", "Debt service capacity"))
+        tiles.append(("Cash conversion", C.fmt_pct(ocf / ni * 100, 0) if ocf is not None and ni else "–", "Does profit become cash?"))
+        if rnd is not None and rev:
+            tiles.append(("R&D intensity", C.fmt_pct(rnd / rev * 100), "Reinvestment in the pipeline"))
     else:
         tiles.append(("Solvency ratio", C.fmt_pct(v("solvency_ratio"), 0), "Capital buffer vs requirement"))
         if v("combined_ratio") is not None:

@@ -1,0 +1,14 @@
+metric,2021,2022,2023,2024,2025,source,note
+revenue,5978,6349,6520,6429,6294,"Hilti media releases – 2023 exact (CHF 6,520 m); 2021, 2022, 2024, 2025 derived from reported growth rates – unverified",Net sales. Take the exact figures from the Financial Report (hilti.group). 2024: −1.4 % in CHF (+1.5 % in local currencies); 2025: −2.1 % (+1.9 % LC).
+ebit,847,731,770,769,728,Hilti media releases – unverified,"Operating result (Betriebsergebnis). Return on sales: 2021 14.2 %, 2023 11.8 %, 2024 12.0 %, 2025 11.6 %."
+depreciation_amortisation,,,,,,To collect from the annual report,"Needed for EBITDA (EV/EBITDA, net debt ÷ EBITDA)."
+net_income,675,565,560,561,516,Hilti media releases – unverified,Net income (Reingewinn).
+total_assets,,,,,,To collect from the annual report,Consolidated balance sheet in the Financial Report.
+total_liabilities,,,,,,To collect from the annual report,
+total_equity,,,,,,To collect from the annual report,"Reported equity ratio: 2021 57 %, 2022 62 %, 2023 59 %, 2024 61 % (target ≥ 45 %)."
+operating_cash_flow,,,,,,To collect from the annual report,Cash flow from operating activities.
+capex,,,,,,To collect from the annual report,"Investments in property, plant and equipment and intangible assets."
+free_cash_flow,377,-147,359,379,545,Hilti media releases – unverified,"Hilti's own definition – compare with your OCF − capex. 2022 was negative: lower profit, inventory build-up and normalised bonuses."
+rnd_expense,,,,466,459,Hilti media releases – unverified,2025: 7.3 % of sales. Collect 2021–2023.
+cash,,,,,,To collect from the annual report,Cash and cash equivalents (2024 ≈ CHF 0.9 bn).
+total_debt,,,,,,To collect from the annual report,Financial debt incl. lease liabilities.

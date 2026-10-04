@@ -1,0 +1,425 @@
+{
+  "id": "hilti",
+  "name": "Hilti AG (Hilti Group)",
+  "short_name": "Hilti",
+  "sector": "corporate",
+  "subsector": "Tools, fastening systems, software and services for construction professionals",
+  "country": "Liechtenstein",
+  "headquarters": "Schaan",
+  "listed": false,
+  "exchange_ticker": "Not listed (owned by the Martin Hilti Family Trust; delisted 2003)",
+  "currency": "CHF",
+  "currency_confirmed": true,
+  "fiscal_year_end": "31 December",
+  "accounting": {
+    "2021": "IFRS",
+    "2022": "IFRS",
+    "2023": "IFRS",
+    "2024": "IFRS",
+    "2025": "IFRS"
+  },
+  "accounting_notes": "Consolidated accounts in Swiss francs (confirm the accounting standard in the Financial Report). As a private company Hilti publishes less detail than listed peers: no EPS, no share price, and limited segment information.",
+  "regulator": "None specific (industrial company under Liechtenstein company law)",
+  "capital_regime": "None — Hilti targets an equity ratio of at least 45 %",
+  "investor_relations": "https://www.hilti.group",
+  "annual_report_hint": "hilti.group → Company → Media relations / Company report. The Financial Report (PDF) contains the consolidated balance sheet, income statement, cash flow statement and notes.",
+  "data_source": "Hilti is not listed and data vendors do not cover it. Starter figures come from Hilti's media releases (some derived from reported growth rates). Collect the balance sheet and cash flows yourself from the Financial Report.",
+  "required_extra": [],
+  "not_applicable": [
+    "eps",
+    "dps",
+    "shares_outstanding",
+    "share_price"
+  ],
+  "business_reference": {
+    "what_it_does": {
+      "reference": "Hilti develops, makes and sells professional tools (power tools, measuring systems), fastening and protection systems (anchors, installation systems, firestop) and software and services (tool fleet management, construction software such as Fieldwire) for construction professionals. It was founded in 1941 in Schaan by Martin and Eugen Hilti and has about 34,000 employees.",
+      "key_points": [
+        {
+          "point": "Professional tools",
+          "keywords": [
+            "tool",
+            "werkzeug",
+            "gerät",
+            "power tool"
+          ]
+        },
+        {
+          "point": "Fastening and protection systems",
+          "keywords": [
+            "fasten",
+            "befestig",
+            "anchor",
+            "dübel",
+            "firestop",
+            "brandschutz",
+            "installation"
+          ]
+        },
+        {
+          "point": "Software and services",
+          "keywords": [
+            "software",
+            "service",
+            "fleet",
+            "digital",
+            "fieldwire"
+          ]
+        },
+        {
+          "point": "For construction professionals",
+          "keywords": [
+            "construction",
+            "bau",
+            "contractor",
+            "professional",
+            "profi"
+          ]
+        }
+      ]
+    },
+    "how_money": {
+      "reference": "Premium prices for high-quality products, sold mainly through its own direct sales force (customer visits, Hilti Stores, online). The direct model is costly but builds loyalty. Fleet management (tools as a service for a monthly fee) and consumables (anchors, drill bits, blades) create recurring revenue. Return on sales is about 11–14 %.",
+      "key_points": [
+        {
+          "point": "Premium pricing and quality",
+          "keywords": [
+            "premium",
+            "price",
+            "preis",
+            "quality",
+            "qualität"
+          ]
+        },
+        {
+          "point": "Direct sales model",
+          "keywords": [
+            "direct",
+            "direkt",
+            "sales force",
+            "verkauf",
+            "store"
+          ]
+        },
+        {
+          "point": "Recurring revenue: fleet management and consumables",
+          "keywords": [
+            "fleet",
+            "recurring",
+            "wiederkehrend",
+            "subscription",
+            "consumable",
+            "verbrauch"
+          ]
+        },
+        {
+          "point": "Margins / return on sales",
+          "keywords": [
+            "margin",
+            "marge",
+            "return on sales"
+          ]
+        }
+      ]
+    },
+    "segments": {
+      "reference": "Hilti reports sales by region (Europe, Americas, Asia/Pacific, Eastern Europe/Middle East/Africa) and gives limited business-unit detail — typical of a private company.",
+      "key_points": [
+        {
+          "point": "Europe",
+          "keywords": [
+            "europe",
+            "europa"
+          ]
+        },
+        {
+          "point": "Americas",
+          "keywords": [
+            "america",
+            "amerika",
+            "us"
+          ]
+        },
+        {
+          "point": "Asia/Pacific",
+          "keywords": [
+            "asia",
+            "asien",
+            "pacific"
+          ]
+        },
+        {
+          "point": "Reporting by region",
+          "keywords": [
+            "region"
+          ]
+        }
+      ]
+    },
+    "customers": {
+      "reference": "Construction professionals: general and specialist contractors (electrical, plumbing, HVAC, drywall), large construction companies, and industrial and energy companies doing maintenance.",
+      "key_points": [
+        {
+          "point": "Contractors",
+          "keywords": [
+            "contractor",
+            "unternehmer",
+            "construction",
+            "bau"
+          ]
+        },
+        {
+          "point": "Specialist trades",
+          "keywords": [
+            "electric",
+            "elektro",
+            "plumb",
+            "sanitär",
+            "hvac",
+            "drywall",
+            "trockenbau"
+          ]
+        },
+        {
+          "point": "Industrial and energy customers",
+          "keywords": [
+            "industrial",
+            "industrie",
+            "energy",
+            "energie"
+          ]
+        }
+      ]
+    },
+    "markets": {
+      "reference": "Global (more than 120 countries). Europe is the largest region (about half of sales), followed by the Americas, mainly the US; Asia/Pacific and EEMEA are smaller. Many costs are in CHF and EUR, so a strong franc reduces reported sales and profit.",
+      "key_points": [
+        {
+          "point": "Europe",
+          "keywords": [
+            "europe",
+            "europa"
+          ]
+        },
+        {
+          "point": "Americas / US",
+          "keywords": [
+            "america",
+            "amerika",
+            "us",
+            "usa"
+          ]
+        },
+        {
+          "point": "Asia and other regions",
+          "keywords": [
+            "asia",
+            "asien",
+            "china",
+            "middle east"
+          ]
+        },
+        {
+          "point": "Currency effects",
+          "keywords": [
+            "currency",
+            "franc",
+            "franken",
+            "chf",
+            "fx"
+          ]
+        }
+      ]
+    },
+    "advantages": {
+      "reference": "A strong brand and reputation for quality, direct customer relationships and data, continuous innovation (70+ new products and services a year), lock-in through fleet management, and a very solid balance sheet owned by a long-term family trust.",
+      "key_points": [
+        {
+          "point": "Brand and quality",
+          "keywords": [
+            "brand",
+            "marke",
+            "reputation",
+            "quality",
+            "qualität"
+          ]
+        },
+        {
+          "point": "Direct customer relationships",
+          "keywords": [
+            "direct",
+            "direkt",
+            "relationship",
+            "beziehung"
+          ]
+        },
+        {
+          "point": "Innovation",
+          "keywords": [
+            "innovat",
+            "r&d",
+            "forschung",
+            "new product"
+          ]
+        },
+        {
+          "point": "Long-term owner and strong balance sheet",
+          "keywords": [
+            "trust",
+            "family",
+            "familie",
+            "long-term",
+            "langfrist",
+            "equity",
+            "eigenkapital"
+          ]
+        }
+      ]
+    },
+    "threats": {
+      "reference": "Construction downturns (housing and commercial, high interest rates), the strong Swiss franc, competition from cheaper or cordless-specialist brands (Milwaukee/TTI, DeWalt/Stanley Black & Decker, Bosch, Makita), tariffs and trade tensions, raw-material and logistics costs, and the high fixed cost of the direct sales model.",
+      "key_points": [
+        {
+          "point": "Construction cycle",
+          "keywords": [
+            "construction",
+            "bau",
+            "cycle",
+            "zyklus",
+            "downturn",
+            "interest rate"
+          ]
+        },
+        {
+          "point": "Strong Swiss franc",
+          "keywords": [
+            "franc",
+            "franken",
+            "chf",
+            "currency",
+            "fx"
+          ]
+        },
+        {
+          "point": "Competition",
+          "keywords": [
+            "competition",
+            "konkurrenz",
+            "milwaukee",
+            "dewalt",
+            "bosch",
+            "makita"
+          ]
+        },
+        {
+          "point": "Tariffs and input costs",
+          "keywords": [
+            "tariff",
+            "zoll",
+            "raw material",
+            "rohstoff",
+            "cost"
+          ]
+        }
+      ]
+    }
+  },
+  "events": [
+    {
+      "year": 2021,
+      "metrics": [
+        "ebit",
+        "net_income"
+      ],
+      "nature": "operational",
+      "title": "Record year after the pandemic",
+      "detail": "Sales grew 12 % and the operating result reached a record CHF 847 m (return on sales 14.2 %) as construction recovered.",
+      "where_to_verify": "Hilti Company/Financial Report 2021."
+    },
+    {
+      "year": 2022,
+      "metrics": [
+        "free_cash_flow",
+        "operating_cash_flow",
+        "ebit"
+      ],
+      "nature": "operational",
+      "title": "Negative free cash flow",
+      "detail": "Free cash flow was −CHF 147 m: the operating result fell 14 % (input costs, Ukraine war, strong franc), inventories were built up to secure supply and bonuses normalised.",
+      "where_to_verify": "Financial Report 2022: cash flow statement (change in inventories / net working capital)."
+    },
+    {
+      "year": 2024,
+      "metrics": [
+        "revenue",
+        "ebit"
+      ],
+      "nature": "currency",
+      "title": "Currency headwinds",
+      "detail": "Sales fell 1.4 % in CHF but grew 1.5 % in local currencies; currency effects reduced sales by about CHF 71 m.",
+      "where_to_verify": "Hilti Company Report 2024 / media release March 2025."
+    },
+    {
+      "year": 2025,
+      "metrics": [
+        "revenue",
+        "ebit",
+        "net_income",
+        "free_cash_flow"
+      ],
+      "nature": "currency",
+      "title": "Strong franc again; cash flow recovers",
+      "detail": "Sales −2.1 % in CHF (+1.9 % in local currencies, −4.0 pp currency effect); operating result −5.3 % to CHF 728 m; free cash flow rose to CHF 545 m.",
+      "where_to_verify": "Hilti Annual Report 2025 / media release 2026."
+    }
+  ],
+  "top_risks_reference": [
+    {
+      "risk": "demand",
+      "why": "Sales follow construction activity: high interest rates and weak housing and commercial building in Europe and the US cut tool and consumables demand directly."
+    },
+    {
+      "risk": "currency",
+      "why": "Most costs are in CHF and EUR while a large share of sales is in other currencies — the strong franc cost about 4 percentage points of sales growth in 2025."
+    },
+    {
+      "risk": "competition",
+      "why": "Cordless-tool specialists and cheaper brands compete aggressively; Hilti must keep its premium justified by quality, service and software."
+    }
+  ],
+  "audit_focus": [
+    "Revenue recognition for fleet management contracts (multi-year services)",
+    "Inventory valuation and obsolescence",
+    "Goodwill and software intangibles from acquisitions",
+    "Pension obligations"
+  ],
+  "quiz": [
+    {
+      "level": 1,
+      "concept": "business_model",
+      "prompt": "Who owns Hilti?",
+      "options": [
+        "The Martin Hilti Family Trust",
+        "The Principality of Liechtenstein",
+        "Public shareholders on SIX",
+        "A private equity fund"
+      ],
+      "answer": 0,
+      "explanation": "Hilti was delisted in 2003; the family trust is a long-term owner, which allows a conservative balance sheet."
+    },
+    {
+      "level": 3,
+      "concept": "linking_statements",
+      "prompt": "In 2022 Hilti earned CHF 565 m but free cash flow was −CHF 147 m. What is the most likely explanation?",
+      "options": [
+        "Cash was tied up in working capital (inventory build-up) on top of investments",
+        "A large non-cash gain inflated net income",
+        "Hilti paid a special dividend",
+        "Depreciation was unusually high"
+      ],
+      "answer": 0,
+      "explanation": "Profit is not cash: building inventories consumes cash before it shows up in sales. Check the change in net working capital in the cash flow statement."
+    }
+  ],
+  "peers_suggested": []
+}

@@ -7,12 +7,12 @@ import pytest
 from lab import data as D
 from lab import metrics as M
 
-COMPANIES = ["ubs", "llb", "swiss_life", "swiss_re", "prismalife"]
+COMPANIES = ["ubs", "llb", "gkb", "swiss_life", "swiss_re", "prismalife", "roche", "novartis", "hilti"]
 
 
 def test_all_companies_load():
     ids = [c["id"] for c in D.list_companies()]
-    assert sorted(ids) >= sorted(COMPANIES)
+    assert set(ids) >= set(COMPANIES)
     for cid in COMPANIES:
         p = D.load_profile(cid)
         v, meta = D.load_starter(cid)
@@ -29,7 +29,7 @@ def test_every_metric_is_bilingual():
 
 
 def test_starter_balance_sheets_are_consistent():
-    for cid in ("ubs", "llb", "swiss_life", "swiss_re"):
+    for cid in ("ubs", "llb", "gkb", "swiss_life", "swiss_re", "roche", "novartis"):
         p = D.load_profile(cid)
         v, _ = D.load_starter(cid)
         errors = [i for i in D.validate(v, p) if i.metric == "total_assets" and i.severity == "error"]
@@ -134,3 +134,29 @@ def test_create_company(tmp_path, monkeypatch):
     p = D.load_profile(cid)
     v, _ = D.load_starter(cid)
     assert p["sector"] == "bank" and set(D.required_metric_keys(p)) <= set(v.index)
+
+
+def test_corporate_required_metrics_and_validation():
+    p = D.load_profile("roche")
+    req = D.required_metric_keys(p)
+    for key in ("ebit", "operating_cash_flow", "capex", "depreciation_amortisation", "total_debt", "cash"):
+        assert key in req
+    assert "aum" not in D.applicable_metric_keys(p), "AuM is a financial-sector metric"
+    v, meta = D.load_starter("roche")
+    v, meta = D.ensure_rows(v, meta, req + ["gross_profit", "free_cash_flow"])
+    assert not [i for i in D.validate(v, p) if i.severity == "error"], "Roche starter data should have no errors"
+    v.at["capex", 2024] = -5009  # sign error
+    v.at["gross_profit", 2023] = 70000  # above revenue
+    v.at["total_debt", 2022] = 90000  # above liabilities
+    v.at["free_cash_flow", 2025] = 5000  # own definition far from OCF − capex
+    msgs = [(i.severity, i.metric, i.year) for i in D.validate(v, p)]
+    assert ("error", "capex", 2024) in msgs
+    assert ("error", "gross_profit", 2023) in msgs
+    assert ("error", "total_debt", 2022) in msgs
+    assert ("info", "free_cash_flow", 2025) in msgs
+
+
+def test_unlisted_corporate_excludes_per_share_metrics():
+    p = D.load_profile("hilti")
+    assert p["sector"] == "corporate" and not p["listed"]
+    assert not {"eps", "dps", "shares_outstanding"} & set(D.required_metric_keys(p))

@@ -18,7 +18,14 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-SECTORS = ("bank", "insurer")
+SECTORS = ("bank", "insurer", "corporate")
+FINANCIAL = ("bank", "insurer")
+SECTOR_NAMES = {"bank": "Bank", "insurer": "Insurer", "corporate": "Non-financial"}
+SECTOR_NAMES_DE = {"bank": "Bank", "insurer": "Versicherung", "corporate": "Industrie- / Dienstleistungsunternehmen"}
+
+
+def sector_name(sector: str) -> str:
+    return SECTOR_NAMES.get(sector, sector.capitalize())
 
 
 @dataclass(frozen=True)
@@ -36,9 +43,17 @@ class Metric:
     plausible: tuple[float | None, float | None] = (None, None)  # warning range
     hard: tuple[float | None, float | None] = (None, None)  # error range
     trend_metric: bool = True  # offered in Stage 3 trend analysis
+    required_for: tuple[str, ...] = ()  # also required for these sectors (metric shared by several sectors)
+    trend_for: tuple[str, ...] = ()  # a trend metric for these sectors even if trend_metric is False
 
     def label(self) -> str:
         return f"{self.en} · {self.de}"
+
+    def is_trend(self, sector: str) -> bool:
+        return self.trend_metric or sector in self.trend_for
+
+    def is_required(self, sector: str) -> bool:
+        return sector in self.sectors and (self.core or self.sector_required or sector in self.required_for)
 
 
 def _m(*args, **kwargs) -> Metric:
@@ -59,7 +74,8 @@ CATALOG: dict[str, Metric] = {
             description=(
                 "Banks: total operating income (net interest + fees + trading + other). "
                 "Insurers: total income/revenues; under IFRS 17 this no longer contains "
-                "savings deposits, so it is not comparable with IFRS 4 'premiums'."
+                "savings deposits, so it is not comparable with IFRS 4 'premiums'. "
+                "Non-financial companies: net sales (check whether royalties and other operating income are included)."
             ),
             hard=(None, None),
             plausible=(0, None),
@@ -92,7 +108,7 @@ CATALOG: dict[str, Metric] = {
             "money",
             core=True,
             statement="Balance sheet",
-            description="Everything the group controls. For banks and insurers mostly financial assets.",
+            description="Everything the group controls. For banks and insurers mostly financial assets; for non-financials mostly plant, intangibles, inventories and receivables.",
             higher_is_better=None,
             hard=(0, None),
         ),
@@ -103,7 +119,7 @@ CATALOG: dict[str, Metric] = {
             "money",
             core=True,
             statement="Balance sheet",
-            description="Deposits, debt issued, insurance contract liabilities, derivatives and other obligations.",
+            description="Deposits, debt issued, insurance contract liabilities, derivatives and other obligations; for non-financials financial debt, payables, provisions and pensions.",
             higher_is_better=None,
             hard=(0, None),
         ),
@@ -124,10 +140,13 @@ CATALOG: dict[str, Metric] = {
             "money",
             statement="Cash flow statement",
             description=(
+                "For non-financial companies the key test of earnings quality: does profit turn into cash? "
                 "Meaningful for insurers with care; for banks it is dominated by changes in loans, "
                 "deposits and trading positions and is rarely used to judge earnings quality."
             ),
             trend_metric=False,
+            required_for=("corporate",),
+            trend_for=("corporate",),
         ),
         _m(
             "eps",
@@ -175,6 +194,7 @@ CATALOG: dict[str, Metric] = {
             "Assets under management / invested assets",
             "Verwaltete Vermögen",
             "bn",
+            sectors=FINANCIAL,
             statement="Management report / segment reporting",
             description="Client assets managed or advised. Drives recurring fee income. Off-balance-sheet.",
             hard=(0, None),
@@ -373,6 +393,154 @@ CATALOG: dict[str, Metric] = {
             description="Unearned profit on in-force insurance contracts, released over the coverage period.",
             plausible=(0, None),
         ),
+        # ------------------------------------------------------------------ non-financial companies
+        _m(
+            "gross_profit",
+            "Gross profit",
+            "Bruttogewinn",
+            "money",
+            sectors=("corporate",),
+            statement="Income statement",
+            description="Sales minus cost of goods sold. Pharma: very high (70–80 % of sales) because the cost of making a patented drug is small.",
+        ),
+        _m(
+            "ebit",
+            "Operating result (EBIT)",
+            "Betriebsergebnis (EBIT)",
+            "money",
+            sectors=("corporate",),
+            sector_required=True,
+            statement="Income statement",
+            description="Profit from operations before interest and taxes. Many companies also show an 'adjusted' or 'core' version — note which one you use.",
+        ),
+        _m(
+            "depreciation_amortisation",
+            "Depreciation and amortisation (D&A)",
+            "Abschreibungen",
+            "money",
+            sectors=("corporate",),
+            sector_required=True,
+            statement="Cash flow statement / notes on PP&E and intangibles",
+            description="Non-cash cost of using up fixed assets and intangibles. EBITDA = EBIT + D&A. Impairments are usually shown separately.",
+            higher_is_better=None,
+            plausible=(0, None),
+            trend_metric=False,
+        ),
+        _m(
+            "rnd_expense",
+            "Research and development expense",
+            "Forschungs- und Entwicklungsaufwand",
+            "money",
+            sectors=("corporate",),
+            statement="Income statement / management report",
+            description="Spending on new products. Under IFRS research is expensed; some development costs may be capitalised as intangible assets.",
+            higher_is_better=None,
+            plausible=(0, None),
+        ),
+        _m(
+            "interest_expense",
+            "Interest expense",
+            "Zinsaufwand",
+            "money",
+            sectors=("corporate",),
+            statement="Income statement (financial result) / notes",
+            description="Interest paid on financial debt and leases. EBIT ÷ interest expense = interest cover.",
+            higher_is_better=False,
+            plausible=(0, None),
+            trend_metric=False,
+        ),
+        _m(
+            "capex",
+            "Capital expenditure (capex)",
+            "Investitionen (Sachanlagen und immaterielle Werte)",
+            "money",
+            sectors=("corporate",),
+            sector_required=True,
+            statement="Cash flow statement (investing activities)",
+            description="Cash spent on property, plant, equipment and intangible assets. Enter as a positive number. Free cash flow ≈ operating cash flow − capex.",
+            higher_is_better=None,
+            hard=(0, None),
+        ),
+        _m(
+            "free_cash_flow",
+            "Free cash flow (as reported)",
+            "Free Cashflow (ausgewiesen)",
+            "money",
+            sectors=("corporate",),
+            statement="Management report / key figures",
+            description="The company's own definition — compare it with your operating cash flow − capex; definitions differ (leases, interest, acquisitions).",
+        ),
+        _m(
+            "cash",
+            "Cash and cash equivalents",
+            "Flüssige Mittel",
+            "money",
+            sectors=("corporate",),
+            sector_required=True,
+            statement="Balance sheet",
+            description="Cash and short-term deposits. Net debt = financial debt − cash (some analysts also deduct marketable securities).",
+            higher_is_better=None,
+            hard=(0, None),
+            trend_metric=False,
+        ),
+        _m(
+            "total_debt",
+            "Financial debt (incl. leases)",
+            "Finanzverbindlichkeiten (inkl. Leasing)",
+            "money",
+            sectors=("corporate",),
+            sector_required=True,
+            statement="Balance sheet / debt note",
+            description="Bonds, bank loans, commercial paper and lease liabilities — interest-bearing obligations only (not payables).",
+            higher_is_better=False,
+            hard=(0, None),
+        ),
+        _m(
+            "current_assets",
+            "Current assets",
+            "Umlaufvermögen",
+            "money",
+            sectors=("corporate",),
+            statement="Balance sheet",
+            higher_is_better=None,
+            hard=(0, None),
+            trend_metric=False,
+        ),
+        _m(
+            "current_liabilities",
+            "Current liabilities",
+            "Kurzfristige Verbindlichkeiten",
+            "money",
+            sectors=("corporate",),
+            statement="Balance sheet",
+            higher_is_better=None,
+            hard=(0, None),
+            trend_metric=False,
+        ),
+        _m(
+            "inventories",
+            "Inventories",
+            "Vorräte",
+            "money",
+            sectors=("corporate",),
+            statement="Balance sheet",
+            description="Raw materials, work in progress and finished goods. Inventories growing faster than sales tie up cash and can signal weak demand.",
+            higher_is_better=None,
+            hard=(0, None),
+            trend_metric=False,
+        ),
+        _m(
+            "receivables",
+            "Trade receivables",
+            "Forderungen aus Lieferungen und Leistungen",
+            "money",
+            sectors=("corporate",),
+            statement="Balance sheet",
+            description="Amounts customers still owe. Receivables growing faster than sales can signal aggressive revenue recognition or weaker customers.",
+            higher_is_better=None,
+            hard=(0, None),
+            trend_metric=False,
+        ),
     ]
 }
 
@@ -390,7 +558,7 @@ def metrics_for_sector(sector: str) -> list[Metric]:
 
 
 def required_metrics(sector: str) -> list[Metric]:
-    return [m for m in metrics_for_sector(sector) if m.core or m.sector_required]
+    return [m for m in metrics_for_sector(sector) if m.is_required(sector)]
 
 
 def unit_label(metric_key: str, currency: str) -> str:
@@ -507,6 +675,45 @@ ALIASES: dict[str, str] = {
     "credit loss expense": "credit_loss_expense",
     "loans": "customer_loans",
     "deposits": "customer_deposits",
+    "net sales": "revenue",
+    "sales": "revenue",
+    "nettoumsatz": "revenue",
+    "gross profit": "gross_profit",
+    "bruttogewinn": "gross_profit",
+    "ebit": "ebit",
+    "operating result": "ebit",
+    "operating profit": "ebit",
+    "betriebsergebnis": "ebit",
+    "depreciation and amortisation": "depreciation_amortisation",
+    "depreciation and amortization": "depreciation_amortisation",
+    "da": "depreciation_amortisation",
+    "abschreibungen": "depreciation_amortisation",
+    "rd": "rnd_expense",
+    "research and development": "rnd_expense",
+    "forschung und entwicklung": "rnd_expense",
+    "interest expense": "interest_expense",
+    "zinsaufwand": "interest_expense",
+    "capex": "capex",
+    "capital expenditure": "capex",
+    "investitionen": "capex",
+    "free cash flow": "free_cash_flow",
+    "fcf": "free_cash_flow",
+    "cash": "cash",
+    "cash and cash equivalents": "cash",
+    "flussige mittel": "cash",
+    "flüssige mittel": "cash",
+    "financial debt": "total_debt",
+    "total debt": "total_debt",
+    "finanzverbindlichkeiten": "total_debt",
+    "current assets": "current_assets",
+    "umlaufvermogen": "current_assets",
+    "umlaufvermögen": "current_assets",
+    "current liabilities": "current_liabilities",
+    "inventories": "inventories",
+    "vorrate": "inventories",
+    "vorräte": "inventories",
+    "receivables": "receivables",
+    "trade receivables": "receivables",
 }
 
 

@@ -42,3 +42,11 @@ def test_bank_fcfe_and_sensitivity():
     grid = V.sensitivity_grid(lambda r, g: V.justified_pb(0.12, r, g), [0.08, 0.10], [0.02, 0.09])
     assert grid.shape == (2, 2)
     assert grid[0, 1] != grid[0, 1]  # NaN where r <= g
+
+
+def test_wacc_and_implied_growth():
+    assert V.wacc(70, 0.08, 30, 0.03, 0.2) == pytest.approx(0.7 * 0.08 + 0.3 * 0.03 * 0.8)
+    ev = V.gordon_ddm(1000, 0.07, 0.02)
+    assert V.implied_growth(ev, 1000, 0.07) == pytest.approx(0.02)
+    assert {"ev_ebitda", "dcf"} <= V.UNSUITED["bank"] and "pb" in V.UNSUITED["corporate"]
+    assert {m.key for m in V.METHOD_GUIDE} >= V.SUITED["corporate"] | V.SUITED["bank"]

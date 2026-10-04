@@ -1,8 +1,10 @@
-# Analyst Lab — learn to analyse a bank or insurer like an equity analyst
+# Analyst Lab — learn to analyse a company like an equity analyst
 
 An interactive Streamlit app that walks you through a full company analysis in ten stages — from understanding the business to writing an investment thesis. It is a **learning tool, not a stock picker**: you enter the data, do the calculations, form the hypotheses and write the interpretations. The app checks your work, explains mistakes and only then shows its own view.
 
-It comes with five companies: **UBS, LLB, Swiss Life, Swiss Re and PrismaLife**. You can add more.
+It comes with nine companies in three sectors — banks (**UBS, LLB, Graubündner Kantonalbank**), insurers (**Swiss Life, Swiss Re, PrismaLife**) and non-financial companies (**Roche, Novartis, Hilti**). You can add more.
+
+The sector changes what you analyse: banks are judged on capital (CET1), efficiency and net interest income and valued on P/B versus ROE; non-financials on margins, cash conversion, net debt ÷ EBITDA and ROCE, and valued with a free-cash-flow DCF at the WACC and EV/EBITDA. Ratios, quality-of-earnings checks, risk types, peer metrics, valuation methods and quiz questions all follow the sector.
 
 ## Quick start
 
@@ -67,6 +69,10 @@ Each question is tagged with a concept. Concepts you get wrong — in quizzes *a
 | Swiss Life | Insurer | Core figures 2021–2025 | IFRS 4 → IFRS 17 break between 2022 and 2023 |
 | Swiss Re | Insurer | Core figures 2021–2025 | US GAAP → IFRS break between 2022 and 2023 |
 | PrismaLife | Insurer | **None** — collect everything yourself | Not listed; local GAAP + Solvency II; market multiples come from peers |
+| Graubündner Kantonalbank (GKB) | Bank | Core figures 2021–2025 | Swiss bank GAAP (not IFRS); listed participation certificates without votes; vendor's 2025 revenue replaced by the bank's own figure |
+| Roche | Non-financial (pharma & diagnostics) | Core, cash-flow and balance-sheet figures 2021–2025 | IFRS vs 'core' results; per-ADR vendor figures converted to per share; group sales used consistently |
+| Novartis | Non-financial (pharma) | Core, cash-flow and balance-sheet figures 2021–2025 | Reports in USD, dividend in CHF; Roche-stake gain 2021; Sandoz spin-off 2023 |
+| Hilti | Non-financial (tools & construction) | Sales, operating result, net income, free cash flow from media releases | Not listed (family trust); balance sheet and cash flows to collect from the Financial Report |
 
 **Read this before relying on any number.** The starter values come from a third-party data vendor (FMP, retrieved via Bigdata.com) plus a few annual-report figures, and **have not been verified**. Vendor data maps bank and insurer accounts onto an industrial template, so some lines differ from the annual report. Industry-specific KPIs (CET1 ratio, cost/income, NII, solvency ratio, combined ratio, AuM …) are left empty on purpose: collecting and verifying them is the Stage 2 exercise. Where the vendor data was clearly inconsistent (e.g. UBS 2023 EPS), the cell is empty and has a note.
 
@@ -76,7 +82,7 @@ The qualitative reference notes (business model, events, risks) are written for 
 
 Use **Add a company** in the sidebar, or copy a folder in `datasets/companies/` and edit it:
 
-- `profile.json` — name, sector (`bank`/`insurer`), currency, accounting basis per year, regulator, investor-relations link, and optionally reference notes, events, risks and company-specific quiz questions.
+- `profile.json` — name, sector (`bank`/`insurer`/`corporate` for non-financial companies), currency, accounting basis per year, regulator, investor-relations link, and optionally reference notes, events, risks and company-specific quiz questions.
 - `financials.csv` — one row per metric (keys from `lab/metrics.py`), one column per year, plus `source` and `note`.
 
 ### Importing data

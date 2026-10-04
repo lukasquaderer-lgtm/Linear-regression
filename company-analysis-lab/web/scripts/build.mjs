@@ -22,7 +22,7 @@ const js = result.outputFiles[0].text.replace(/<\/script/gi, "<\\/script");
 const css = readFileSync("src/styles.css", "utf8");
 
 const html = `<title>Analyst Lab</title>
-<meta name="description" content="Learn to analyse banks and insurers like an equity analyst — ten guided stages from business model to investment thesis.">
+<meta name="description" content="Learn to analyse banks, insurers and non-financial companies like an equity analyst — ten guided stages from business model to investment thesis.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="${FONTS}">

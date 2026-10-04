@@ -6,12 +6,13 @@ Methods and when they fit
 -------------------------
 P/E                 any profitable company; use normalised EPS, not one-off-inflated EPS
 P/B                 banks and insurers — book value is mostly financial assets
+EV/EBITDA           non-financial companies; capital-structure neutral
 Dividend yield      mature dividend payers; check payout sustainability
 Justified P/B       (ROE − g)/(r − g): links profitability, growth and cost of equity
 Gordon DDM          stable dividend payers with g < r
 Two-stage DDM       when near-term dividend growth differs from long-run growth
 Residual income     financials and any firm where book value is meaningful
-Simple DCF (FCFE)   industrial firms; for banks/insurers only with FCFE = distributable capital
+FCFF DCF (WACC)     non-financial firms; for banks/insurers only with FCFE = distributable capital
 """
 
 from __future__ import annotations
@@ -156,5 +157,24 @@ METHOD_GUIDE = [
     MethodGuide("jpb", "ROE vs P/B (justified P/B)", "Financials: value creation = ROE above cost of equity.", "Very sensitive to r − g; use sustainable (through-the-cycle) ROE.", "justified_pb"),
     MethodGuide("ddm", "Dividend discount model (Dividendendiskontierungsmodell)", "Stable payers whose dividends reflect capital generation.", "Ignores buybacks unless you include them; explodes as g approaches r.", "ddm"),
     MethodGuide("ri", "Residual income (Residualgewinnmodell)", "Banks and insurers — anchored on book value, value comes from ROE − r.", "Requires clean-surplus accounting; OCI swings and IFRS 17 CSM need thought.", "residual_income"),
-    MethodGuide("dcf", "Simple DCF (FCFE)", "Industrial companies with clear free cash flow. For financials only if FCFE = distributable capital.", "For banks, 'debt' is operating raw material and cash flow statements are not informative — FCFF DCF is inappropriate.", "dcf"),
+    MethodGuide("ev_ebitda", "EV/EBITDA (Unternehmenswert / EBITDA)", "Non-financial companies — compares firms with different debt levels and depreciation policies.", "Meaningless for banks and insurers (no EBITDA, debt is operating). Treat leases and minorities consistently in EV.", "ev_ebitda"),
+    MethodGuide("dcf", "DCF on free cash flow (FCFF at the WACC)", "Non-financial companies with clear free cash flow. For financials only if redefined as FCFE = distributable capital.", "Very sensitive to the WACC and terminal growth. For banks, 'debt' is operating raw material and cash flow statements are not informative — FCFF is inappropriate.", "dcf"),
 ]
+
+# Methods that fit — or clearly do not fit — each sector (Stage 9 feedback).
+SUITED = {"bank": {"pb", "jpb", "ddm", "ri"}, "insurer": {"pb", "jpb", "ddm", "ri"}, "corporate": {"pe", "ev_ebitda", "dcf", "ddm"}}
+UNSUITED = {"bank": {"dcf", "ev_ebitda"}, "insurer": {"dcf", "ev_ebitda"}, "corporate": {"pb", "jpb"}}
+
+
+def wacc(equity_value: float, cost_of_equity: float, debt_value: float, cost_of_debt: float, tax_rate: float) -> float | None:
+    v = equity_value + debt_value
+    if v <= 0:
+        return None
+    return equity_value / v * cost_of_equity + debt_value / v * cost_of_debt * (1 - tax_rate)
+
+
+def implied_growth(enterprise_value: float, fcf0: float, r: float) -> float | None:
+    """Perpetual growth that makes FCF₀ × (1 + g) ÷ (r − g) equal the enterprise value."""
+    if enterprise_value + fcf0 == 0:
+        return None
+    return (enterprise_value * r - fcf0) / (enterprise_value + fcf0)

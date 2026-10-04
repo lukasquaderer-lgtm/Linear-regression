@@ -22,6 +22,7 @@ CORE_TREND = ["revenue", "net_income", "total_equity", "eps"]
 SECTOR_PRIORITY = {
     "bank": ["cet1_ratio", "cost_income_ratio", "net_interest_income", "fee_income", "net_new_money", "aum"],
     "insurer": ["solvency_ratio", "combined_ratio", "investment_income", "insurance_revenue", "gross_premiums", "aum"],
+    "corporate": ["ebit", "operating_cash_flow", "free_cash_flow", "rnd_expense", "gross_profit", "total_debt"],
 }
 
 
@@ -30,7 +31,7 @@ def trend_metrics(app: AppContext, values: pd.DataFrame) -> list[str]:
     out = []
     for key in list(M.CATALOG) + list(app.custom_metrics):
         m = M.get(key)
-        if key not in applicable or (m is not None and not m.trend_metric) or key not in values.index:
+        if key not in applicable or (m is not None and not m.is_trend(app.sector)) or key not in values.index:
             continue
         if values.loc[key].notna().sum() >= 3:
             out.append(key)

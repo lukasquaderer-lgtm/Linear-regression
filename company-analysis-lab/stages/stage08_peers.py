@@ -47,7 +47,17 @@ def comparison_set(sector_a: str, sector_b: str) -> list[dict]:
             {"key": "investment_share", "kind": "ratio", "label": "Investment income share", "unit": "%", "why": "Dependence on investment returns."},
             {"key": "combined_ratio", "kind": "metric", "label": "Combined ratio", "unit": "%", "why": "Only meaningful if both write P&C business."},
         ] + common[1:]
-    return common + [{"key": "equity_ratio", "kind": "ratio", "label": "Equity / total assets", "unit": "%", "why": "Rough leverage — but bank and insurer balance sheets are structurally different."}]
+    if sector_a == sector_b == "corporate":
+        return common[:1] + [
+            {"key": "ebit_margin", "kind": "ratio", "label": "EBIT margin", "unit": "%", "why": "Operating profitability before financing and tax — the fairest margin to compare."},
+            {"key": "roce", "kind": "ratio", "label": "Return on capital employed", "unit": "%", "why": "Return on all capital, not inflated by buybacks or debt like ROE."},
+            {"key": "cash_conversion", "kind": "ratio", "label": "Cash conversion (OCF ÷ net income)", "unit": "%", "why": "Does profit turn into cash? One-off gains distort it."},
+            {"key": "fcf_margin", "kind": "ratio", "label": "Free cash flow margin", "unit": "%", "why": "Cash left for dividends, buybacks and acquisitions per unit of sales."},
+            {"key": "net_debt_ebitda", "kind": "ratio", "label": "Net debt ÷ EBITDA", "unit": "×", "why": "Financial risk — check it before praising a higher ROE."},
+            {"key": "rnd_intensity", "kind": "ratio", "label": "R&D intensity", "unit": "%", "why": "Reinvestment in future products."},
+            {"key": "revenue", "kind": "indexed", "label": "Revenue growth (indexed)", "unit": "index", "why": "Organic growth, acquisitions and spin-offs all show up here — check which."},
+        ] + common[1:]
+    return common + [{"key": "equity_ratio", "kind": "ratio", "label": "Equity / total assets", "unit": "%", "why": "Rough leverage — but bank, insurer and industrial balance sheets are structurally different (a bank runs on about 5 % equity, an industrial on 40–60 %)."}]
 
 
 def series_for(item: dict, values: pd.DataFrame) -> pd.Series:
@@ -77,7 +87,7 @@ def render(app: AppContext) -> None:
     with c1:
         ui.task_box(
             "Choose a peer, check how comparable it really is, <b>predict</b> where the two differ — then look at the side-by-side 5-year trends. "
-            "The app only compares metrics that make sense for the pair (a bank's CET1 ratio is not comparable with an insurer's solvency ratio)."
+            "The app only compares metrics that make sense for the pair (a bank's CET1 ratio is not comparable with an insurer's solvency ratio, and neither with an industrial's net debt ÷ EBITDA)."
         )
     with c2:
         ui.cfa_box("peers")
@@ -87,7 +97,7 @@ def render(app: AppContext) -> None:
     by_id = {c["id"]: c for c in others}
     suggested = [p for p in app.profile.get("peers_suggested", []) if p in ids]
     current = answers.get("peer_id") if answers.get("peer_id") in ids else (suggested[0] if suggested else ids[0])
-    peer_id = st.selectbox("Peer company", ids, index=ids.index(current), format_func=lambda i: f"{by_id[i]['short_name']} · {by_id[i]['sector']}" + ("  (suggested)" if i in suggested else ""), key="s8-peer")
+    peer_id = st.selectbox("Peer company", ids, index=ids.index(current), format_func=lambda i: f"{by_id[i]['short_name']} · {M.sector_name(by_id[i]['sector'])}" + ("  (suggested)" if i in suggested else ""), key="s8-peer")
     if peer_id != answers.get("peer_id"):
         answers.update({"peer_id": peer_id, "predicted": False, "predictions": {}})
         app.save()
@@ -104,7 +114,7 @@ def render(app: AppContext) -> None:
     peer_currency = storage.load_progress(peer_id).get("settings", {}).get("currency") or peer.get("currency")
     rows = [
         ("Business model", app.profile.get("subsector", ""), peer.get("subsector", ""), app.sector == peer["sector"]),
-        ("Sector", app.sector, peer["sector"], app.sector == peer["sector"]),
+        ("Sector", M.sector_name(app.sector), M.sector_name(peer["sector"]), app.sector == peer["sector"]),
         ("Reporting currency", app.currency, peer_currency, app.currency == peer_currency),
         ("Accounting basis", ", ".join(acc_a), ", ".join(acc_b), acc_a == acc_b),
         ("Listed", "yes" if app.profile.get("listed") else "no", "yes" if peer.get("listed") else "no", app.profile.get("listed") == peer.get("listed")),
@@ -112,7 +122,7 @@ def render(app: AppContext) -> None:
     ]
     st.dataframe(pd.DataFrame([{"Dimension": r[0], name_a: r[1], name_b: r[2], "Same?": "✓" if r[3] else "⚠"} for r in rows]), hide_index=True)
     if app.sector != peer["sector"]:
-        st.warning("Cross-sector comparison: only ROE, payout, growth and simple leverage are shown. Capital ratios (CET1 vs solvency) measure different things.", icon=":material/warning:")
+        st.warning("Cross-sector comparison: only ROE, payout, growth and simple leverage are shown. Capital and leverage measures (CET1, solvency ratio, net debt ÷ EBITDA) measure different things.", icon=":material/warning:")
     if peer_currency != app.currency:
         st.info("Different reporting currencies: compare ratios and indexed growth, never absolute amounts.", icon=":material/currency_exchange:")
     missing_peer = [k for k in D.required_metric_keys(peer) if k not in pvalues.index or pvalues.loc[k].isna().all()]

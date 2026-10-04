@@ -21,12 +21,15 @@ NUMBER = 4
 MIN_INTERP_WORDS = 15
 CONCEPT_OF = {"roe": "roe", "roa": "roa", "leverage": "dupont", "net_margin": "ratio_definitions", "cost_income": "ratio_definitions", "payout": "payout",
               "equity_ratio": "leverage", "bvps": "ratio_definitions", "cet1_calc": "regulatory_capital", "rwa_density": "regulatory_capital",
-              "nii_share": "revenue_mix", "fee_share": "revenue_mix", "nnm_growth": "ratio_definitions", "insurance_margin": "ratio_definitions", "investment_share": "revenue_mix"}
+              "nii_share": "revenue_mix", "fee_share": "revenue_mix", "nnm_growth": "ratio_definitions", "insurance_margin": "ratio_definitions", "investment_share": "revenue_mix",
+              "ebit_margin": "ratio_definitions", "cash_conversion": "cash_conversion", "fcf_margin": "cash_conversion", "net_debt_ebitda": "debt_capacity",
+              "roce": "roe", "gross_margin": "ratio_definitions", "rnd_intensity": "cost_structure", "capex_intensity": "cost_structure",
+              "interest_cover": "debt_capacity", "current_ratio": "ratio_definitions", "asset_turnover": "dupont"}
 
 
 def required_ratios(app: AppContext, available: list[R.RatioDef]) -> list[str]:
-    core = [r.key for r in available if r.core]
-    sector = [r.key for r in available if not r.core and app.sector in r.sectors and r.sectors != M.SECTORS]
+    core = [r.key for r in available if r.is_core(app.sector)]
+    sector = [r.key for r in available if not r.is_core(app.sector) and app.sector in r.sectors and r.sectors != M.SECTORS]
     return core + sector[:2]
 
 
@@ -197,4 +200,4 @@ def _dupont(app: AppContext, values: pd.DataFrame) -> None:
     for col, (c, u) in zip(cols, [("ROA %", "%"), ("Leverage ×", "×"), ("ROE %", "%")]):
         with col:
             ui.plotly(viz.small_line(s[c], c, u), key=f"s4-dupont-{c}")
-    st.caption("Question to ask yourself: did ROE move because the company became more profitable (ROA) or because it used more leverage? Banks and insurers can raise ROE simply by holding less capital.")
+    st.caption("Question to ask yourself: did ROE move because the company became more profitable (ROA) or because it used more leverage? Banks and insurers can raise ROE simply by holding less capital; other companies by buying back shares with debt.")

@@ -8,7 +8,8 @@ export const RATIOS = [
   "unit": "%",
   "sectors": [
    "bank",
-   "insurer"
+   "insurer",
+   "corporate"
   ],
   "higher_is_better": true,
   "core": true,
@@ -27,11 +28,13 @@ export const RATIOS = [
   ],
   "interpretation": {
    "bank": "Compare ROE with the cost of equity (roughly 8–12 % for European banks). ROE above it creates value and supports P/B above 1. Check whether ROE comes from margins or from leverage (DuPont), and adjust for one-offs.",
-   "insurer": "Compare ROE with the cost of equity (roughly 7–10 % for large insurers). Under IFRS 17 equity excludes the CSM (future profit), which can make ROE look higher than under IFRS 4. Reinsurers' ROE swings with catastrophe losses."
+   "insurer": "Compare ROE with the cost of equity (roughly 7–10 % for large insurers). Under IFRS 17 equity excludes the CSM (future profit), which can make ROE look higher than under IFRS 4. Reinsurers' ROE swings with catastrophe losses.",
+   "corporate": "Compare ROE with the cost of equity (roughly 6–9 % for large Swiss companies). Use DuPont to see whether it comes from margins, asset turnover or debt. Buybacks and write-offs shrink equity and inflate ROE — for pharma, ROCE or ROIC is often more telling."
   },
   "benchmark": {
    "bank": "Swiss/European banks: about 5–15 %",
-   "insurer": "Life insurers: about 8–15 %; reinsurers: volatile, 0–20 %"
+   "insurer": "Life insurers: about 8–15 %; reinsurers: volatile, 0–20 %",
+   "corporate": "Pharma: 15–40 % (equity reduced by buybacks); industrials: about 10–25 %"
   }
  },
  {
@@ -42,7 +45,8 @@ export const RATIOS = [
   "unit": "%",
   "sectors": [
    "bank",
-   "insurer"
+   "insurer",
+   "corporate"
   ],
   "higher_is_better": true,
   "core": true,
@@ -61,11 +65,13 @@ export const RATIOS = [
   ],
   "interpretation": {
    "bank": "Banks earn thin returns on a large balance sheet: 0.3–1 % is normal. A low ROA with a decent ROE means high leverage. Wealth managers with off-balance-sheet client assets can earn higher ROA.",
-   "insurer": "Insurers' balance sheets include large policyholder assets (e.g. unit-linked funds) on which they earn only fees — ROA is low by design. Compare with peers on the same accounting basis."
+   "insurer": "Insurers' balance sheets include large policyholder assets (e.g. unit-linked funds) on which they earn only fees — ROA is low by design. Compare with peers on the same accounting basis.",
+   "corporate": "Non-financial companies earn far more per unit of assets than banks: 5–15 % is common. Large acquired intangibles and goodwill depress ROA; asset-light businesses show high ROA."
   },
   "benchmark": {
    "bank": "about 0.3–1.0 %",
-   "insurer": "about 0.3–1.5 %"
+   "insurer": "about 0.3–1.5 %",
+   "corporate": "about 5–15 %"
   }
  },
  {
@@ -76,7 +82,8 @@ export const RATIOS = [
   "unit": "%",
   "sectors": [
    "bank",
-   "insurer"
+   "insurer",
+   "corporate"
   ],
   "higher_is_better": true,
   "core": true,
@@ -95,11 +102,13 @@ export const RATIOS = [
   ],
   "interpretation": {
    "bank": "Share of operating income that ends up as profit for shareholders. Falls when costs, credit losses or taxes rise. A margin above 50 % usually signals a one-off gain.",
-   "insurer": "Depends heavily on what 'revenue' contains: IFRS 4 premiums (incl. savings) give low margins; IFRS 17 insurance revenue gives higher ones. Never compare across the accounting break."
+   "insurer": "Depends heavily on what 'revenue' contains: IFRS 4 premiums (incl. savings) give low margins; IFRS 17 insurance revenue gives higher ones. Never compare across the accounting break.",
+   "corporate": "Share of sales left after all costs, interest and tax. Patented medicines earn high margins (15–30 %); industrials 5–12 %. Disposal gains and impairments distort it — compare with the EBIT margin and with the company's 'core' or 'adjusted' figures."
   },
   "benchmark": {
    "bank": "about 15–30 %",
-   "insurer": "basis-dependent (IFRS 17: about 5–15 %)"
+   "insurer": "basis-dependent (IFRS 17: about 5–15 %)",
+   "corporate": "pharma about 15–30 %; industrials about 5–12 %"
   }
  },
  {
@@ -141,10 +150,14 @@ export const RATIOS = [
   "unit": "x",
   "sectors": [
    "bank",
-   "insurer"
+   "insurer",
+   "corporate"
   ],
   "higher_is_better": null,
-  "core": true,
+  "core": [
+   "bank",
+   "insurer"
+  ],
   "cfa": "leverage",
   "inputs": [
    {
@@ -160,11 +173,13 @@ export const RATIOS = [
   ],
   "interpretation": {
    "bank": "Banks typically run 12–25× leverage. Higher leverage boosts ROE but leaves less loss absorption — regulators cap it via capital and leverage-ratio rules.",
-   "insurer": "Insurers often show 15–30× because policyholder liabilities dominate the balance sheet. Look at the solvency ratio for the real capital buffer."
+   "insurer": "Insurers often show 15–30× because policyholder liabilities dominate the balance sheet. Look at the solvency ratio for the real capital buffer.",
+   "corporate": "Assets ÷ equity of 1.5–3× is typical. Higher leverage lifts ROE but raises financial risk — for a non-financial, judge debt with net debt ÷ EBITDA and interest cover."
   },
   "benchmark": {
    "bank": "about 12–25×",
-   "insurer": "about 10–30×"
+   "insurer": "about 10–30×",
+   "corporate": "about 1.5–3×"
   }
  },
  {
@@ -175,7 +190,8 @@ export const RATIOS = [
   "unit": "%",
   "sectors": [
    "bank",
-   "insurer"
+   "insurer",
+   "corporate"
   ],
   "higher_is_better": true,
   "core": false,
@@ -194,11 +210,13 @@ export const RATIOS = [
   ],
   "interpretation": {
    "bank": "Simple (unweighted) capital measure — the accounting cousin of the regulatory leverage ratio.",
-   "insurer": "Low equity ratios are normal; what matters is the risk-based solvency ratio."
+   "insurer": "Low equity ratios are normal; what matters is the risk-based solvency ratio.",
+   "corporate": "Share of assets financed by equity. 40–60 % is solid for an industrial (Hilti targets at least 45 %); buybacks and debt-financed acquisitions lower it."
   },
   "benchmark": {
    "bank": "about 4–8 %",
-   "insurer": "about 3–10 %"
+   "insurer": "about 3–10 %",
+   "corporate": "about 30–60 %"
   }
  },
  {
@@ -209,7 +227,8 @@ export const RATIOS = [
   "unit": "%",
   "sectors": [
    "bank",
-   "insurer"
+   "insurer",
+   "corporate"
   ],
   "higher_is_better": null,
   "core": false,
@@ -228,11 +247,13 @@ export const RATIOS = [
   ],
   "interpretation": {
    "bank": "Swiss banks pay out 40–60 % in cash and often add buybacks. A payout above 100 % is only sustainable with excess capital.",
-   "insurer": "Insurers often target 50–70 %+. Judge sustainability against capital generation (solvency ratio stable?), not only against IFRS earnings."
+   "insurer": "Insurers often target 50–70 %+. Judge sustainability against capital generation (solvency ratio stable?), not only against IFRS earnings.",
+   "corporate": "Swiss blue chips are known for rising dividends; 50–80 % of IFRS EPS is common (Roche targets about half of core EPS). Check that free cash flow covers dividends plus buybacks — and watch the currency of the dividend."
   },
   "benchmark": {
    "bank": "about 40–60 % (plus buybacks)",
-   "insurer": "about 50–80 %"
+   "insurer": "about 50–80 %",
+   "corporate": "about 40–80 %"
   }
  },
  {
@@ -243,7 +264,8 @@ export const RATIOS = [
   "unit": "ccy",
   "sectors": [
    "bank",
-   "insurer"
+   "insurer",
+   "corporate"
   ],
   "higher_is_better": true,
   "core": false,
@@ -262,7 +284,8 @@ export const RATIOS = [
   ],
   "interpretation": {
    "bank": "The denominator of P/B. Growing BVPS (plus dividends) is a good long-run measure of value creation for banks.",
-   "insurer": "Under IFRS 17 book value excludes the CSM — some analysts add the after-tax CSM ('adjusted book value')."
+   "insurer": "Under IFRS 17 book value excludes the CSM — some analysts add the after-tax CSM ('adjusted book value').",
+   "corporate": "Less informative for non-financials: book value leaves out internally developed assets (R&D pipelines, brands) and shrinks with buybacks, so P/B of 5–10× for pharma says little on its own."
   },
   "benchmark": {}
  },
@@ -474,6 +497,372 @@ export const RATIOS = [
    "insurer": "How dependent the insurer is on investment returns. Life insurers depend heavily on them (spread business); reinsurers less so but still materially."
   },
   "benchmark": {}
+ },
+ {
+  "key": "ebit_margin",
+  "en": "EBIT margin (operating margin)",
+  "de": "EBIT-Marge (Betriebsergebnismarge)",
+  "text": "Operating result (EBIT) ÷ revenue × 100",
+  "unit": "%",
+  "sectors": [
+   "corporate"
+  ],
+  "higher_is_better": true,
+  "core": true,
+  "cfa": "ebit_margin",
+  "inputs": [
+   {
+    "metric": "ebit",
+    "averaged": false,
+    "opening": false
+   },
+   {
+    "metric": "revenue",
+    "averaged": false,
+    "opening": false
+   }
+  ],
+  "interpretation": {
+   "corporate": "Profitability of the operating business before financing and tax — the best margin for comparing companies with different debt and tax. Watch the trend: falling EBIT margin with rising sales means costs or prices are moving against the company. Hilti calls it 'return on sales'."
+  },
+  "benchmark": {
+   "corporate": "pharma about 25–35 % (IFRS; higher on core); industrials about 10–15 %"
+  }
+ },
+ {
+  "key": "cash_conversion",
+  "en": "Cash conversion (OCF ÷ net income)",
+  "de": "Cash-Conversion (operativer Cashflow ÷ Reingewinn)",
+  "text": "Operating cash flow ÷ net income × 100",
+  "unit": "%",
+  "sectors": [
+   "corporate"
+  ],
+  "higher_is_better": true,
+  "core": true,
+  "cfa": "cash_conversion",
+  "inputs": [
+   {
+    "metric": "operating_cash_flow",
+    "averaged": false,
+    "opening": false
+   },
+   {
+    "metric": "net_income",
+    "averaged": false,
+    "opening": false
+   }
+  ],
+  "interpretation": {
+   "corporate": "Does profit turn into cash? Above 100 % is normal because depreciation and amortisation are non-cash. Persistently below 100 % — or falling while profit rises — points to working capital build-up or aggressive accounting. One-off gains in net income (disposals) make it look low."
+  },
+  "benchmark": {
+   "corporate": "usually about 100–150 %"
+  }
+ },
+ {
+  "key": "fcf_margin",
+  "en": "Free cash flow margin",
+  "de": "Free-Cashflow-Marge",
+  "text": "(Operating cash flow − capex) ÷ revenue × 100",
+  "unit": "%",
+  "sectors": [
+   "corporate"
+  ],
+  "higher_is_better": true,
+  "core": false,
+  "cfa": "fcf",
+  "inputs": [
+   {
+    "metric": "operating_cash_flow",
+    "averaged": false,
+    "opening": false
+   },
+   {
+    "metric": "capex",
+    "averaged": false,
+    "opening": false
+   },
+   {
+    "metric": "revenue",
+    "averaged": false,
+    "opening": false
+   }
+  ],
+  "interpretation": {
+   "corporate": "Cash left after maintaining and expanding the asset base, per unit of sales — what is available for dividends, buybacks, acquisitions and debt repayment. Pharma converts 20–30 % of sales into free cash flow; industrials 5–10 %."
+  },
+  "benchmark": {
+   "corporate": "pharma about 20–30 %; industrials about 5–10 %"
+  }
+ },
+ {
+  "key": "net_debt_ebitda",
+  "en": "Net debt ÷ EBITDA",
+  "de": "Nettoverschuldung ÷ EBITDA",
+  "text": "(Financial debt − cash) ÷ (EBIT + D&A), times",
+  "unit": "x",
+  "sectors": [
+   "corporate"
+  ],
+  "higher_is_better": false,
+  "core": false,
+  "cfa": "net_debt_ebitda",
+  "inputs": [
+   {
+    "metric": "total_debt",
+    "averaged": false,
+    "opening": false
+   },
+   {
+    "metric": "cash",
+    "averaged": false,
+    "opening": false
+   },
+   {
+    "metric": "ebit",
+    "averaged": false,
+    "opening": false
+   },
+   {
+    "metric": "depreciation_amortisation",
+    "averaged": false,
+    "opening": false
+   }
+  ],
+  "interpretation": {
+   "corporate": "How many years of operating cash earnings it would take to repay net debt. Below 1.5× is conservative, 2–3× is common after acquisitions, above 3–4× worries rating agencies. Negative means net cash."
+  },
+  "benchmark": {
+   "corporate": "about 0–2.5× for strong ratings"
+  }
+ },
+ {
+  "key": "roce",
+  "en": "Return on capital employed (ROCE)",
+  "de": "Rendite auf das eingesetzte Kapital (ROCE)",
+  "text": "EBIT ÷ average capital employed (equity + financial debt − cash) × 100",
+  "unit": "%",
+  "sectors": [
+   "corporate"
+  ],
+  "higher_is_better": true,
+  "core": false,
+  "cfa": "roce",
+  "inputs": [
+   {
+    "metric": "ebit",
+    "averaged": false,
+    "opening": false
+   },
+   {
+    "metric": "total_equity",
+    "averaged": true,
+    "opening": false
+   },
+   {
+    "metric": "total_debt",
+    "averaged": true,
+    "opening": false
+   },
+   {
+    "metric": "cash",
+    "averaged": true,
+    "opening": false
+   }
+  ],
+  "interpretation": {
+   "corporate": "Pre-tax return on all the capital the business uses, regardless of how it is financed — so buybacks and leverage do not inflate it like ROE. Compare it with the pre-tax cost of capital (WACC grossed up for tax, roughly 8–10 %). Hilti reports its own ROCE (2025: 11.8 %)."
+  },
+  "benchmark": {
+   "corporate": "about 10–25 %"
+  }
+ },
+ {
+  "key": "gross_margin",
+  "en": "Gross margin",
+  "de": "Bruttomarge",
+  "text": "Gross profit ÷ revenue × 100",
+  "unit": "%",
+  "sectors": [
+   "corporate"
+  ],
+  "higher_is_better": true,
+  "core": false,
+  "cfa": "gross_margin",
+  "inputs": [
+   {
+    "metric": "gross_profit",
+    "averaged": false,
+    "opening": false
+   },
+   {
+    "metric": "revenue",
+    "averaged": false,
+    "opening": false
+   }
+  ],
+  "interpretation": {
+   "corporate": "Pricing power and production cost. Patented medicines: 70–80 %. A falling gross margin points to price pressure, input-cost inflation or a shift to lower-margin products."
+  },
+  "benchmark": {
+   "corporate": "pharma about 70–80 %; tools and industrials about 40–65 %"
+  }
+ },
+ {
+  "key": "rnd_intensity",
+  "en": "R&D intensity",
+  "de": "F&E-Quote",
+  "text": "R&D expense ÷ revenue × 100",
+  "unit": "%",
+  "sectors": [
+   "corporate"
+  ],
+  "higher_is_better": null,
+  "core": false,
+  "cfa": "rnd",
+  "inputs": [
+   {
+    "metric": "rnd_expense",
+    "averaged": false,
+    "opening": false
+   },
+   {
+    "metric": "revenue",
+    "averaged": false,
+    "opening": false
+   }
+  ],
+  "interpretation": {
+   "corporate": "How much of each franc of sales is reinvested in innovation. Big pharma spends 18–25 %; Hilti about 7 %. Cutting R&D lifts today's margin at the expense of tomorrow's growth."
+  },
+  "benchmark": {
+   "corporate": "pharma about 18–25 %; industrials about 3–8 %"
+  }
+ },
+ {
+  "key": "capex_intensity",
+  "en": "Capex intensity",
+  "de": "Investitionsquote",
+  "text": "Capital expenditure ÷ revenue × 100",
+  "unit": "%",
+  "sectors": [
+   "corporate"
+  ],
+  "higher_is_better": null,
+  "core": false,
+  "cfa": "capex",
+  "inputs": [
+   {
+    "metric": "capex",
+    "averaged": false,
+    "opening": false
+   },
+   {
+    "metric": "revenue",
+    "averaged": false,
+    "opening": false
+   }
+  ],
+  "interpretation": {
+   "corporate": "How capital-intensive the business is. Compare capex with depreciation: capex persistently below D&A means the asset base is shrinking; well above means expansion."
+  },
+  "benchmark": {
+   "corporate": "about 3–8 %"
+  }
+ },
+ {
+  "key": "interest_cover",
+  "en": "Interest cover",
+  "de": "Zinsdeckungsgrad",
+  "text": "EBIT ÷ interest expense, times",
+  "unit": "x",
+  "sectors": [
+   "corporate"
+  ],
+  "higher_is_better": true,
+  "core": false,
+  "cfa": "net_debt_ebitda",
+  "inputs": [
+   {
+    "metric": "ebit",
+    "averaged": false,
+    "opening": false
+   },
+   {
+    "metric": "interest_expense",
+    "averaged": false,
+    "opening": false
+   }
+  ],
+  "interpretation": {
+   "corporate": "How many times operating profit covers interest. Above 8–10× is comfortable; below 3× is a warning sign. It falls quickly when rates or debt rise."
+  },
+  "benchmark": {
+   "corporate": "above about 8× for strong ratings"
+  }
+ },
+ {
+  "key": "current_ratio",
+  "en": "Current ratio",
+  "de": "Liquiditätsgrad 3 (Current Ratio)",
+  "text": "Current assets ÷ current liabilities, times",
+  "unit": "x",
+  "sectors": [
+   "corporate"
+  ],
+  "higher_is_better": true,
+  "core": false,
+  "cfa": "liquidity_ratios",
+  "inputs": [
+   {
+    "metric": "current_assets",
+    "averaged": false,
+    "opening": false
+   },
+   {
+    "metric": "current_liabilities",
+    "averaged": false,
+    "opening": false
+   }
+  ],
+  "interpretation": {
+   "corporate": "Short-term liquidity: can the company pay obligations due within a year from short-term assets? Around 1–2× is normal; below 1× is fine only for companies with strong cash flow and credit access."
+  },
+  "benchmark": {
+   "corporate": "about 1–2×"
+  }
+ },
+ {
+  "key": "asset_turnover",
+  "en": "Asset turnover",
+  "de": "Kapitalumschlag",
+  "text": "Revenue ÷ average total assets, times",
+  "unit": "x",
+  "sectors": [
+   "corporate"
+  ],
+  "higher_is_better": true,
+  "core": false,
+  "cfa": "dupont",
+  "inputs": [
+   {
+    "metric": "revenue",
+    "averaged": false,
+    "opening": false
+   },
+   {
+    "metric": "total_assets",
+    "averaged": true,
+    "opening": false
+   }
+  ],
+  "interpretation": {
+   "corporate": "Sales generated per unit of assets — the middle term of DuPont. Acquisitions (goodwill) lower it; asset-light models raise it."
+  },
+  "benchmark": {
+   "corporate": "pharma about 0.5–0.7×; industrials about 0.8–1.2×"
+  }
  }
 ];
 export const METRICS = [
@@ -484,12 +873,13 @@ export const METRICS = [
   "unit": "money",
   "sectors": [
    "bank",
-   "insurer"
+   "insurer",
+   "corporate"
   ],
   "core": true,
   "sector_required": false,
   "statement": "Income statement",
-  "description": "Banks: total operating income (net interest + fees + trading + other). Insurers: total income/revenues; under IFRS 17 this no longer contains savings deposits, so it is not comparable with IFRS 4 'premiums'.",
+  "description": "Banks: total operating income (net interest + fees + trading + other). Insurers: total income/revenues; under IFRS 17 this no longer contains savings deposits, so it is not comparable with IFRS 4 'premiums'. Non-financial companies: net sales (check whether royalties and other operating income are included).",
   "higher_is_better": true,
   "plausible": [
    0,
@@ -499,7 +889,9 @@ export const METRICS = [
    null,
    null
   ],
-  "trend_metric": true
+  "trend_metric": true,
+  "required_for": [],
+  "trend_for": []
  },
  {
   "key": "operating_expenses",
@@ -522,7 +914,9 @@ export const METRICS = [
    null,
    null
   ],
-  "trend_metric": true
+  "trend_metric": true,
+  "required_for": [],
+  "trend_for": []
  },
  {
   "key": "net_income",
@@ -531,7 +925,8 @@ export const METRICS = [
   "unit": "money",
   "sectors": [
    "bank",
-   "insurer"
+   "insurer",
+   "corporate"
   ],
   "core": true,
   "sector_required": false,
@@ -546,7 +941,9 @@ export const METRICS = [
    null,
    null
   ],
-  "trend_metric": true
+  "trend_metric": true,
+  "required_for": [],
+  "trend_for": []
  },
  {
   "key": "total_assets",
@@ -555,12 +952,13 @@ export const METRICS = [
   "unit": "money",
   "sectors": [
    "bank",
-   "insurer"
+   "insurer",
+   "corporate"
   ],
   "core": true,
   "sector_required": false,
   "statement": "Balance sheet",
-  "description": "Everything the group controls. For banks and insurers mostly financial assets.",
+  "description": "Everything the group controls. For banks and insurers mostly financial assets; for non-financials mostly plant, intangibles, inventories and receivables.",
   "higher_is_better": null,
   "plausible": [
    null,
@@ -570,7 +968,9 @@ export const METRICS = [
    0,
    null
   ],
-  "trend_metric": true
+  "trend_metric": true,
+  "required_for": [],
+  "trend_for": []
  },
  {
   "key": "total_liabilities",
@@ -579,12 +979,13 @@ export const METRICS = [
   "unit": "money",
   "sectors": [
    "bank",
-   "insurer"
+   "insurer",
+   "corporate"
   ],
   "core": true,
   "sector_required": false,
   "statement": "Balance sheet",
-  "description": "Deposits, debt issued, insurance contract liabilities, derivatives and other obligations.",
+  "description": "Deposits, debt issued, insurance contract liabilities, derivatives and other obligations; for non-financials financial debt, payables, provisions and pensions.",
   "higher_is_better": null,
   "plausible": [
    null,
@@ -594,7 +995,9 @@ export const METRICS = [
    0,
    null
   ],
-  "trend_metric": true
+  "trend_metric": true,
+  "required_for": [],
+  "trend_for": []
  },
  {
   "key": "total_equity",
@@ -603,7 +1006,8 @@ export const METRICS = [
   "unit": "money",
   "sectors": [
    "bank",
-   "insurer"
+   "insurer",
+   "corporate"
   ],
   "core": true,
   "sector_required": false,
@@ -618,7 +1022,9 @@ export const METRICS = [
    null,
    null
   ],
-  "trend_metric": true
+  "trend_metric": true,
+  "required_for": [],
+  "trend_for": []
  },
  {
   "key": "operating_cash_flow",
@@ -627,12 +1033,13 @@ export const METRICS = [
   "unit": "money",
   "sectors": [
    "bank",
-   "insurer"
+   "insurer",
+   "corporate"
   ],
   "core": false,
   "sector_required": false,
   "statement": "Cash flow statement",
-  "description": "Meaningful for insurers with care; for banks it is dominated by changes in loans, deposits and trading positions and is rarely used to judge earnings quality.",
+  "description": "For non-financial companies the key test of earnings quality: does profit turn into cash? Meaningful for insurers with care; for banks it is dominated by changes in loans, deposits and trading positions and is rarely used to judge earnings quality.",
   "higher_is_better": true,
   "plausible": [
    null,
@@ -642,7 +1049,13 @@ export const METRICS = [
    null,
    null
   ],
-  "trend_metric": false
+  "trend_metric": false,
+  "required_for": [
+   "corporate"
+  ],
+  "trend_for": [
+   "corporate"
+  ]
  },
  {
   "key": "eps",
@@ -651,7 +1064,8 @@ export const METRICS = [
   "unit": "per_share",
   "sectors": [
    "bank",
-   "insurer"
+   "insurer",
+   "corporate"
   ],
   "core": true,
   "sector_required": false,
@@ -666,7 +1080,9 @@ export const METRICS = [
    null,
    null
   ],
-  "trend_metric": true
+  "trend_metric": true,
+  "required_for": [],
+  "trend_for": []
  },
  {
   "key": "dps",
@@ -675,7 +1091,8 @@ export const METRICS = [
   "unit": "per_share",
   "sectors": [
    "bank",
-   "insurer"
+   "insurer",
+   "corporate"
   ],
   "core": true,
   "sector_required": false,
@@ -690,7 +1107,9 @@ export const METRICS = [
    0,
    null
   ],
-  "trend_metric": true
+  "trend_metric": true,
+  "required_for": [],
+  "trend_for": []
  },
  {
   "key": "shares_outstanding",
@@ -699,7 +1118,8 @@ export const METRICS = [
   "unit": "shares",
   "sectors": [
    "bank",
-   "insurer"
+   "insurer",
+   "corporate"
   ],
   "core": false,
   "sector_required": false,
@@ -714,7 +1134,9 @@ export const METRICS = [
    0,
    null
   ],
-  "trend_metric": false
+  "trend_metric": false,
+  "required_for": [],
+  "trend_for": []
  },
  {
   "key": "share_price",
@@ -723,7 +1145,8 @@ export const METRICS = [
   "unit": "per_share",
   "sectors": [
    "bank",
-   "insurer"
+   "insurer",
+   "corporate"
   ],
   "core": false,
   "sector_required": false,
@@ -738,7 +1161,9 @@ export const METRICS = [
    0,
    null
   ],
-  "trend_metric": false
+  "trend_metric": false,
+  "required_for": [],
+  "trend_for": []
  },
  {
   "key": "aum",
@@ -762,7 +1187,9 @@ export const METRICS = [
    0,
    null
   ],
-  "trend_metric": true
+  "trend_metric": true,
+  "required_for": [],
+  "trend_for": []
  },
  {
   "key": "roe_reported",
@@ -771,7 +1198,8 @@ export const METRICS = [
   "unit": "pct",
   "sectors": [
    "bank",
-   "insurer"
+   "insurer",
+   "corporate"
   ],
   "core": false,
   "sector_required": false,
@@ -786,7 +1214,9 @@ export const METRICS = [
    -100,
    100
   ],
-  "trend_metric": true
+  "trend_metric": true,
+  "required_for": [],
+  "trend_for": []
  },
  {
   "key": "net_interest_income",
@@ -809,7 +1239,9 @@ export const METRICS = [
    null,
    null
   ],
-  "trend_metric": true
+  "trend_metric": true,
+  "required_for": [],
+  "trend_for": []
  },
  {
   "key": "fee_income",
@@ -832,7 +1264,9 @@ export const METRICS = [
    null,
    null
   ],
-  "trend_metric": true
+  "trend_metric": true,
+  "required_for": [],
+  "trend_for": []
  },
  {
   "key": "cet1_capital",
@@ -855,7 +1289,9 @@ export const METRICS = [
    null,
    null
   ],
-  "trend_metric": true
+  "trend_metric": true,
+  "required_for": [],
+  "trend_for": []
  },
  {
   "key": "rwa",
@@ -878,7 +1314,9 @@ export const METRICS = [
    0,
    null
   ],
-  "trend_metric": true
+  "trend_metric": true,
+  "required_for": [],
+  "trend_for": []
  },
  {
   "key": "cet1_ratio",
@@ -901,7 +1339,9 @@ export const METRICS = [
    0,
    100
   ],
-  "trend_metric": true
+  "trend_metric": true,
+  "required_for": [],
+  "trend_for": []
  },
  {
   "key": "net_new_money",
@@ -924,7 +1364,9 @@ export const METRICS = [
    null,
    null
   ],
-  "trend_metric": true
+  "trend_metric": true,
+  "required_for": [],
+  "trend_for": []
  },
  {
   "key": "cost_income_ratio",
@@ -947,7 +1389,9 @@ export const METRICS = [
    0,
    300
   ],
-  "trend_metric": true
+  "trend_metric": true,
+  "required_for": [],
+  "trend_for": []
  },
  {
   "key": "credit_loss_expense",
@@ -970,7 +1414,9 @@ export const METRICS = [
    null,
    null
   ],
-  "trend_metric": false
+  "trend_metric": false,
+  "required_for": [],
+  "trend_for": []
  },
  {
   "key": "customer_loans",
@@ -993,7 +1439,9 @@ export const METRICS = [
    0,
    null
   ],
-  "trend_metric": false
+  "trend_metric": false,
+  "required_for": [],
+  "trend_for": []
  },
  {
   "key": "customer_deposits",
@@ -1016,7 +1464,9 @@ export const METRICS = [
    0,
    null
   ],
-  "trend_metric": false
+  "trend_metric": false,
+  "required_for": [],
+  "trend_for": []
  },
  {
   "key": "gross_premiums",
@@ -1039,7 +1489,9 @@ export const METRICS = [
    null,
    null
   ],
-  "trend_metric": true
+  "trend_metric": true,
+  "required_for": [],
+  "trend_for": []
  },
  {
   "key": "insurance_revenue",
@@ -1062,7 +1514,9 @@ export const METRICS = [
    null,
    null
   ],
-  "trend_metric": true
+  "trend_metric": true,
+  "required_for": [],
+  "trend_for": []
  },
  {
   "key": "investment_income",
@@ -1085,7 +1539,9 @@ export const METRICS = [
    null,
    null
   ],
-  "trend_metric": true
+  "trend_metric": true,
+  "required_for": [],
+  "trend_for": []
  },
  {
   "key": "insurance_service_result",
@@ -1108,7 +1564,9 @@ export const METRICS = [
    null,
    null
   ],
-  "trend_metric": true
+  "trend_metric": true,
+  "required_for": [],
+  "trend_for": []
  },
  {
   "key": "solvency_ratio",
@@ -1131,7 +1589,9 @@ export const METRICS = [
    0,
    1000
   ],
-  "trend_metric": true
+  "trend_metric": true,
+  "required_for": [],
+  "trend_for": []
  },
  {
   "key": "combined_ratio",
@@ -1154,7 +1614,9 @@ export const METRICS = [
    0,
    300
   ],
-  "trend_metric": true
+  "trend_metric": true,
+  "required_for": [],
+  "trend_for": []
  },
  {
   "key": "csm",
@@ -1177,7 +1639,334 @@ export const METRICS = [
    null,
    null
   ],
-  "trend_metric": true
+  "trend_metric": true,
+  "required_for": [],
+  "trend_for": []
+ },
+ {
+  "key": "gross_profit",
+  "en": "Gross profit",
+  "de": "Bruttogewinn",
+  "unit": "money",
+  "sectors": [
+   "corporate"
+  ],
+  "core": false,
+  "sector_required": false,
+  "statement": "Income statement",
+  "description": "Sales minus cost of goods sold. Pharma: very high (70–80 % of sales) because the cost of making a patented drug is small.",
+  "higher_is_better": true,
+  "plausible": [
+   null,
+   null
+  ],
+  "hard": [
+   null,
+   null
+  ],
+  "trend_metric": true,
+  "required_for": [],
+  "trend_for": []
+ },
+ {
+  "key": "ebit",
+  "en": "Operating result (EBIT)",
+  "de": "Betriebsergebnis (EBIT)",
+  "unit": "money",
+  "sectors": [
+   "corporate"
+  ],
+  "core": false,
+  "sector_required": true,
+  "statement": "Income statement",
+  "description": "Profit from operations before interest and taxes. Many companies also show an 'adjusted' or 'core' version — note which one you use.",
+  "higher_is_better": true,
+  "plausible": [
+   null,
+   null
+  ],
+  "hard": [
+   null,
+   null
+  ],
+  "trend_metric": true,
+  "required_for": [],
+  "trend_for": []
+ },
+ {
+  "key": "depreciation_amortisation",
+  "en": "Depreciation and amortisation (D&A)",
+  "de": "Abschreibungen",
+  "unit": "money",
+  "sectors": [
+   "corporate"
+  ],
+  "core": false,
+  "sector_required": true,
+  "statement": "Cash flow statement / notes on PP&E and intangibles",
+  "description": "Non-cash cost of using up fixed assets and intangibles. EBITDA = EBIT + D&A. Impairments are usually shown separately.",
+  "higher_is_better": null,
+  "plausible": [
+   0,
+   null
+  ],
+  "hard": [
+   null,
+   null
+  ],
+  "trend_metric": false,
+  "required_for": [],
+  "trend_for": []
+ },
+ {
+  "key": "rnd_expense",
+  "en": "Research and development expense",
+  "de": "Forschungs- und Entwicklungsaufwand",
+  "unit": "money",
+  "sectors": [
+   "corporate"
+  ],
+  "core": false,
+  "sector_required": false,
+  "statement": "Income statement / management report",
+  "description": "Spending on new products. Under IFRS research is expensed; some development costs may be capitalised as intangible assets.",
+  "higher_is_better": null,
+  "plausible": [
+   0,
+   null
+  ],
+  "hard": [
+   null,
+   null
+  ],
+  "trend_metric": true,
+  "required_for": [],
+  "trend_for": []
+ },
+ {
+  "key": "interest_expense",
+  "en": "Interest expense",
+  "de": "Zinsaufwand",
+  "unit": "money",
+  "sectors": [
+   "corporate"
+  ],
+  "core": false,
+  "sector_required": false,
+  "statement": "Income statement (financial result) / notes",
+  "description": "Interest paid on financial debt and leases. EBIT ÷ interest expense = interest cover.",
+  "higher_is_better": false,
+  "plausible": [
+   0,
+   null
+  ],
+  "hard": [
+   null,
+   null
+  ],
+  "trend_metric": false,
+  "required_for": [],
+  "trend_for": []
+ },
+ {
+  "key": "capex",
+  "en": "Capital expenditure (capex)",
+  "de": "Investitionen (Sachanlagen und immaterielle Werte)",
+  "unit": "money",
+  "sectors": [
+   "corporate"
+  ],
+  "core": false,
+  "sector_required": true,
+  "statement": "Cash flow statement (investing activities)",
+  "description": "Cash spent on property, plant, equipment and intangible assets. Enter as a positive number. Free cash flow ≈ operating cash flow − capex.",
+  "higher_is_better": null,
+  "plausible": [
+   null,
+   null
+  ],
+  "hard": [
+   0,
+   null
+  ],
+  "trend_metric": true,
+  "required_for": [],
+  "trend_for": []
+ },
+ {
+  "key": "free_cash_flow",
+  "en": "Free cash flow (as reported)",
+  "de": "Free Cashflow (ausgewiesen)",
+  "unit": "money",
+  "sectors": [
+   "corporate"
+  ],
+  "core": false,
+  "sector_required": false,
+  "statement": "Management report / key figures",
+  "description": "The company's own definition — compare it with your operating cash flow − capex; definitions differ (leases, interest, acquisitions).",
+  "higher_is_better": true,
+  "plausible": [
+   null,
+   null
+  ],
+  "hard": [
+   null,
+   null
+  ],
+  "trend_metric": true,
+  "required_for": [],
+  "trend_for": []
+ },
+ {
+  "key": "cash",
+  "en": "Cash and cash equivalents",
+  "de": "Flüssige Mittel",
+  "unit": "money",
+  "sectors": [
+   "corporate"
+  ],
+  "core": false,
+  "sector_required": true,
+  "statement": "Balance sheet",
+  "description": "Cash and short-term deposits. Net debt = financial debt − cash (some analysts also deduct marketable securities).",
+  "higher_is_better": null,
+  "plausible": [
+   null,
+   null
+  ],
+  "hard": [
+   0,
+   null
+  ],
+  "trend_metric": false,
+  "required_for": [],
+  "trend_for": []
+ },
+ {
+  "key": "total_debt",
+  "en": "Financial debt (incl. leases)",
+  "de": "Finanzverbindlichkeiten (inkl. Leasing)",
+  "unit": "money",
+  "sectors": [
+   "corporate"
+  ],
+  "core": false,
+  "sector_required": true,
+  "statement": "Balance sheet / debt note",
+  "description": "Bonds, bank loans, commercial paper and lease liabilities — interest-bearing obligations only (not payables).",
+  "higher_is_better": false,
+  "plausible": [
+   null,
+   null
+  ],
+  "hard": [
+   0,
+   null
+  ],
+  "trend_metric": true,
+  "required_for": [],
+  "trend_for": []
+ },
+ {
+  "key": "current_assets",
+  "en": "Current assets",
+  "de": "Umlaufvermögen",
+  "unit": "money",
+  "sectors": [
+   "corporate"
+  ],
+  "core": false,
+  "sector_required": false,
+  "statement": "Balance sheet",
+  "description": "",
+  "higher_is_better": null,
+  "plausible": [
+   null,
+   null
+  ],
+  "hard": [
+   0,
+   null
+  ],
+  "trend_metric": false,
+  "required_for": [],
+  "trend_for": []
+ },
+ {
+  "key": "current_liabilities",
+  "en": "Current liabilities",
+  "de": "Kurzfristige Verbindlichkeiten",
+  "unit": "money",
+  "sectors": [
+   "corporate"
+  ],
+  "core": false,
+  "sector_required": false,
+  "statement": "Balance sheet",
+  "description": "",
+  "higher_is_better": null,
+  "plausible": [
+   null,
+   null
+  ],
+  "hard": [
+   0,
+   null
+  ],
+  "trend_metric": false,
+  "required_for": [],
+  "trend_for": []
+ },
+ {
+  "key": "inventories",
+  "en": "Inventories",
+  "de": "Vorräte",
+  "unit": "money",
+  "sectors": [
+   "corporate"
+  ],
+  "core": false,
+  "sector_required": false,
+  "statement": "Balance sheet",
+  "description": "Raw materials, work in progress and finished goods. Inventories growing faster than sales tie up cash and can signal weak demand.",
+  "higher_is_better": null,
+  "plausible": [
+   null,
+   null
+  ],
+  "hard": [
+   0,
+   null
+  ],
+  "trend_metric": false,
+  "required_for": [],
+  "trend_for": []
+ },
+ {
+  "key": "receivables",
+  "en": "Trade receivables",
+  "de": "Forderungen aus Lieferungen und Leistungen",
+  "unit": "money",
+  "sectors": [
+   "corporate"
+  ],
+  "core": false,
+  "sector_required": false,
+  "statement": "Balance sheet",
+  "description": "Amounts customers still owe. Receivables growing faster than sales can signal aggressive revenue recognition or weaker customers.",
+  "higher_is_better": null,
+  "plausible": [
+   null,
+   null
+  ],
+  "hard": [
+   0,
+   null
+  ],
+  "trend_metric": false,
+  "required_for": [],
+  "trend_for": []
  }
 ];
 export const ALIASES = {
@@ -1255,7 +2044,46 @@ export const ALIASES = {
  "csm": "csm",
  "credit loss expense": "credit_loss_expense",
  "loans": "customer_loans",
- "deposits": "customer_deposits"
+ "deposits": "customer_deposits",
+ "net sales": "revenue",
+ "sales": "revenue",
+ "nettoumsatz": "revenue",
+ "gross profit": "gross_profit",
+ "bruttogewinn": "gross_profit",
+ "ebit": "ebit",
+ "operating result": "ebit",
+ "operating profit": "ebit",
+ "betriebsergebnis": "ebit",
+ "depreciation and amortisation": "depreciation_amortisation",
+ "depreciation and amortization": "depreciation_amortisation",
+ "da": "depreciation_amortisation",
+ "abschreibungen": "depreciation_amortisation",
+ "rd": "rnd_expense",
+ "research and development": "rnd_expense",
+ "forschung und entwicklung": "rnd_expense",
+ "interest expense": "interest_expense",
+ "zinsaufwand": "interest_expense",
+ "capex": "capex",
+ "capital expenditure": "capex",
+ "investitionen": "capex",
+ "free cash flow": "free_cash_flow",
+ "fcf": "free_cash_flow",
+ "cash": "cash",
+ "cash and cash equivalents": "cash",
+ "flussige mittel": "cash",
+ "flüssige mittel": "cash",
+ "financial debt": "total_debt",
+ "total debt": "total_debt",
+ "finanzverbindlichkeiten": "total_debt",
+ "current assets": "current_assets",
+ "umlaufvermogen": "current_assets",
+ "umlaufvermögen": "current_assets",
+ "current liabilities": "current_liabilities",
+ "inventories": "inventories",
+ "vorrate": "inventories",
+ "vorräte": "inventories",
+ "receivables": "receivables",
+ "trade receivables": "receivables"
 };
 export const DEFAULT_YEARS = [
  2021,
@@ -1291,7 +2119,7 @@ export const CFA = {
  ],
  "roa": [
   "Financial Statement Analysis",
-  "ROA measures profit per unit of total assets. Banks and insurers have very low ROA (≈0.3–1 %) because their balance sheets are highly leveraged."
+  "ROA measures profit per unit of total assets. Banks and insurers have very low ROA (≈0.3–1 %) because their balance sheets are highly leveraged; non-financials typically earn 5–15 %."
  ],
  "dupont": [
   "Financial Statement Analysis",
@@ -1315,7 +2143,7 @@ export const CFA = {
  ],
  "bvps": [
   "Equity Investments",
-  "Book value per share is the anchor for P/B valuation — most relevant for banks and insurers whose assets are largely financial and marked close to fair value."
+  "Book value per share is the anchor for P/B valuation — most relevant for banks and insurers whose assets are largely financial and marked close to fair value; weak for intangible-rich companies such as pharma."
  ],
  "cet1": [
   "Financial Statement Analysis (financial institutions)",
@@ -1433,6 +2261,86 @@ export const CFA = {
   "Equity Investments · Corporate Issuers",
   "FCFF/FCFE DCF suits industrial firms. For banks, debt is raw material, not financing, so use FCFE defined as distributable capital, or DDM/RI."
  ],
+ "fcff": [
+  "Equity Investments · Corporate Issuers",
+  "FCFF = cash flow available to all capital providers. Discount at the WACC to get enterprise value, then subtract net debt (and minorities) to reach equity value."
+ ],
+ "wacc": [
+  "Corporate Issuers",
+  "WACC = E/V × r_e + D/V × r_d × (1 − t). Debt is cheaper than equity after tax, but more debt raises both costs — the discount rate for FCFF."
+ ],
+ "ev_ebitda": [
+  "Equity Investments",
+  "EV/EBITDA compares enterprise value (market cap + net debt) with operating earnings before D&A — capital-structure neutral, so firms with different debt levels can be compared."
+ ],
+ "ebit_margin": [
+  "Financial Statement Analysis",
+  "Operating margin = EBIT ÷ revenue: profitability before financing and tax, the cleanest margin for comparing companies with different capital structures."
+ ],
+ "gross_margin": [
+  "Financial Statement Analysis",
+  "Gross margin reflects pricing power and production cost — a falling gross margin is often the first sign of competitive pressure."
+ ],
+ "cash_conversion": [
+  "Financial Statement Analysis",
+  "Comparing operating cash flow with net income is the simplest earnings-quality test for non-financial companies: persistent shortfalls mean accruals are building up."
+ ],
+ "fcf": [
+  "Equity Investments · FSA",
+  "Free cash flow = operating cash flow − capital expenditure: the cash available for dividends, buybacks, acquisitions and debt repayment."
+ ],
+ "net_debt_ebitda": [
+  "Fixed Income · Corporate Issuers",
+  "Credit analysts judge leverage with net debt ÷ EBITDA and coverage with EBIT ÷ interest — the core of the 'capacity' C in credit analysis."
+ ],
+ "roce": [
+  "Financial Statement Analysis · Corporate Issuers",
+  "ROCE (or ROIC) measures returns on all capital employed, independent of financing — value is created only when it exceeds the cost of capital."
+ ],
+ "rnd": [
+  "Financial Statement Analysis",
+  "Under IFRS research is expensed and some development is capitalised; R&D intensity shows how much of today's sales is reinvested in future products."
+ ],
+ "capex": [
+  "Corporate Issuers",
+  "Capital expenditure versus depreciation shows whether a company is maintaining, shrinking or growing its asset base."
+ ],
+ "liquidity_ratios": [
+  "Financial Statement Analysis",
+  "Liquidity ratios (current, quick, cash ratio) measure the ability to meet short-term obligations; working capital ties up cash."
+ ],
+ "working_capital": [
+  "Financial Statement Analysis",
+  "Working capital (receivables + inventories − payables) absorbs cash when sales grow — and rising days sales outstanding can signal aggressive revenue recognition."
+ ],
+ "risk_demand": [
+  "Economics · Equity Investments",
+  "Cyclical companies' sales follow the business cycle; with high fixed costs (operating leverage) profit swings much more than sales."
+ ],
+ "risk_competition": [
+  "Equity Investments",
+  "Porter's five forces: rivalry, substitutes, new entrants, buyer and supplier power determine whether high margins can last."
+ ],
+ "risk_pricing": [
+  "Economics · Equity Investments",
+  "Regulated or negotiated prices (drug pricing, tariffs) shift value from companies to payers and governments — a political risk to margins."
+ ],
+ "risk_pipeline": [
+  "Equity Investments",
+  "Patent expiry ('loss of exclusivity') can erase most of a drug's sales within two years; valuation depends on the pipeline replacing it."
+ ],
+ "risk_currency": [
+  "Economics · FSA",
+  "Currency risk: transaction exposure (costs and sales in different currencies) hits margins; translation exposure changes reported figures."
+ ],
+ "risk_supply": [
+  "Corporate Issuers",
+  "Supply-chain and input-cost risk: raw materials, energy and logistics costs squeeze gross margins unless they can be passed on in prices."
+ ],
+ "risk_legal": [
+  "Financial Statement Analysis",
+  "Litigation and product-liability risk sits in provisions and contingent liabilities (IAS 37) — read the legal note."
+ ],
  "capm": [
   "Portfolio Management · Equity",
   "CAPM: r = r_f + β × equity risk premium — the cost of equity used to discount dividends and residual income."
@@ -1490,14 +2398,1231 @@ export const METHOD_GUIDE = [
   "cfa": "residual_income"
  },
  {
+  "key": "ev_ebitda",
+  "name": "EV/EBITDA (Unternehmenswert / EBITDA)",
+  "when": "Non-financial companies — compares firms with different debt levels and depreciation policies.",
+  "caution": "Meaningless for banks and insurers (no EBITDA, debt is operating). Treat leases and minorities consistently in EV.",
+  "cfa": "ev_ebitda"
+ },
+ {
   "key": "dcf",
-  "name": "Simple DCF (FCFE)",
-  "when": "Industrial companies with clear free cash flow. For financials only if FCFE = distributable capital.",
-  "caution": "For banks, 'debt' is operating raw material and cash flow statements are not informative — FCFF DCF is inappropriate.",
+  "name": "DCF on free cash flow (FCFF at the WACC)",
+  "when": "Non-financial companies with clear free cash flow. For financials only if redefined as FCFE = distributable capital.",
+  "caution": "Very sensitive to the WACC and terminal growth. For banks, 'debt' is operating raw material and cash flow statements are not informative — FCFF is inappropriate.",
   "cfa": "dcf"
  }
 ];
+export const SUITED = {
+ "bank": [
+  "ddm",
+  "jpb",
+  "pb",
+  "ri"
+ ],
+ "insurer": [
+  "ddm",
+  "jpb",
+  "pb",
+  "ri"
+ ],
+ "corporate": [
+  "dcf",
+  "ddm",
+  "ev_ebitda",
+  "pe"
+ ]
+};
+export const UNSUITED = {
+ "bank": [
+  "dcf",
+  "ev_ebitda"
+ ],
+ "insurer": [
+  "dcf",
+  "ev_ebitda"
+ ],
+ "corporate": [
+  "jpb",
+  "pb"
+ ]
+};
+export const SECTORS = [
+ "bank",
+ "insurer",
+ "corporate"
+];
+export const SECTOR_NAMES = {
+ "bank": "Bank",
+ "insurer": "Insurer",
+ "corporate": "Non-financial"
+};
 export const COMPANIES = [
+ {
+  "profile": {
+   "id": "gkb",
+   "name": "Graubündner Kantonalbank",
+   "short_name": "GKB",
+   "sector": "bank",
+   "subsector": "Cantonal bank: mortgages, savings, SMEs and private banking in Graubünden",
+   "country": "Switzerland",
+   "headquarters": "Chur",
+   "listed": true,
+   "exchange_ticker": "GRKP (participation certificates, SIX Swiss Exchange)",
+   "currency": "CHF",
+   "currency_confirmed": true,
+   "fiscal_year_end": "31 December",
+   "accounting": {
+    "2021": "Swiss GAAP (banks)",
+    "2022": "Swiss GAAP (banks)",
+    "2023": "Swiss GAAP (banks)",
+    "2024": "Swiss GAAP (banks)",
+    "2025": "Swiss GAAP (banks)"
+   },
+   "accounting_notes": "Group accounts under the Swiss accounting rules for banks (Banking Ordinance and FINMA accounting rules, true-and-fair view) — not IFRS. Profit is stated after allocations to or releases from 'reserves for general banking risks', which count as equity and can smooth earnings. The listed participation certificates (Partizipationsscheine, PS) carry dividend rights but no votes; the Canton of Graubünden owns most of the capital and guarantees the bank's liabilities (Staatsgarantie).",
+   "regulator": "FINMA (Swiss Financial Market Supervisory Authority); the canton supervises the owner relationship",
+   "capital_regime": "Basel III as implemented in Switzerland (Capital Adequacy Ordinance)",
+   "investor_relations": "https://www.gkb.ch",
+   "annual_report_hint": "gkb.ch → Über uns → Medien und Publikationen → Kennzahlen und Finanzberichte. The Geschäftsbericht contains the group accounts, the notes (incl. reserves for general banking risks) and the capital disclosure.",
+   "data_source": "Starter values from a data vendor (FMP via Bigdata.com) and GKB's 2025 results release; sector KPIs are left for you to collect. Unverified — the vendor's 2025 revenue was wrong, so check every year.",
+   "required_extra": [],
+   "not_applicable": [],
+   "business_reference": {
+    "what_it_does": {
+     "reference": "GKB is the cantonal bank of Graubünden, founded in 1870 and majority-owned by the canton. It is the leading bank in the canton: mortgages and savings accounts for private clients, loans to SMEs and tourism businesses, payment services, and investment advice and asset management (also through majority-owned subsidiaries).",
+     "key_points": [
+      {
+       "point": "Cantonal bank owned by the canton",
+       "keywords": [
+        "cantonal",
+        "kantonal",
+        "canton",
+        "kanton",
+        "state",
+        "staat"
+       ]
+      },
+      {
+       "point": "Mortgages and savings",
+       "keywords": [
+        "mortgage",
+        "hypothek",
+        "savings",
+        "spar",
+        "deposit",
+        "einlage"
+       ]
+      },
+      {
+       "point": "SMEs and tourism businesses",
+       "keywords": [
+        "sme",
+        "kmu",
+        "firmen",
+        "tourism",
+        "tourismus"
+       ]
+      },
+      {
+       "point": "Investment advice and asset management",
+       "keywords": [
+        "wealth",
+        "private bank",
+        "vermögensverwaltung",
+        "asset management",
+        "anlage"
+       ]
+      }
+     ]
+    },
+    "how_money": {
+     "reference": "Mostly from net interest income — the margin between mortgage and loan rates and what it pays on savings and deposits (about 60 % of operating income). Fees from securities, advice and payments are the second pillar. Net interest income therefore follows SNB rates: the 2022–2023 rate rises helped, the cuts back to 0 % in 2024–2025 squeeze margins.",
+     "key_points": [
+      {
+       "point": "Net interest income (interest margin)",
+       "keywords": [
+        "interest",
+        "zins",
+        "margin",
+        "nii"
+       ]
+      },
+      {
+       "point": "Fee and commission income",
+       "keywords": [
+        "fee",
+        "kommission",
+        "commission",
+        "gebühr",
+        "advisory",
+        "depot"
+       ]
+      },
+      {
+       "point": "Dependence on SNB rates",
+       "keywords": [
+        "snb",
+        "rate",
+        "leitzins"
+       ]
+      }
+     ]
+    },
+    "segments": {
+     "reference": "Retail and SME banking in Graubünden is the core; private banking and asset management (including subsidiaries) and the treasury/corporate centre complete it. Swiss GAAP banks disclose less segment detail than IFRS banks — check what the report shows.",
+     "key_points": [
+      {
+       "point": "Retail and SME banking",
+       "keywords": [
+        "retail",
+        "privatkunden",
+        "sme",
+        "kmu"
+       ]
+      },
+      {
+       "point": "Private banking / asset management",
+       "keywords": [
+        "private bank",
+        "asset management",
+        "vermögensverwaltung"
+       ]
+      },
+      {
+       "point": "Treasury / corporate centre",
+       "keywords": [
+        "treasury",
+        "corporate centre",
+        "zentrale"
+       ]
+      }
+     ]
+    },
+    "customers": {
+     "reference": "Private households and homeowners in Graubünden, local SMEs and tourism businesses (hotels, mountain railways), public-sector entities and wealthy private clients.",
+     "key_points": [
+      {
+       "point": "Households and homeowners",
+       "keywords": [
+        "private",
+        "privat",
+        "household",
+        "homeowner",
+        "eigenheim"
+       ]
+      },
+      {
+       "point": "SMEs and tourism businesses",
+       "keywords": [
+        "sme",
+        "kmu",
+        "hotel",
+        "tourism",
+        "tourismus",
+        "bergbahn"
+       ]
+      },
+      {
+       "point": "Public sector",
+       "keywords": [
+        "public",
+        "öffentlich",
+        "gemeinde",
+        "municipal"
+       ]
+      },
+      {
+       "point": "Wealthy private clients",
+       "keywords": [
+        "wealthy",
+        "vermögend",
+        "private banking"
+       ]
+      }
+     ]
+    },
+    "markets": {
+     "reference": "Mainly the canton of Graubünden — an alpine tourism region with many second homes — plus private banking and asset management elsewhere in Switzerland.",
+     "key_points": [
+      {
+       "point": "Graubünden",
+       "keywords": [
+        "graubünden",
+        "graubuenden",
+        "canton",
+        "kanton",
+        "grisons"
+       ]
+      },
+      {
+       "point": "Tourism and second homes",
+       "keywords": [
+        "tourism",
+        "tourismus",
+        "second home",
+        "zweitwohnung"
+       ]
+      },
+      {
+       "point": "Switzerland",
+       "keywords": [
+        "switzerland",
+        "schweiz"
+       ]
+      }
+     ]
+    },
+    "advantages": {
+     "reference": "Dominant local market share and loyal clients, the state guarantee (cheap and stable funding), strong capitalisation and a low-risk mortgage book.",
+     "key_points": [
+      {
+       "point": "Local market leadership",
+       "keywords": [
+        "market share",
+        "marktanteil",
+        "local",
+        "lokal",
+        "dominant",
+        "leader"
+       ]
+      },
+      {
+       "point": "State guarantee",
+       "keywords": [
+        "guarantee",
+        "garantie"
+       ]
+      },
+      {
+       "point": "Strong capital",
+       "keywords": [
+        "capital",
+        "kapital",
+        "cet1"
+       ]
+      },
+      {
+       "point": "Low-risk mortgage book",
+       "keywords": [
+        "mortgage",
+        "hypothek",
+        "low risk",
+        "tiefes risiko"
+       ]
+      }
+     ]
+    },
+    "threats": {
+     "reference": "Falling interest rates (SNB at 0 %) compress net interest income; concentration in one regional economy and in residential and holiday real estate; the tourism cycle; competition from digital banks and other banks; political influence of the owner and the fee paid to the canton for the state guarantee.",
+     "key_points": [
+      {
+       "point": "Falling interest rates",
+       "keywords": [
+        "rate",
+        "zins",
+        "snb"
+       ]
+      },
+      {
+       "point": "Regional and real-estate concentration",
+       "keywords": [
+        "concentration",
+        "klumpen",
+        "real estate",
+        "immobilien",
+        "region"
+       ]
+      },
+      {
+       "point": "Competition",
+       "keywords": [
+        "competition",
+        "konkurrenz",
+        "digital",
+        "neobank"
+       ]
+      },
+      {
+       "point": "Political / owner influence",
+       "keywords": [
+        "political",
+        "politik",
+        "canton",
+        "kanton",
+        "owner"
+       ]
+      }
+     ]
+    }
+   },
+   "events": [
+    {
+     "year": 2023,
+     "metrics": [
+      "net_interest_income",
+      "revenue",
+      "net_income"
+     ],
+     "nature": "operational",
+     "title": "Higher SNB rates lift interest income",
+     "detail": "The SNB ended negative rates in 2022 and raised its policy rate to 1.75 % by mid-2023. Net interest income and operating income jumped in 2023.",
+     "where_to_verify": "Geschäftsbericht 2023: Erfolg aus dem Zinsengeschäft; management commentary."
+    },
+    {
+     "year": 2023,
+     "metrics": [
+      "dps"
+     ],
+     "nature": "capital",
+     "title": "Dividend raised to CHF 47.50 per PS",
+     "detail": "The distribution per participation certificate rose from CHF 42.50 to 47.50. Most of it goes to the canton as the majority owner.",
+     "where_to_verify": "Geschäftsbericht 2023: Gewinnverwendung (appropriation of profit)."
+    },
+    {
+     "year": 2025,
+     "metrics": [
+      "net_interest_income",
+      "revenue",
+      "cost_income_ratio"
+     ],
+     "nature": "operational",
+     "title": "SNB back at 0 % — interest income falls",
+     "detail": "After the SNB cut rates to 0 % (June 2025), net interest income fell 5.4 % to CHF 309.9 m and operating income 2.9 % to CHF 513.2 m; the cost/income ratio rose to 48.0 %.",
+     "where_to_verify": "Geschäftsbericht 2025 / results release February 2026."
+    }
+   ],
+   "top_risks_reference": [
+    {
+     "risk": "interest_rate",
+     "why": "Net interest income is about 60 % of income; with the SNB at 0 % deposit margins shrink, and negative rates would hurt further."
+    },
+    {
+     "risk": "concentration",
+     "why": "Loans are concentrated in one canton, in residential and holiday real estate and in tourism — a regional or property downturn would hit the whole book at once."
+    },
+    {
+     "risk": "credit",
+     "why": "Mortgages are low-risk only while property prices and borrowers' incomes hold; second homes and tourism loans are more cyclical."
+    }
+   ],
+   "audit_focus": [
+    "Valuation of mortgage loans and value adjustments for default risks",
+    "Reserves for general banking risks (allocations and releases)",
+    "Interest-rate risk in the banking book",
+    "IT general controls"
+   ],
+   "quiz": [
+    {
+     "level": 1,
+     "concept": "business_model",
+     "prompt": "What do GKB's listed participation certificates (PS) lack compared with ordinary shares?",
+     "options": [
+      "Voting rights",
+      "Dividend rights",
+      "A stock exchange listing",
+      "A nominal value"
+     ],
+     "answer": 0,
+     "explanation": "PS holders share in profit and dividends but cannot vote — control stays with the canton."
+    },
+    {
+     "level": 3,
+     "concept": "one_off_items",
+     "prompt": "GKB reports under Swiss bank accounting. What are 'reserves for general banking risks'?",
+     "options": [
+      "Equity reserves the bank can build up or release through the income statement, which can smooth reported profit",
+      "Provisions for specific bad loans",
+      "Cash held at the SNB",
+      "Deposits guaranteed by the canton"
+     ],
+     "answer": 0,
+     "explanation": "Allocations reduce profit, releases increase it. Check the note every year: a release can make profit look better than the operating business."
+    }
+   ],
+   "peers_suggested": [
+    "llb",
+    "ubs"
+   ]
+  },
+  "years": [
+   2021,
+   2022,
+   2023,
+   2024,
+   2025
+  ],
+  "values": {
+   "revenue": {
+    "2021": 438.722,
+    "2022": 478.191,
+    "2023": 525.906,
+    "2024": 528.411,
+    "2025": 513.2
+   },
+   "operating_expenses": {
+    "2021": null,
+    "2022": null,
+    "2023": null,
+    "2024": null,
+    "2025": null
+   },
+   "net_income": {
+    "2021": 184.23,
+    "2022": 197.781,
+    "2023": 218.287,
+    "2024": 217.46,
+    "2025": 216.289
+   },
+   "total_assets": {
+    "2021": 32788.597,
+    "2022": 33253.232,
+    "2023": 32769.099,
+    "2024": 35598.061,
+    "2025": 36307.387
+   },
+   "total_liabilities": {
+    "2021": 29974.384,
+    "2022": 30384.238,
+    "2023": 29828.227,
+    "2024": 32597.183,
+    "2025": 33295.612
+   },
+   "total_equity": {
+    "2021": 2775.547,
+    "2022": 2811.002,
+    "2023": 2889.917,
+    "2024": 2951.368,
+    "2025": 2971.683
+   },
+   "operating_cash_flow": {
+    "2021": 311.799,
+    "2022": 221.623,
+    "2023": 538.497,
+    "2024": 822.872,
+    "2025": 136.035
+   },
+   "eps": {
+    "2021": 73.92,
+    "2022": 79.35,
+    "2023": 87.65,
+    "2024": 87.32,
+    "2025": 86.9
+   },
+   "dps": {
+    "2021": 42.5,
+    "2022": 42.5,
+    "2023": 47.5,
+    "2024": 47.5,
+    "2025": 47.5
+   },
+   "shares_outstanding": {
+    "2021": 2.492,
+    "2022": 2.492,
+    "2023": 2.49,
+    "2024": 2.49,
+    "2025": 2.489
+   },
+   "net_interest_income": {
+    "2021": null,
+    "2022": null,
+    "2023": null,
+    "2024": null,
+    "2025": 309.9
+   },
+   "fee_income": {
+    "2021": null,
+    "2022": null,
+    "2023": null,
+    "2024": null,
+    "2025": null
+   },
+   "cet1_ratio": {
+    "2021": null,
+    "2022": null,
+    "2023": null,
+    "2024": null,
+    "2025": null
+   },
+   "cost_income_ratio": {
+    "2021": null,
+    "2022": null,
+    "2023": null,
+    "2024": 46.7,
+    "2025": 48.0
+   },
+   "customer_loans": {
+    "2021": null,
+    "2022": null,
+    "2023": null,
+    "2024": null,
+    "2025": null
+   },
+   "aum": {
+    "2021": null,
+    "2022": null,
+    "2023": null,
+    "2024": null,
+    "2025": null
+   },
+   "net_new_money": {
+    "2021": null,
+    "2022": null,
+    "2023": null,
+    "2024": null,
+    "2025": null
+   }
+  },
+  "meta": {
+   "revenue": {
+    "source": "2021–2024: Data vendor (FMP via Bigdata.com) – unverified; 2025: GKB annual results release (Feb 2026)",
+    "note": "Geschäftsertrag (total operating income). The vendor's 2025 figure (661) was wrong – check every year against the Geschäftsbericht."
+   },
+   "operating_expenses": {
+    "source": "To collect from the annual report",
+    "note": "Geschäftsaufwand (personnel + general expenses). GKB's Cost/Income-Ratio I uses this line."
+   },
+   "net_income": {
+    "source": "Data vendor (FMP via Bigdata.com) – unverified",
+    "note": "Attributable to GKB's capital holders. Konzerngewinn incl. minorities: 2025 CHF 224.6 m (results release). Under Swiss bank accounting, profit is after allocations to/releases from reserves for general banking risks – check the note."
+   },
+   "total_assets": {
+    "source": "Data vendor (FMP via Bigdata.com) – unverified",
+    "note": ""
+   },
+   "total_liabilities": {
+    "source": "Derived: total assets − total equity incl. non-controlling interests",
+    "note": ""
+   },
+   "total_equity": {
+    "source": "Data vendor (FMP via Bigdata.com) – unverified",
+    "note": "Attributable equity incl. reserves for general banking risks (part of equity under Swiss bank GAAP)."
+   },
+   "operating_cash_flow": {
+    "source": "Data vendor (FMP via Bigdata.com) – unverified",
+    "note": "Bank operating cash flow – driven by loans and deposits, not an earnings-quality measure."
+   },
+   "eps": {
+    "source": "Data vendor (FMP via Bigdata.com) – unverified",
+    "note": "Per participation certificate (Partizipationsschein, PS)."
+   },
+   "dps": {
+    "source": "Data vendor (FMP via Bigdata.com) – unverified",
+    "note": "Dividend per PS for the fiscal year (paid the following March)."
+   },
+   "shares_outstanding": {
+    "source": "Data vendor (FMP via Bigdata.com) – unverified",
+    "note": "Participation certificates outstanding (m), average. 2.5 m PS of CHF 100 nominal."
+   },
+   "net_interest_income": {
+    "source": "2025: GKB annual results release",
+    "note": "Net result from interest operations (after changes in value adjustments for default risk), −5.4 % vs 2024. Collect 2021–2024."
+   },
+   "fee_income": {
+    "source": "To collect from the annual report",
+    "note": "Erfolg aus dem Kommissions- und Dienstleistungsgeschäft."
+   },
+   "cet1_ratio": {
+    "source": "To collect from the annual report",
+    "note": "From the capital adequacy disclosure (Offenlegung Eigenmittel)."
+   },
+   "cost_income_ratio": {
+    "source": "GKB annual results release (Cost/Income-Ratio I)",
+    "note": "Collect 2021–2023."
+   },
+   "customer_loans": {
+    "source": "To collect from the annual report",
+    "note": "Kundenausleihungen (mortgages + other loans)."
+   },
+   "aum": {
+    "source": "To collect from the annual report",
+    "note": "Kundenvermögen / Depotvolumen – note which measure you use (CHF bn)."
+   },
+   "net_new_money": {
+    "source": "To collect from the annual report",
+    "note": "CHF bn."
+   }
+  }
+ },
+ {
+  "profile": {
+   "id": "hilti",
+   "name": "Hilti AG (Hilti Group)",
+   "short_name": "Hilti",
+   "sector": "corporate",
+   "subsector": "Tools, fastening systems, software and services for construction professionals",
+   "country": "Liechtenstein",
+   "headquarters": "Schaan",
+   "listed": false,
+   "exchange_ticker": "Not listed (owned by the Martin Hilti Family Trust; delisted 2003)",
+   "currency": "CHF",
+   "currency_confirmed": true,
+   "fiscal_year_end": "31 December",
+   "accounting": {
+    "2021": "IFRS",
+    "2022": "IFRS",
+    "2023": "IFRS",
+    "2024": "IFRS",
+    "2025": "IFRS"
+   },
+   "accounting_notes": "Consolidated accounts in Swiss francs (confirm the accounting standard in the Financial Report). As a private company Hilti publishes less detail than listed peers: no EPS, no share price, and limited segment information.",
+   "regulator": "None specific (industrial company under Liechtenstein company law)",
+   "capital_regime": "None — Hilti targets an equity ratio of at least 45 %",
+   "investor_relations": "https://www.hilti.group",
+   "annual_report_hint": "hilti.group → Company → Media relations / Company report. The Financial Report (PDF) contains the consolidated balance sheet, income statement, cash flow statement and notes.",
+   "data_source": "Hilti is not listed and data vendors do not cover it. Starter figures come from Hilti's media releases (some derived from reported growth rates). Collect the balance sheet and cash flows yourself from the Financial Report.",
+   "required_extra": [],
+   "not_applicable": [
+    "eps",
+    "dps",
+    "shares_outstanding",
+    "share_price"
+   ],
+   "business_reference": {
+    "what_it_does": {
+     "reference": "Hilti develops, makes and sells professional tools (power tools, measuring systems), fastening and protection systems (anchors, installation systems, firestop) and software and services (tool fleet management, construction software such as Fieldwire) for construction professionals. It was founded in 1941 in Schaan by Martin and Eugen Hilti and has about 34,000 employees.",
+     "key_points": [
+      {
+       "point": "Professional tools",
+       "keywords": [
+        "tool",
+        "werkzeug",
+        "gerät",
+        "power tool"
+       ]
+      },
+      {
+       "point": "Fastening and protection systems",
+       "keywords": [
+        "fasten",
+        "befestig",
+        "anchor",
+        "dübel",
+        "firestop",
+        "brandschutz",
+        "installation"
+       ]
+      },
+      {
+       "point": "Software and services",
+       "keywords": [
+        "software",
+        "service",
+        "fleet",
+        "digital",
+        "fieldwire"
+       ]
+      },
+      {
+       "point": "For construction professionals",
+       "keywords": [
+        "construction",
+        "bau",
+        "contractor",
+        "professional",
+        "profi"
+       ]
+      }
+     ]
+    },
+    "how_money": {
+     "reference": "Premium prices for high-quality products, sold mainly through its own direct sales force (customer visits, Hilti Stores, online). The direct model is costly but builds loyalty. Fleet management (tools as a service for a monthly fee) and consumables (anchors, drill bits, blades) create recurring revenue. Return on sales is about 11–14 %.",
+     "key_points": [
+      {
+       "point": "Premium pricing and quality",
+       "keywords": [
+        "premium",
+        "price",
+        "preis",
+        "quality",
+        "qualität"
+       ]
+      },
+      {
+       "point": "Direct sales model",
+       "keywords": [
+        "direct",
+        "direkt",
+        "sales force",
+        "verkauf",
+        "store"
+       ]
+      },
+      {
+       "point": "Recurring revenue: fleet management and consumables",
+       "keywords": [
+        "fleet",
+        "recurring",
+        "wiederkehrend",
+        "subscription",
+        "consumable",
+        "verbrauch"
+       ]
+      },
+      {
+       "point": "Margins / return on sales",
+       "keywords": [
+        "margin",
+        "marge",
+        "return on sales"
+       ]
+      }
+     ]
+    },
+    "segments": {
+     "reference": "Hilti reports sales by region (Europe, Americas, Asia/Pacific, Eastern Europe/Middle East/Africa) and gives limited business-unit detail — typical of a private company.",
+     "key_points": [
+      {
+       "point": "Europe",
+       "keywords": [
+        "europe",
+        "europa"
+       ]
+      },
+      {
+       "point": "Americas",
+       "keywords": [
+        "america",
+        "amerika",
+        "us"
+       ]
+      },
+      {
+       "point": "Asia/Pacific",
+       "keywords": [
+        "asia",
+        "asien",
+        "pacific"
+       ]
+      },
+      {
+       "point": "Reporting by region",
+       "keywords": [
+        "region"
+       ]
+      }
+     ]
+    },
+    "customers": {
+     "reference": "Construction professionals: general and specialist contractors (electrical, plumbing, HVAC, drywall), large construction companies, and industrial and energy companies doing maintenance.",
+     "key_points": [
+      {
+       "point": "Contractors",
+       "keywords": [
+        "contractor",
+        "unternehmer",
+        "construction",
+        "bau"
+       ]
+      },
+      {
+       "point": "Specialist trades",
+       "keywords": [
+        "electric",
+        "elektro",
+        "plumb",
+        "sanitär",
+        "hvac",
+        "drywall",
+        "trockenbau"
+       ]
+      },
+      {
+       "point": "Industrial and energy customers",
+       "keywords": [
+        "industrial",
+        "industrie",
+        "energy",
+        "energie"
+       ]
+      }
+     ]
+    },
+    "markets": {
+     "reference": "Global (more than 120 countries). Europe is the largest region (about half of sales), followed by the Americas, mainly the US; Asia/Pacific and EEMEA are smaller. Many costs are in CHF and EUR, so a strong franc reduces reported sales and profit.",
+     "key_points": [
+      {
+       "point": "Europe",
+       "keywords": [
+        "europe",
+        "europa"
+       ]
+      },
+      {
+       "point": "Americas / US",
+       "keywords": [
+        "america",
+        "amerika",
+        "us",
+        "usa"
+       ]
+      },
+      {
+       "point": "Asia and other regions",
+       "keywords": [
+        "asia",
+        "asien",
+        "china",
+        "middle east"
+       ]
+      },
+      {
+       "point": "Currency effects",
+       "keywords": [
+        "currency",
+        "franc",
+        "franken",
+        "chf",
+        "fx"
+       ]
+      }
+     ]
+    },
+    "advantages": {
+     "reference": "A strong brand and reputation for quality, direct customer relationships and data, continuous innovation (70+ new products and services a year), lock-in through fleet management, and a very solid balance sheet owned by a long-term family trust.",
+     "key_points": [
+      {
+       "point": "Brand and quality",
+       "keywords": [
+        "brand",
+        "marke",
+        "reputation",
+        "quality",
+        "qualität"
+       ]
+      },
+      {
+       "point": "Direct customer relationships",
+       "keywords": [
+        "direct",
+        "direkt",
+        "relationship",
+        "beziehung"
+       ]
+      },
+      {
+       "point": "Innovation",
+       "keywords": [
+        "innovat",
+        "r&d",
+        "forschung",
+        "new product"
+       ]
+      },
+      {
+       "point": "Long-term owner and strong balance sheet",
+       "keywords": [
+        "trust",
+        "family",
+        "familie",
+        "long-term",
+        "langfrist",
+        "equity",
+        "eigenkapital"
+       ]
+      }
+     ]
+    },
+    "threats": {
+     "reference": "Construction downturns (housing and commercial, high interest rates), the strong Swiss franc, competition from cheaper or cordless-specialist brands (Milwaukee/TTI, DeWalt/Stanley Black & Decker, Bosch, Makita), tariffs and trade tensions, raw-material and logistics costs, and the high fixed cost of the direct sales model.",
+     "key_points": [
+      {
+       "point": "Construction cycle",
+       "keywords": [
+        "construction",
+        "bau",
+        "cycle",
+        "zyklus",
+        "downturn",
+        "interest rate"
+       ]
+      },
+      {
+       "point": "Strong Swiss franc",
+       "keywords": [
+        "franc",
+        "franken",
+        "chf",
+        "currency",
+        "fx"
+       ]
+      },
+      {
+       "point": "Competition",
+       "keywords": [
+        "competition",
+        "konkurrenz",
+        "milwaukee",
+        "dewalt",
+        "bosch",
+        "makita"
+       ]
+      },
+      {
+       "point": "Tariffs and input costs",
+       "keywords": [
+        "tariff",
+        "zoll",
+        "raw material",
+        "rohstoff",
+        "cost"
+       ]
+      }
+     ]
+    }
+   },
+   "events": [
+    {
+     "year": 2021,
+     "metrics": [
+      "ebit",
+      "net_income"
+     ],
+     "nature": "operational",
+     "title": "Record year after the pandemic",
+     "detail": "Sales grew 12 % and the operating result reached a record CHF 847 m (return on sales 14.2 %) as construction recovered.",
+     "where_to_verify": "Hilti Company/Financial Report 2021."
+    },
+    {
+     "year": 2022,
+     "metrics": [
+      "free_cash_flow",
+      "operating_cash_flow",
+      "ebit"
+     ],
+     "nature": "operational",
+     "title": "Negative free cash flow",
+     "detail": "Free cash flow was −CHF 147 m: the operating result fell 14 % (input costs, Ukraine war, strong franc), inventories were built up to secure supply and bonuses normalised.",
+     "where_to_verify": "Financial Report 2022: cash flow statement (change in inventories / net working capital)."
+    },
+    {
+     "year": 2024,
+     "metrics": [
+      "revenue",
+      "ebit"
+     ],
+     "nature": "currency",
+     "title": "Currency headwinds",
+     "detail": "Sales fell 1.4 % in CHF but grew 1.5 % in local currencies; currency effects reduced sales by about CHF 71 m.",
+     "where_to_verify": "Hilti Company Report 2024 / media release March 2025."
+    },
+    {
+     "year": 2025,
+     "metrics": [
+      "revenue",
+      "ebit",
+      "net_income",
+      "free_cash_flow"
+     ],
+     "nature": "currency",
+     "title": "Strong franc again; cash flow recovers",
+     "detail": "Sales −2.1 % in CHF (+1.9 % in local currencies, −4.0 pp currency effect); operating result −5.3 % to CHF 728 m; free cash flow rose to CHF 545 m.",
+     "where_to_verify": "Hilti Annual Report 2025 / media release 2026."
+    }
+   ],
+   "top_risks_reference": [
+    {
+     "risk": "demand",
+     "why": "Sales follow construction activity: high interest rates and weak housing and commercial building in Europe and the US cut tool and consumables demand directly."
+    },
+    {
+     "risk": "currency",
+     "why": "Most costs are in CHF and EUR while a large share of sales is in other currencies — the strong franc cost about 4 percentage points of sales growth in 2025."
+    },
+    {
+     "risk": "competition",
+     "why": "Cordless-tool specialists and cheaper brands compete aggressively; Hilti must keep its premium justified by quality, service and software."
+    }
+   ],
+   "audit_focus": [
+    "Revenue recognition for fleet management contracts (multi-year services)",
+    "Inventory valuation and obsolescence",
+    "Goodwill and software intangibles from acquisitions",
+    "Pension obligations"
+   ],
+   "quiz": [
+    {
+     "level": 1,
+     "concept": "business_model",
+     "prompt": "Who owns Hilti?",
+     "options": [
+      "The Martin Hilti Family Trust",
+      "The Principality of Liechtenstein",
+      "Public shareholders on SIX",
+      "A private equity fund"
+     ],
+     "answer": 0,
+     "explanation": "Hilti was delisted in 2003; the family trust is a long-term owner, which allows a conservative balance sheet."
+    },
+    {
+     "level": 3,
+     "concept": "linking_statements",
+     "prompt": "In 2022 Hilti earned CHF 565 m but free cash flow was −CHF 147 m. What is the most likely explanation?",
+     "options": [
+      "Cash was tied up in working capital (inventory build-up) on top of investments",
+      "A large non-cash gain inflated net income",
+      "Hilti paid a special dividend",
+      "Depreciation was unusually high"
+     ],
+     "answer": 0,
+     "explanation": "Profit is not cash: building inventories consumes cash before it shows up in sales. Check the change in net working capital in the cash flow statement."
+    }
+   ],
+   "peers_suggested": []
+  },
+  "years": [
+   2021,
+   2022,
+   2023,
+   2024,
+   2025
+  ],
+  "values": {
+   "revenue": {
+    "2021": 5978.0,
+    "2022": 6349.0,
+    "2023": 6520.0,
+    "2024": 6429.0,
+    "2025": 6294.0
+   },
+   "ebit": {
+    "2021": 847.0,
+    "2022": 731.0,
+    "2023": 770.0,
+    "2024": 769.0,
+    "2025": 728.0
+   },
+   "depreciation_amortisation": {
+    "2021": null,
+    "2022": null,
+    "2023": null,
+    "2024": null,
+    "2025": null
+   },
+   "net_income": {
+    "2021": 675.0,
+    "2022": 565.0,
+    "2023": 560.0,
+    "2024": 561.0,
+    "2025": 516.0
+   },
+   "total_assets": {
+    "2021": null,
+    "2022": null,
+    "2023": null,
+    "2024": null,
+    "2025": null
+   },
+   "total_liabilities": {
+    "2021": null,
+    "2022": null,
+    "2023": null,
+    "2024": null,
+    "2025": null
+   },
+   "total_equity": {
+    "2021": null,
+    "2022": null,
+    "2023": null,
+    "2024": null,
+    "2025": null
+   },
+   "operating_cash_flow": {
+    "2021": null,
+    "2022": null,
+    "2023": null,
+    "2024": null,
+    "2025": null
+   },
+   "capex": {
+    "2021": null,
+    "2022": null,
+    "2023": null,
+    "2024": null,
+    "2025": null
+   },
+   "free_cash_flow": {
+    "2021": 377.0,
+    "2022": -147.0,
+    "2023": 359.0,
+    "2024": 379.0,
+    "2025": 545.0
+   },
+   "rnd_expense": {
+    "2021": null,
+    "2022": null,
+    "2023": null,
+    "2024": 466.0,
+    "2025": 459.0
+   },
+   "cash": {
+    "2021": null,
+    "2022": null,
+    "2023": null,
+    "2024": null,
+    "2025": null
+   },
+   "total_debt": {
+    "2021": null,
+    "2022": null,
+    "2023": null,
+    "2024": null,
+    "2025": null
+   }
+  },
+  "meta": {
+   "revenue": {
+    "source": "Hilti media releases – 2023 exact (CHF 6,520 m); 2021, 2022, 2024, 2025 derived from reported growth rates – unverified",
+    "note": "Net sales. Take the exact figures from the Financial Report (hilti.group). 2024: −1.4 % in CHF (+1.5 % in local currencies); 2025: −2.1 % (+1.9 % LC)."
+   },
+   "ebit": {
+    "source": "Hilti media releases – unverified",
+    "note": "Operating result (Betriebsergebnis). Return on sales: 2021 14.2 %, 2023 11.8 %, 2024 12.0 %, 2025 11.6 %."
+   },
+   "depreciation_amortisation": {
+    "source": "To collect from the annual report",
+    "note": "Needed for EBITDA (EV/EBITDA, net debt ÷ EBITDA)."
+   },
+   "net_income": {
+    "source": "Hilti media releases – unverified",
+    "note": "Net income (Reingewinn)."
+   },
+   "total_assets": {
+    "source": "To collect from the annual report",
+    "note": "Consolidated balance sheet in the Financial Report."
+   },
+   "total_liabilities": {
+    "source": "To collect from the annual report",
+    "note": ""
+   },
+   "total_equity": {
+    "source": "To collect from the annual report",
+    "note": "Reported equity ratio: 2021 57 %, 2022 62 %, 2023 59 %, 2024 61 % (target ≥ 45 %)."
+   },
+   "operating_cash_flow": {
+    "source": "To collect from the annual report",
+    "note": "Cash flow from operating activities."
+   },
+   "capex": {
+    "source": "To collect from the annual report",
+    "note": "Investments in property, plant and equipment and intangible assets."
+   },
+   "free_cash_flow": {
+    "source": "Hilti media releases – unverified",
+    "note": "Hilti's own definition – compare with your OCF − capex. 2022 was negative: lower profit, inventory build-up and normalised bonuses."
+   },
+   "rnd_expense": {
+    "source": "Hilti media releases – unverified",
+    "note": "2025: 7.3 % of sales. Collect 2021–2023."
+   },
+   "cash": {
+    "source": "To collect from the annual report",
+    "note": "Cash and cash equivalents (2024 ≈ CHF 0.9 bn)."
+   },
+   "total_debt": {
+    "source": "To collect from the annual report",
+    "note": "Financial debt incl. lease liabilities."
+   }
+  }
+ },
  {
   "profile": {
    "id": "llb",
@@ -2098,6 +4223,667 @@ export const COMPANIES = [
  },
  {
   "profile": {
+   "id": "novartis",
+   "name": "Novartis AG",
+   "short_name": "Novartis",
+   "sector": "corporate",
+   "subsector": "Innovative medicines (focused pharmaceuticals)",
+   "country": "Switzerland",
+   "headquarters": "Basel",
+   "listed": true,
+   "exchange_ticker": "NOVN (SIX Swiss Exchange), NVS (NYSE, ADR)",
+   "currency": "USD",
+   "currency_confirmed": true,
+   "fiscal_year_end": "31 December",
+   "accounting": {
+    "2021": "IFRS",
+    "2022": "IFRS",
+    "2023": "IFRS",
+    "2024": "IFRS",
+    "2025": "IFRS"
+   },
+   "accounting_notes": "IFRS group accounts in US dollars although Novartis is a Swiss company — and the dividend is declared in Swiss francs. Alcon (eye care) was spun off in 2019 and Sandoz (generics) in October 2023: restated figures show 'continuing operations', but older balance sheets and cash flows still include Sandoz. Novartis also reports 'core' results.",
+   "regulator": "Swissmedic, US FDA, EMA (product approvals); SIX and the US SEC (Form 20-F)",
+   "capital_regime": "None (non-financial company): the constraints are leverage, the credit rating and the cash needed for R&D, acquisitions, dividends and buybacks",
+   "investor_relations": "https://www.novartis.com/investors",
+   "annual_report_hint": "novartis.com → Investors → Financial data → Annual Report and Form 20-F. The consolidated financial statements are in the Annual Report; the 20-F has the most detailed risk factors.",
+   "data_source": "Starter values from a data vendor (FMP via Bigdata.com). Dividends converted from CHF to USD using dividends paid in the cash flow statement. Unverified — check each number.",
+   "required_extra": [],
+   "not_applicable": [],
+   "business_reference": {
+    "what_it_does": {
+     "reference": "Novartis discovers, develops and sells innovative prescription medicines. After spinning off Alcon (2019) and Sandoz (2023) it focuses on four therapeutic areas — cardiovascular-renal-metabolic, immunology, neuroscience and oncology — and on technology platforms such as RNA therapeutics, cell and gene therapy and radioligand therapy.",
+     "key_points": [
+      {
+       "point": "Innovative prescription medicines",
+       "keywords": [
+        "innovative",
+        "medicine",
+        "medikament",
+        "pharma",
+        "drug"
+       ]
+      },
+      {
+       "point": "Four focus therapeutic areas",
+       "keywords": [
+        "cardio",
+        "immunolog",
+        "neuro",
+        "oncolog",
+        "onkolog"
+       ]
+      },
+      {
+       "point": "Spin-offs of Alcon and Sandoz",
+       "keywords": [
+        "sandoz",
+        "alcon",
+        "spin",
+        "abspaltung"
+       ]
+      },
+      {
+       "point": "Technology platforms",
+       "keywords": [
+        "rna",
+        "gene",
+        "cell",
+        "zell",
+        "radioligand",
+        "platform"
+       ]
+      }
+     ]
+    },
+    "how_money": {
+     "reference": "By selling patented medicines at high gross margins (about 75 %). Large brands such as Entresto, Cosentyx, Kesimpta, Kisqali and Pluvicto drive growth. Profits fund R&D (about 20 % of sales), dividends and large share buybacks. A brand earns most until its patent expires; then generics take most of the volume.",
+     "key_points": [
+      {
+       "point": "Patented brands",
+       "keywords": [
+        "patent",
+        "brand",
+        "marke",
+        "entresto",
+        "cosentyx",
+        "kisqali",
+        "kesimpta"
+       ]
+      },
+      {
+       "point": "High gross margins",
+       "keywords": [
+        "margin",
+        "marge"
+       ]
+      },
+      {
+       "point": "R&D reinvestment",
+       "keywords": [
+        "r&d",
+        "research",
+        "forschung"
+       ]
+      },
+      {
+       "point": "Patent expiry / loss of exclusivity",
+       "keywords": [
+        "expir",
+        "generic",
+        "generika",
+        "exclusivity",
+        "loe"
+       ]
+      }
+     ]
+    },
+    "segments": {
+     "reference": "One reportable segment (Innovative Medicines) since 2023, run through two commercial units — US and International. Sales are also shown by therapeutic area and by brand.",
+     "key_points": [
+      {
+       "point": "Innovative Medicines",
+       "keywords": [
+        "innovative medicines"
+       ]
+      },
+      {
+       "point": "US and International units",
+       "keywords": [
+        "us",
+        "international"
+       ]
+      },
+      {
+       "point": "Therapeutic areas",
+       "keywords": [
+        "therapeutic",
+        "therapie"
+       ]
+      },
+      {
+       "point": "Brands",
+       "keywords": [
+        "brand",
+        "entresto",
+        "cosentyx"
+       ]
+      }
+     ]
+    },
+    "customers": {
+     "reference": "Patients reached through doctors and hospitals; payers (governments, health insurers, US pharmacy benefit managers) negotiate prices and rebates; wholesalers distribute the products.",
+     "key_points": [
+      {
+       "point": "Payers",
+       "keywords": [
+        "payer",
+        "insurer",
+        "versicher",
+        "government",
+        "staat",
+        "pbm",
+        "medicare"
+       ]
+      },
+      {
+       "point": "Doctors and hospitals",
+       "keywords": [
+        "doctor",
+        "arzt",
+        "hospital",
+        "spital",
+        "physician"
+       ]
+      },
+      {
+       "point": "Wholesalers",
+       "keywords": [
+        "wholesal",
+        "grosshändler",
+        "distribut"
+       ]
+      }
+     ]
+    },
+    "markets": {
+     "reference": "Global. The US is the largest and fastest-growing market (about 40 % of sales), followed by Europe, Japan, China and other emerging markets. Reporting in USD means CHF-based costs and EUR sales create currency effects.",
+     "key_points": [
+      {
+       "point": "United States",
+       "keywords": [
+        "us",
+        "usa",
+        "united states",
+        "amerika"
+       ]
+      },
+      {
+       "point": "Europe",
+       "keywords": [
+        "europe",
+        "europa"
+       ]
+      },
+      {
+       "point": "China / emerging markets",
+       "keywords": [
+        "china",
+        "emerging",
+        "asia",
+        "asien"
+       ]
+      },
+      {
+       "point": "Currency effects",
+       "keywords": [
+        "currency",
+        "währung",
+        "fx",
+        "dollar"
+       ]
+      }
+     ]
+    },
+    "advantages": {
+     "reference": "A focused portfolio with several multi-billion blockbusters, a strong US commercial presence, platform technologies (radioligands, siRNA), a large R&D budget and strong cash generation that funds bolt-on acquisitions and buybacks.",
+     "key_points": [
+      {
+       "point": "Blockbusters",
+       "keywords": [
+        "blockbuster",
+        "brand",
+        "entresto",
+        "kisqali"
+       ]
+      },
+      {
+       "point": "Platform technologies",
+       "keywords": [
+        "platform",
+        "radioligand",
+        "rna"
+       ]
+      },
+      {
+       "point": "Cash generation",
+       "keywords": [
+        "cash",
+        "free cash flow",
+        "fcf"
+       ]
+      },
+      {
+       "point": "Bolt-on acquisitions",
+       "keywords": [
+        "acquisition",
+        "akquisition",
+        "bolt-on",
+        "übernahme"
+       ]
+      }
+     ]
+    },
+    "threats": {
+     "reference": "Loss of exclusivity — US generic versions of Entresto launched in 2025 and other brands follow; US drug-pricing reform (IRA negotiation includes Entresto), most-favoured-nation pricing and tariffs; pipeline setbacks; integration risk of acquisitions; currency.",
+     "key_points": [
+      {
+       "point": "Loss of exclusivity",
+       "keywords": [
+        "entresto",
+        "generic",
+        "generika",
+        "patent",
+        "exclusivity"
+       ]
+      },
+      {
+       "point": "Pricing reform and tariffs",
+       "keywords": [
+        "ira",
+        "pricing",
+        "preis",
+        "mfn",
+        "tariff"
+       ]
+      },
+      {
+       "point": "Pipeline setbacks",
+       "keywords": [
+        "pipeline",
+        "trial",
+        "studie"
+       ]
+      },
+      {
+       "point": "Acquisition risk",
+       "keywords": [
+        "acquisition",
+        "akquisition",
+        "integration"
+       ]
+      }
+     ]
+    }
+   },
+   "events": [
+    {
+     "year": 2021,
+     "metrics": [
+      "net_income",
+      "eps"
+     ],
+     "nature": "one-off",
+     "title": "Sale of the Roche stake",
+     "detail": "Novartis sold its 33 % stake in Roche back to Roche for about USD 20.7 bn and booked a gain of about USD 14.6 bn. Net income of USD 24 bn in 2021 is therefore not a sustainable level.",
+     "where_to_verify": "Annual Report 2021: income from associated companies; cash flow from investing activities."
+    },
+    {
+     "year": 2023,
+     "metrics": [
+      "revenue",
+      "net_income",
+      "total_equity",
+      "total_assets",
+      "operating_cash_flow"
+     ],
+     "nature": "structural",
+     "title": "Spin-off of Sandoz (4 October 2023)",
+     "detail": "The generics business was distributed to shareholders. Revenue is restated to continuing operations; net income 2023 contains a large gain on the distribution (discontinued operations); equity and total assets dropped.",
+     "where_to_verify": "Annual Report 2023: discontinued operations note; statement of changes in equity (distribution of Sandoz)."
+    },
+    {
+     "year": 2024,
+     "metrics": [
+      "total_assets",
+      "total_debt"
+     ],
+     "nature": "acquisition",
+     "title": "Acquisition of MorphoSys (≈ EUR 2.7 bn)",
+     "detail": "Novartis bought the German biotech MorphoSys for its oncology pipeline. Acquired rights become intangible assets — and an impairment risk.",
+     "where_to_verify": "Annual Report 2024: business combinations / acquisitions note."
+    },
+    {
+     "year": 2025,
+     "metrics": [
+      "revenue"
+     ],
+     "nature": "operational",
+     "title": "US generic competition for Entresto begins",
+     "detail": "Generic versions of Novartis's biggest brand launched in the US in 2025. Growth from newer brands must offset the erosion — watch the 2026 figures.",
+     "where_to_verify": "Annual Report 2025 / Form 20-F: product sales table; risk factors on loss of exclusivity."
+    }
+   ],
+   "top_risks_reference": [
+    {
+     "risk": "pipeline",
+     "why": "Entresto and other brands are losing exclusivity; the value of Novartis depends on newer brands and the pipeline more than replacing that revenue."
+    },
+    {
+     "risk": "pricing",
+     "why": "The US is about 40 % of sales and the main profit pool: IRA price negotiation (Entresto is on the first list), most-favoured-nation pricing and tariffs cut prices directly."
+    },
+    {
+     "risk": "concentration",
+     "why": "A handful of brands generate a large share of sales and profit, so one patent loss, safety issue or competitor launch can move group results."
+    }
+   ],
+   "audit_focus": [
+    "Revenue deductions in the US (rebates, chargebacks, returns)",
+    "Impairment of goodwill and intangible assets",
+    "Provisions for legal matters",
+    "Uncertain tax positions"
+   ],
+   "quiz": [
+    {
+     "level": 2,
+     "concept": "one_off_items",
+     "prompt": "Novartis earned USD 24 bn in 2021 but only USD 7 bn in 2022. What is the main reason?",
+     "options": [
+      "A one-off gain from selling its Roche stake in 2021",
+      "Sales fell by two thirds in 2022",
+      "A switch from IFRS to US GAAP",
+      "Higher dividends in 2022"
+     ],
+     "answer": 0,
+     "explanation": "The ≈ USD 14.6 bn gain on the Roche stake inflated 2021. Underlying profit did not collapse — always remove disposal gains before judging the trend."
+    },
+    {
+     "level": 3,
+     "concept": "accounting_changes",
+     "prompt": "Novartis spun off Sandoz in October 2023. How do you compare revenue 2021–2025?",
+     "options": [
+      "Use figures restated for continuing operations and remember that pre-2023 balance sheets still include Sandoz",
+      "Use the originally reported figures — restatements are not allowed",
+      "Add Sandoz revenue to 2024 and 2025",
+      "Revenue cannot be compared at all"
+     ],
+     "answer": 0,
+     "explanation": "Restated continuing-operations figures make revenue comparable; balance-sheet and cash-flow figures before the spin-off are not restated."
+    },
+    {
+     "level": 1,
+     "concept": "business_model",
+     "prompt": "In which currency does Novartis report, and in which currency does it declare its dividend?",
+     "options": [
+      "Reports in USD, declares the dividend in CHF",
+      "Reports and pays in CHF",
+      "Reports in EUR, pays in USD",
+      "Reports and pays in USD"
+     ],
+     "answer": 0,
+     "explanation": "So the payout ratio needs a currency conversion — a classic trap for Swiss multinationals."
+    }
+   ],
+   "peers_suggested": [
+    "roche"
+   ]
+  },
+  "years": [
+   2021,
+   2022,
+   2023,
+   2024,
+   2025
+  ],
+  "values": {
+   "revenue": {
+    "2021": 43974.0,
+    "2022": 43461.0,
+    "2023": 46660.0,
+    "2024": 51722.0,
+    "2025": 57126.0
+   },
+   "gross_profit": {
+    "2021": 32239.0,
+    "2022": 31879.0,
+    "2023": 34188.0,
+    "2024": 38895.0,
+    "2025": 42858.0
+   },
+   "ebit": {
+    "2021": 10056.0,
+    "2022": 7946.0,
+    "2023": 9769.0,
+    "2024": 14544.0,
+    "2025": 17795.0
+   },
+   "net_income": {
+    "2021": 24021.0,
+    "2022": 6955.0,
+    "2023": 14850.0,
+    "2024": 11939.0,
+    "2025": 14649.0
+   },
+   "total_assets": {
+    "2021": 131795.0,
+    "2022": 117453.0,
+    "2023": 99945.0,
+    "2024": 102246.0,
+    "2025": 115493.0
+   },
+   "total_liabilities": {
+    "2021": 63973.0,
+    "2022": 58030.0,
+    "2023": 53195.0,
+    "2024": 58120.0,
+    "2025": 68975.0
+   },
+   "total_equity": {
+    "2021": 67655.0,
+    "2022": 59342.0,
+    "2023": 46667.0,
+    "2024": 44046.0,
+    "2025": 46100.0
+   },
+   "operating_cash_flow": {
+    "2021": 15071.0,
+    "2022": 14236.0,
+    "2023": 14458.0,
+    "2024": 17619.0,
+    "2025": 20055.0
+   },
+   "capex": {
+    "2021": 2971.0,
+    "2022": 2671.0,
+    "2023": 2753.0,
+    "2024": 3814.0,
+    "2025": 1622.0
+   },
+   "depreciation_amortisation": {
+    "2021": 6113.0,
+    "2022": 7181.0,
+    "2023": 8277.0,
+    "2024": 6069.0,
+    "2025": 5578.0
+   },
+   "rnd_expense": {
+    "2021": 8641.0,
+    "2022": 9172.0,
+    "2023": 11371.0,
+    "2024": 10022.0,
+    "2025": 11195.0
+   },
+   "interest_expense": {
+    "2021": 905.0,
+    "2022": 860.0,
+    "2023": 917.0,
+    "2024": 1006.0,
+    "2025": 1237.0
+   },
+   "cash": {
+    "2021": 12407.0,
+    "2022": 7517.0,
+    "2023": 13393.0,
+    "2024": 11459.0,
+    "2025": 11428.0
+   },
+   "total_debt": {
+    "2021": 31025.0,
+    "2022": 27909.0,
+    "2023": 26348.0,
+    "2024": 31258.0,
+    "2025": 37009.0
+   },
+   "current_assets": {
+    "2021": 45718.0,
+    "2022": 36910.0,
+    "2023": 30481.0,
+    "2024": 29704.0,
+    "2025": 30440.0
+   },
+   "current_liabilities": {
+    "2021": 30208.0,
+    "2022": 28656.0,
+    "2023": 26390.0,
+    "2024": 28692.0,
+    "2025": 27260.0
+   },
+   "inventories": {
+    "2021": 6666.0,
+    "2022": 7175.0,
+    "2023": 5913.0,
+    "2024": 5723.0,
+    "2025": 6265.0
+   },
+   "receivables": {
+    "2021": 8005.0,
+    "2022": 8066.0,
+    "2023": 7107.0,
+    "2024": 7423.0,
+    "2025": 8931.0
+   },
+   "eps": {
+    "2021": 10.63,
+    "2022": 3.17,
+    "2023": 7.1,
+    "2024": 5.87,
+    "2025": 7.49
+   },
+   "dps": {
+    "2021": 3.44,
+    "2022": 3.47,
+    "2023": 3.78,
+    "2024": 4.22,
+    "2025": null
+   },
+   "shares_outstanding": {
+    "2021": 2260.0,
+    "2022": 2197.0,
+    "2023": 2092.0,
+    "2024": 2035.0,
+    "2025": 1955.0
+   }
+  },
+  "meta": {
+   "revenue": {
+    "source": "Data vendor (FMP via Bigdata.com) – unverified",
+    "note": "Total revenues (net sales + other revenues) of continuing operations; 2021–2022 restated to exclude Sandoz (spun off Oct 2023)."
+   },
+   "gross_profit": {
+    "source": "Data vendor (FMP via Bigdata.com) – unverified",
+    "note": "Same basis as revenue."
+   },
+   "ebit": {
+    "source": "Data vendor (FMP via Bigdata.com) – unverified",
+    "note": "IFRS operating income, continuing operations. Novartis also reports 'core operating income'."
+   },
+   "net_income": {
+    "source": "Data vendor (FMP via Bigdata.com) – unverified",
+    "note": "Group net income attributable to shareholders, incl. discontinued operations. 2021 includes a ≈ USD 14.6 bn gain on selling the Roche stake; 2023 includes the Sandoz spin-off gain (continuing operations only: 8,572)."
+   },
+   "total_assets": {
+    "source": "Data vendor (FMP via Bigdata.com) – unverified",
+    "note": "2021–2022 still include Sandoz."
+   },
+   "total_liabilities": {
+    "source": "Derived: total assets − total equity incl. non-controlling interests",
+    "note": ""
+   },
+   "total_equity": {
+    "source": "Data vendor (FMP via Bigdata.com) – unverified",
+    "note": "Attributable to shareholders. The 2023 drop reflects the Sandoz distribution to shareholders; buybacks reduce equity every year."
+   },
+   "operating_cash_flow": {
+    "source": "Data vendor (FMP via Bigdata.com) – unverified",
+    "note": "Total group (incl. Sandoz until the 2023 spin-off)."
+   },
+   "capex": {
+    "source": "Data vendor (FMP via Bigdata.com) – unverified",
+    "note": "Vendor capex; 2025 looks low – verify (purchases of PP&E plus intangible assets)."
+   },
+   "depreciation_amortisation": {
+    "source": "Data vendor (FMP via Bigdata.com) – unverified",
+    "note": "From the cash flow statement; may include impairments."
+   },
+   "rnd_expense": {
+    "source": "Data vendor (FMP via Bigdata.com) – unverified",
+    "note": ""
+   },
+   "interest_expense": {
+    "source": "Data vendor (FMP via Bigdata.com) – unverified",
+    "note": ""
+   },
+   "cash": {
+    "source": "Data vendor (FMP via Bigdata.com) – unverified",
+    "note": "Cash and cash equivalents only."
+   },
+   "total_debt": {
+    "source": "Data vendor (FMP via Bigdata.com) – unverified",
+    "note": "Financial debt incl. lease liabilities."
+   },
+   "current_assets": {
+    "source": "Data vendor (FMP via Bigdata.com) – unverified",
+    "note": ""
+   },
+   "current_liabilities": {
+    "source": "Data vendor (FMP via Bigdata.com) – unverified",
+    "note": ""
+   },
+   "inventories": {
+    "source": "Data vendor (FMP via Bigdata.com) – unverified",
+    "note": ""
+   },
+   "receivables": {
+    "source": "Data vendor (FMP via Bigdata.com) – unverified",
+    "note": "Trade receivables."
+   },
+   "eps": {
+    "source": "Data vendor (FMP via Bigdata.com) – unverified",
+    "note": "Diluted, total group (incl. discontinued operations)."
+   },
+   "dps": {
+    "source": "Derived: dividends paid the following year (cash flow statement, USD) ÷ average shares – approximate",
+    "note": "Novartis declares its dividend in CHF (FY2021–FY2025: 3.10, 3.20, 3.30, 3.50, 3.70) but reports in USD. FY2025: convert CHF 3.70 at the USD/CHF rate on the payment date (March 2026)."
+   },
+   "shares_outstanding": {
+    "source": "Data vendor (FMP via Bigdata.com) – unverified",
+    "note": "Diluted weighted average (m). Large buybacks every year."
+   }
+  }
+ },
+ {
+  "profile": {
    "id": "prismalife",
    "name": "PrismaLife AG",
    "short_name": "PrismaLife",
@@ -2577,6 +5363,678 @@ export const COMPANIES = [
    "aum": {
     "source": "To collect from the Geschäftsbericht",
     "note": "Investments for the account of policyholders (Kapitalanlagen für Rechnung und Risiko von Inhabern von Lebensversicherungspolicen)."
+   }
+  }
+ },
+ {
+  "profile": {
+   "id": "roche",
+   "name": "Roche Holding AG",
+   "short_name": "Roche",
+   "sector": "corporate",
+   "subsector": "Pharmaceuticals and diagnostics",
+   "country": "Switzerland",
+   "headquarters": "Basel",
+   "listed": true,
+   "exchange_ticker": "ROG (non-voting equity securities) and RO (bearer shares), SIX Swiss Exchange",
+   "currency": "CHF",
+   "currency_confirmed": true,
+   "fiscal_year_end": "31 December",
+   "accounting": {
+    "2021": "IFRS",
+    "2022": "IFRS",
+    "2023": "IFRS",
+    "2024": "IFRS",
+    "2025": "IFRS"
+   },
+   "accounting_notes": "IFRS group accounts in Swiss francs. Roche steers the business on 'core' results, which exclude amortisation and impairment of intangible assets, restructuring and some legal items; the dividend is based on core EPS. Chugai (Japan, about 60 % owned) is fully consolidated, which creates large non-controlling interests.",
+   "regulator": "Swissmedic, US FDA, EMA (product approvals); SIX Exchange Regulation (listing)",
+   "capital_regime": "None (non-financial company): the constraints are leverage, a strong credit rating and the cash needed for R&D, acquisitions and the dividend",
+   "investor_relations": "https://www.roche.com/investors",
+   "annual_report_hint": "roche.com → Investors → Annual Report. The 'Finance Report' contains the IFRS consolidated financial statements, the notes and the reconciliation from IFRS to core results.",
+   "data_source": "Starter values from a data vendor (FMP via Bigdata.com) and Roche results releases; per-ADR figures converted to per-share figures. Unverified — check each number in the Finance Report.",
+   "required_extra": [],
+   "not_applicable": [],
+   "business_reference": {
+    "what_it_does": {
+     "reference": "Roche is one of the world's largest healthcare companies and the leader in in-vitro diagnostics. It researches, develops, makes and sells prescription medicines (Pharmaceuticals division, about three quarters of sales) and diagnostic instruments, tests and software (Diagnostics division). Oncology, immunology, neuroscience and ophthalmology are key areas. Genentech (US) and Chugai (Japan) belong to the group.",
+     "key_points": [
+      {
+       "point": "Prescription medicines (Pharmaceuticals)",
+       "keywords": [
+        "pharma",
+        "medicine",
+        "medikament",
+        "drug",
+        "arznei"
+       ]
+      },
+      {
+       "point": "Diagnostics",
+       "keywords": [
+        "diagnost",
+        "test",
+        "labor"
+       ]
+      },
+      {
+       "point": "Research-driven / innovative",
+       "keywords": [
+        "research",
+        "forschung",
+        "innovat",
+        "r&d",
+        "biotech",
+        "pipeline"
+       ]
+      },
+      {
+       "point": "Genentech and Chugai",
+       "keywords": [
+        "genentech",
+        "chugai"
+       ]
+      }
+     ]
+    },
+    "how_money": {
+     "reference": "By selling patented medicines at prices that reflect their innovation: high gross margins fund heavy R&D (about 20 % of sales). Diagnostics earns from instruments placed in laboratories and the recurring sale of tests and reagents (a 'razor and blade' model). Royalties and licences add income. When patents expire, biosimilars or generics take share quickly.",
+     "key_points": [
+      {
+       "point": "Patented medicines with high margins",
+       "keywords": [
+        "patent",
+        "margin",
+        "marge",
+        "pricing",
+        "preis"
+       ]
+      },
+      {
+       "point": "Recurring sales of diagnostic tests and reagents",
+       "keywords": [
+        "recurring",
+        "reagent",
+        "reagenz",
+        "test",
+        "installed base",
+        "razor"
+       ]
+      },
+      {
+       "point": "Reinvestment in R&D",
+       "keywords": [
+        "r&d",
+        "research",
+        "forschung",
+        "pipeline"
+       ]
+      },
+      {
+       "point": "Patent expiry and biosimilars",
+       "keywords": [
+        "biosimilar",
+        "generic",
+        "generika",
+        "patent expir",
+        "patentablauf"
+       ]
+      }
+     ]
+    },
+    "segments": {
+     "reference": "Two divisions: Pharmaceuticals (Roche Pharmaceuticals including Genentech, and Chugai) and Diagnostics (Core Lab, Molecular Lab, Near Patient Care, Pathology Lab).",
+     "key_points": [
+      {
+       "point": "Pharmaceuticals",
+       "keywords": [
+        "pharma"
+       ]
+      },
+      {
+       "point": "Diagnostics",
+       "keywords": [
+        "diagnost"
+       ]
+      },
+      {
+       "point": "Chugai",
+       "keywords": [
+        "chugai"
+       ]
+      },
+      {
+       "point": "Genentech",
+       "keywords": [
+        "genentech"
+       ]
+      }
+     ]
+    },
+    "customers": {
+     "reference": "Patients reached through doctors and hospitals, with governments and health insurers paying and negotiating prices; hospital and commercial laboratories buy diagnostic systems and tests.",
+     "key_points": [
+      {
+       "point": "Payers: governments and health insurers",
+       "keywords": [
+        "insurer",
+        "versicher",
+        "krankenkasse",
+        "government",
+        "staat",
+        "payer",
+        "medicare"
+       ]
+      },
+      {
+       "point": "Doctors and hospitals",
+       "keywords": [
+        "hospital",
+        "spital",
+        "klinik",
+        "doctor",
+        "arzt",
+        "physician"
+       ]
+      },
+      {
+       "point": "Laboratories",
+       "keywords": [
+        "lab",
+        "labor"
+       ]
+      }
+     ]
+    },
+    "markets": {
+     "reference": "Global. The United States is the largest market (about half of pharma sales), followed by Europe, Japan and international markets including China. Sales are earned in many currencies while much of the cost base is in Switzerland, so a strong Swiss franc reduces reported figures.",
+     "key_points": [
+      {
+       "point": "United States",
+       "keywords": [
+        "us",
+        "usa",
+        "united states",
+        "amerika"
+       ]
+      },
+      {
+       "point": "Europe",
+       "keywords": [
+        "europe",
+        "europa"
+       ]
+      },
+      {
+       "point": "Japan, China and other international markets",
+       "keywords": [
+        "japan",
+        "china",
+        "asia",
+        "asien",
+        "international"
+       ]
+      },
+      {
+       "point": "Currency effects (CHF reporting)",
+       "keywords": [
+        "currency",
+        "währung",
+        "chf",
+        "franc",
+        "franken",
+        "fx"
+       ]
+      }
+     ]
+    },
+    "advantages": {
+     "reference": "Deep oncology and biologics expertise, a large late-stage pipeline, the leading position in diagnostics with a large installed base of instruments, global scale in R&D and commercialisation, the Genentech research engine and a strong balance sheet.",
+     "key_points": [
+      {
+       "point": "Pipeline and R&D capability",
+       "keywords": [
+        "pipeline",
+        "r&d",
+        "research",
+        "forschung"
+       ]
+      },
+      {
+       "point": "Diagnostics leadership / installed base",
+       "keywords": [
+        "diagnost",
+        "installed base",
+        "leader",
+        "marktführer"
+       ]
+      },
+      {
+       "point": "Global scale",
+       "keywords": [
+        "scale",
+        "size",
+        "global",
+        "grösse",
+        "größe"
+       ]
+      },
+      {
+       "point": "Financial strength",
+       "keywords": [
+        "balance sheet",
+        "bilanz",
+        "rating",
+        "cash",
+        "financial strength"
+       ]
+      }
+     ]
+    },
+    "threats": {
+     "reference": "US drug-pricing pressure (Inflation Reduction Act negotiations, the most-favoured-nation pricing push, tariffs), biosimilar erosion of older antibodies, clinical-trial failures, healthcare pricing reforms in China (diagnostics), competition in new areas such as obesity, and the strong Swiss franc.",
+     "key_points": [
+      {
+       "point": "Drug-pricing pressure and tariffs",
+       "keywords": [
+        "pricing",
+        "preis",
+        "ira",
+        "mfn",
+        "tariff",
+        "zoll"
+       ]
+      },
+      {
+       "point": "Biosimilars and patent expiry",
+       "keywords": [
+        "biosimilar",
+        "generic",
+        "patent"
+       ]
+      },
+      {
+       "point": "Clinical-trial failures",
+       "keywords": [
+        "trial",
+        "studie",
+        "failure",
+        "pipeline"
+       ]
+      },
+      {
+       "point": "Strong Swiss franc",
+       "keywords": [
+        "currency",
+        "franc",
+        "franken",
+        "chf",
+        "fx"
+       ]
+      },
+      {
+       "point": "China pricing reforms",
+       "keywords": [
+        "china"
+       ]
+      }
+     ]
+    }
+   },
+   "events": [
+    {
+     "year": 2021,
+     "metrics": [
+      "shares_outstanding",
+      "total_debt",
+      "total_equity"
+     ],
+     "nature": "capital",
+     "title": "Buy-back of Novartis's 33 % stake in Roche",
+     "detail": "Roche bought back the 53.3 m bearer shares held by Novartis for about CHF 19 bn, financed largely with new debt. The share count fell by about 6 % and debt rose — EPS benefits, the balance sheet becomes more leveraged.",
+     "where_to_verify": "Annual Report 2021: statement of changes in equity (own equity instruments), financing cash flows, debt note."
+    },
+    {
+     "year": 2023,
+     "metrics": [
+      "revenue",
+      "ebit",
+      "net_income"
+     ],
+     "nature": "operational",
+     "title": "COVID-19 test sales fall away",
+     "detail": "COVID-19 tests had boosted Diagnostics in 2021–2022. Their collapse in 2023, plus a strong franc, cut Group sales by about 7 % in CHF although the base business grew at constant exchange rates.",
+     "where_to_verify": "Annual Report 2023: Diagnostics divisional review; sales growth at constant exchange rates (CER) vs CHF."
+    },
+    {
+     "year": 2023,
+     "metrics": [
+      "total_assets",
+      "total_debt"
+     ],
+     "nature": "acquisition",
+     "title": "Acquisition of Telavant (≈ USD 7.1 bn upfront)",
+     "detail": "Roche bought Telavant for the rights to an antibody for inflammatory bowel disease. Acquired product rights are booked as intangible assets — future impairment risk if trials fail.",
+     "where_to_verify": "Finance Report 2023: note on acquisitions / intangible assets."
+    },
+    {
+     "year": 2024,
+     "metrics": [
+      "net_income",
+      "ebit",
+      "rnd_expense"
+     ],
+     "nature": "one-off",
+     "title": "Goodwill and intangible-asset impairments",
+     "detail": "Impairments (including goodwill from the Spark Therapeutics acquisition) cut IFRS net income to CHF 8.3 bn. Core results exclude them, so core EPS kept growing — a textbook IFRS vs 'core' gap.",
+     "where_to_verify": "Finance Report 2024: goodwill and intangible assets notes; reconciliation of IFRS to core results."
+    },
+    {
+     "year": 2025,
+     "metrics": [
+      "revenue",
+      "net_income"
+     ],
+     "nature": "currency",
+     "title": "Strong growth at constant rates, much less in CHF",
+     "detail": "Sales grew 7 % at constant exchange rates but only about 2 % in CHF. IFRS net income rose about 50 % because the 2024 impairments did not recur.",
+     "where_to_verify": "Annual Report 2025 / results release 29 January 2026: CER vs CHF growth; IFRS to core reconciliation."
+    }
+   ],
+   "top_risks_reference": [
+    {
+     "risk": "pricing",
+     "why": "The US is about half of pharma sales: IRA price negotiations, most-favoured-nation pricing and tariffs can cut prices on the biggest brands directly."
+    },
+    {
+     "risk": "pipeline",
+     "why": "Older antibodies face biosimilars and newer brands will lose exclusivity too; value depends on the late-stage pipeline replacing them — trial failures also trigger impairments."
+    },
+    {
+     "risk": "currency",
+     "why": "Most sales are in USD, EUR and JPY while Roche reports in CHF: a strong franc reduces reported sales, profit and dividend capacity even when the business grows."
+    }
+   ],
+   "audit_focus": [
+    "Revenue deductions in the US (rebates, chargebacks, returns)",
+    "Impairment testing of goodwill and intangible assets (product rights, in-process R&D)",
+    "Uncertain tax positions",
+    "Legal provisions and contingent liabilities"
+   ],
+   "quiz": [
+    {
+     "level": 1,
+     "concept": "business_model",
+     "prompt": "Which two divisions make up Roche?",
+     "options": [
+      "Pharmaceuticals and Diagnostics",
+      "Pharmaceuticals and Generics",
+      "Pharmaceuticals and Consumer Health",
+      "Diagnostics and Medical Devices only"
+     ],
+     "answer": 0,
+     "explanation": "Roche is the only big pharma company that is also the world leader in in-vitro diagnostics."
+    },
+    {
+     "level": 3,
+     "concept": "one_off_items",
+     "prompt": "Roche's IFRS net income dropped to CHF 8.3 bn in 2024 and rebounded in 2025, while core EPS grew in both years. What explains the gap?",
+     "options": [
+      "Non-cash impairments of goodwill and intangibles in 2024, excluded from core results",
+      "A collapse in Pharmaceuticals sales in 2024",
+      "A change from IFRS to US GAAP",
+      "Higher dividends paid in 2024"
+     ],
+     "answer": 0,
+     "explanation": "Impairments hit IFRS profit but not core profit. Ask whether impairments are truly one-off: they show that past acquisitions earned less than expected."
+    },
+    {
+     "level": 2,
+     "concept": "acquisition_effects",
+     "prompt": "In 2021 Roche bought back the stake Novartis held in Roche. What happened to Roche's EPS and leverage?",
+     "options": [
+      "EPS rose (fewer shares) and leverage rose (financed with debt)",
+      "EPS fell and leverage fell",
+      "Nothing — buybacks do not affect EPS",
+      "Revenue increased by the value of the stake"
+     ],
+     "answer": 0,
+     "explanation": "A debt-financed buyback reduces the share count and raises net debt: per-share figures improve, the balance sheet becomes riskier."
+    }
+   ],
+   "peers_suggested": [
+    "novartis"
+   ]
+  },
+  "years": [
+   2021,
+   2022,
+   2023,
+   2024,
+   2025
+  ],
+  "values": {
+   "revenue": {
+    "2021": 62801.0,
+    "2022": 63281.0,
+    "2023": 58716.0,
+    "2024": 60495.0,
+    "2025": 61500.0
+   },
+   "ebit": {
+    "2021": 17283.0,
+    "2022": 17476.0,
+    "2023": 15395.0,
+    "2024": 13417.0,
+    "2025": 18476.0
+   },
+   "net_income": {
+    "2021": 13930.0,
+    "2022": 12421.0,
+    "2023": 11498.0,
+    "2024": 8277.0,
+    "2025": 12880.0
+   },
+   "total_assets": {
+    "2021": 92317.0,
+    "2022": 88151.0,
+    "2023": 90468.0,
+    "2024": 101801.0,
+    "2025": 100817.0
+   },
+   "total_liabilities": {
+    "2021": 63972.0,
+    "2022": 56136.0,
+    "2023": 57205.0,
+    "2024": 65640.0,
+    "2025": 62894.0
+   },
+   "total_equity": {
+    "2021": 24489.0,
+    "2022": 27992.0,
+    "2023": 29315.0,
+    "2024": 31767.0,
+    "2025": 33840.0
+   },
+   "operating_cash_flow": {
+    "2021": 20569.0,
+    "2022": 17890.0,
+    "2023": 16095.0,
+    "2024": 20094.0,
+    "2025": 17028.0
+   },
+   "capex": {
+    "2021": 4549.0,
+    "2022": 4552.0,
+    "2023": 4649.0,
+    "2024": 5009.0,
+    "2025": 3580.0
+   },
+   "depreciation_amortisation": {
+    "2021": 4447.0,
+    "2022": 3824.0,
+    "2023": 3474.0,
+    "2024": 3430.0,
+    "2025": 3386.0
+   },
+   "rnd_expense": {
+    "2021": 14799.0,
+    "2022": 15225.0,
+    "2023": 14200.0,
+    "2024": 15304.0,
+    "2025": 12752.0
+   },
+   "interest_expense": {
+    "2021": 341.0,
+    "2022": 690.0,
+    "2023": 997.0,
+    "2024": 1403.0,
+    "2025": 1288.0
+   },
+   "cash": {
+    "2021": 6850.0,
+    "2022": 4991.0,
+    "2023": 5376.0,
+    "2024": 6975.0,
+    "2025": 5588.0
+   },
+   "total_debt": {
+    "2021": 32552.0,
+    "2022": 26544.0,
+    "2023": 30782.0,
+    "2024": 36354.0,
+    "2025": 33191.0
+   },
+   "current_assets": {
+    "2021": 35627.0,
+    "2022": 33816.0,
+    "2023": 33446.0,
+    "2024": 40036.0,
+    "2025": 38773.0
+   },
+   "current_liabilities": {
+    "2021": 38416.0,
+    "2022": 27239.0,
+    "2023": 24824.0,
+    "2024": 27023.0,
+    "2025": 28033.0
+   },
+   "inventories": {
+    "2021": 7715.0,
+    "2022": 8605.0,
+    "2023": 7749.0,
+    "2024": 7606.0,
+    "2025": 7487.0
+   },
+   "receivables": {
+    "2021": 10806.0,
+    "2022": 11606.0,
+    "2023": 11021.0,
+    "2024": 12005.0,
+    "2025": 11519.0
+   },
+   "eps": {
+    "2021": 16.24,
+    "2022": 15.36,
+    "2023": 14.32,
+    "2024": 10.32,
+    "2025": 15.28
+   },
+   "dps": {
+    "2021": 9.3,
+    "2022": 9.5,
+    "2023": 9.6,
+    "2024": 9.7,
+    "2025": 9.8
+   },
+   "shares_outstanding": {
+    "2021": 860.0,
+    "2022": 800.0,
+    "2023": 804.0,
+    "2024": 802.0,
+    "2025": 803.0
+   }
+  },
+  "meta": {
+   "revenue": {
+    "source": "Roche results releases ('Group sales') as recalled – unverified; 2025 per results release 29 Jan 2026 (CHF 61.5 bn, rounded)",
+    "note": "Group sales only. Roche also books royalties and other operating income (≈ CHF 1.8–2.6 bn a year); data vendors mix 'sales' and 'total revenues' between years – keep one definition. Enter the exact 2025 figure."
+   },
+   "ebit": {
+    "source": "Data vendor (FMP via Bigdata.com) – unverified",
+    "note": "IFRS operating profit. Roche also reports 'core operating profit' (excludes amortisation, impairments, restructuring) – note which one you use."
+   },
+   "net_income": {
+    "source": "Data vendor (FMP via Bigdata.com) – unverified",
+    "note": "Attributable to Roche shareholders. Group net income incl. non-controlling interests (mainly Chugai): 2024 9,187; 2025 ≈ 13,800 (results release). 2024 is depressed by goodwill and intangible impairments."
+   },
+   "total_assets": {
+    "source": "Data vendor (FMP via Bigdata.com) – unverified",
+    "note": ""
+   },
+   "total_liabilities": {
+    "source": "Derived: total assets − total equity incl. non-controlling interests",
+    "note": ""
+   },
+   "total_equity": {
+    "source": "Data vendor (FMP via Bigdata.com) – unverified",
+    "note": "Attributable to Roche shareholders; non-controlling interests (≈ CHF 4 bn, mainly Chugai) excluded."
+   },
+   "operating_cash_flow": {
+    "source": "Data vendor (FMP via Bigdata.com) – unverified",
+    "note": ""
+   },
+   "capex": {
+    "source": "Data vendor (FMP via Bigdata.com) – unverified",
+    "note": "Purchases of property, plant and equipment (vendor). 2025 looks low – verify, and decide whether to include intangible assets."
+   },
+   "depreciation_amortisation": {
+    "source": "Data vendor (FMP via Bigdata.com) – unverified",
+    "note": "From the cash flow statement; excludes impairments."
+   },
+   "rnd_expense": {
+    "source": "Data vendor (FMP via Bigdata.com) – unverified",
+    "note": "Vendor R&D line may include impairments of intangible assets – compare with the income statement and with core R&D."
+   },
+   "interest_expense": {
+    "source": "Data vendor (FMP via Bigdata.com) – unverified",
+    "note": ""
+   },
+   "cash": {
+    "source": "Data vendor (FMP via Bigdata.com) – unverified",
+    "note": "Cash and cash equivalents only (marketable securities of ≈ CHF 5–10 bn come on top)."
+   },
+   "total_debt": {
+    "source": "Data vendor (FMP via Bigdata.com) – unverified",
+    "note": "Bonds, notes and other financial debt incl. lease liabilities."
+   },
+   "current_assets": {
+    "source": "Data vendor (FMP via Bigdata.com) – unverified",
+    "note": ""
+   },
+   "current_liabilities": {
+    "source": "Data vendor (FMP via Bigdata.com) – unverified",
+    "note": ""
+   },
+   "inventories": {
+    "source": "Data vendor (FMP via Bigdata.com) – unverified",
+    "note": ""
+   },
+   "receivables": {
+    "source": "Data vendor (FMP via Bigdata.com) – unverified",
+    "note": "Trade receivables."
+   },
+   "eps": {
+    "source": "Data vendor (FMP via Bigdata.com), converted – unverified",
+    "note": "Diluted IFRS EPS. The vendor reports per ADR (1/8 of a share) – multiplied by 8. Roche guides and pays dividends on core EPS (2025: CHF 19.46)."
+   },
+   "dps": {
+    "source": "Roche dividend proposals as recalled – unverified; 2025 per results release",
+    "note": "Per share and non-voting equity security (Genussschein); FY2025 is the 39th consecutive increase."
+   },
+   "shares_outstanding": {
+    "source": "Data vendor (FMP via Bigdata.com), converted – unverified",
+    "note": "Diluted average, shares plus non-voting equity securities. Vendor ADR count ÷ 8. The drop in 2022 follows the buy-back of Novartis's stake (Dec 2021)."
    }
   }
  },
